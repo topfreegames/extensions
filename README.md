@@ -8,6 +8,9 @@ This package contains the common extensions we use in our projects.
 * Statsd
 * Kafka Consumer
 * Kafka Producer
+
+### Dependencias
+* [librdkafka](https://github.com/edenhill/librdkafka)
   
 ### Changelog
 ##### v 1.0.0
