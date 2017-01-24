@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS test_db;
+DROP OWNED BY db_user CASCADE;
+DROP ROLE db_user;

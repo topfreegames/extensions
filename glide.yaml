@@ -1,0 +1,19 @@
+package: github.com/topfreegames/extensions
+import:
+- package: github.com/Sirupsen/logrus
+  version: ^0.11.0
+- package: github.com/alexcesaro/statsd
+  version: ^2.0.0
+- package: github.com/confluentinc/confluent-kafka-go
+  version: ^0.9.2
+  subpackages:
+  - kafka
+- package: github.com/getsentry/raven-go
+- package: github.com/spf13/viper
+- package: gopkg.in/pg.v5
+  version: ^5.2.8
+testImport:
+- package: github.com/onsi/ginkgo
+  version: ^1.2.0
+- package: github.com/onsi/gomega
+  version: ^1.0.0

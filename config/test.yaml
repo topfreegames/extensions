@@ -1,0 +1,23 @@
+---
+queue:
+  topics:
+    - "com.games.test"
+  brokers: "localhost:9941"
+  group: testGroup
+  sessionTimeout: 6000
+  offsetResetStrategy: latest
+  handleAllMessagesBeforeExiting: true
+statsd:
+  host: "localhost:40001"
+  prefix: "push"
+  flushIntervalMs: 5000
+pg:
+  table: "test_table"
+  host: localhost
+  port: 8585
+  user: pg_user
+  pass: ""
+  poolSize: 20
+  maxRetries: 3
+  database: test_db
+  connectionTimeout: 100
