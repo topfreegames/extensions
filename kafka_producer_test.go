@@ -53,7 +53,7 @@ var _ = Describe("KafkaProducer Extension", func() {
 			It("should send message", func() {
 				KafkaProducer, err := NewKafkaProducer(config, logger, mockProducer)
 				Expect(err).NotTo(HaveOccurred())
-				KafkaProducer.SendFeedback([]byte("test message"))
+				KafkaProducer.SendMessage([]byte("test message"), "test-topic")
 				Eventually(func() int {
 					return KafkaProducer.Producer.(*mocks.KafkaProducerClientMock).SentMessages
 				}).Should(Equal(1))

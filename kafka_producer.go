@@ -37,7 +37,6 @@ type KafkaProducer struct {
 	Config   *viper.Viper
 	Producer interfaces.KafkaProducerClient
 	Logger   *log.Logger
-	Topic    string
 }
 
 // NewKafkaProducer for creating a new KafkaProducer instance
@@ -62,13 +61,11 @@ func (q *KafkaProducer) loadConfigurationDefaults() {
 func (q *KafkaProducer) configure(producer interfaces.KafkaProducerClient) error {
 	q.loadConfigurationDefaults()
 	q.Brokers = q.Config.GetString("feedback.kafka.brokers")
-	q.Topic = q.Config.GetString("feedback.kafka.topics")
 	c := &kafka.ConfigMap{
 		"bootstrap.servers": q.Brokers,
 	}
 	l := q.Logger.WithFields(log.Fields{
 		"brokers": q.Brokers,
-		"topic":   q.Topic,
 	})
 	l.Debug("configuring kafka producer")
 
@@ -115,14 +112,14 @@ func (q *KafkaProducer) listenForKafkaResponses() {
 	}
 }
 
-// SendFeedback sends the feedback to the kafka Queue
-func (q *KafkaProducer) SendFeedback(feedback []byte) {
+// SendMessage sends the message to a topic of kafka Queue
+func (q *KafkaProducer) SendMessage(message []byte, topic string) {
 	m := &kafka.Message{
 		TopicPartition: kafka.TopicPartition{
-			Topic:     &q.Topic,
+			Topic:     &topic,
 			Partition: kafka.PartitionAny,
 		},
-		Value: feedback,
+		Value: message,
 	}
 	q.Producer.ProduceChannel() <- m
 }
