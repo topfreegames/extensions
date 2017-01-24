@@ -49,12 +49,12 @@ func NewPGClient(prefix string, config *viper.Viper, pgOrNil ...interfaces.DB) (
 	if len(pgOrNil) == 1 {
 		db = pgOrNil[0]
 	}
-	err := client.Connect(prefix, db)
+	err := client.Connect(db)
 	if err != nil {
 		return nil, err
 	}
 
-	timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
+	timeout := config.GetInt("extensions.pg.connectionTimeout")
 	err = client.WaitForConnection(timeout)
 	if err != nil {
 		return nil, err
@@ -64,14 +64,14 @@ func NewPGClient(prefix string, config *viper.Viper, pgOrNil ...interfaces.DB) (
 }
 
 // Connect to PG
-func (c *PGClient) Connect(prefix string, db interfaces.DB) error {
-	user := c.Config.GetString(fmt.Sprintf("%s.user", prefix))
-	pass := c.Config.GetString(fmt.Sprintf("%s.pass", prefix))
-	host := c.Config.GetString(fmt.Sprintf("%s.host", prefix))
-	database := c.Config.GetString(fmt.Sprintf("%s.database", prefix))
-	port := c.Config.GetInt(fmt.Sprintf("%s.port", prefix))
-	poolSize := c.Config.GetInt(fmt.Sprintf("%s.poolSize", prefix))
-	maxRetries := c.Config.GetInt(fmt.Sprintf("%s.maxRetries", prefix))
+func (c *PGClient) Connect(db interfaces.DB) error {
+	user := c.Config.GetString("extensions.pg.user")
+	pass := c.Config.GetString("extensions.pg.pass")
+	host := c.Config.GetString("extensions.pg.host")
+	database := c.Config.GetString("extensions.pg.database")
+	port := c.Config.GetInt("extensions.pg.port")
+	poolSize := c.Config.GetInt("extensions.pg.poolSize")
+	maxRetries := c.Config.GetInt("extensions.pg.maxRetries")
 
 	c.Options = &pg.Options{
 		Addr:       fmt.Sprintf("%s:%d", host, port),

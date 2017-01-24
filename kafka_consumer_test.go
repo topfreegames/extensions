@@ -67,12 +67,12 @@ var _ = Describe("Kafka Extension", func() {
 		BeforeEach(func() {
 			kafkaConsumerClientMock = mocks.NewKafkaConsumerClientMock()
 			config := viper.New()
-			config.Set("queue.topics", []string{"com.games.test"})
-			config.Set("queue.brokers", "localhost:9941")
-			config.Set("queue.group", "testGroup")
-			config.Set("queue.sessionTimeout", 6000)
-			config.Set("queue.offsetResetStrategy", "latest")
-			config.Set("queue.handleAllMessagesBeforeExiting", true)
+			config.Set("extensions.kafkaconsumer.topics", []string{"com.games.test"})
+			config.Set("extensions.kafkaconsumer.brokers", "localhost:9941")
+			config.Set("extensions.kafkaconsumer.group", "testGroup")
+			config.Set("extensions.kafkaconsumer.sessionTimeout", 6000)
+			config.Set("extensions.kafkaconsumer.offsetResetStrategy", "latest")
+			config.Set("extensions.kafkaconsumer.handleAllMessagesBeforeExiting", true)
 
 			var err error
 			consumer, err = NewKafkaConsumer(config, logger, kafkaConsumerClientMock)
@@ -112,7 +112,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should assign partition", func() {
-				topic := consumer.Config.GetStringSlice("queue.topics")[0]
+				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 				part := kafka.TopicPartition{
@@ -128,7 +128,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should log error if fails to assign partition", func() {
-				topic := consumer.Config.GetStringSlice("queue.topics")[0]
+				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 
@@ -149,7 +149,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should revoke partitions", func() {
-				topic := consumer.Config.GetStringSlice("queue.topics")[0]
+				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 				part := kafka.TopicPartition{
@@ -165,7 +165,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should stop loop if fails to revoke partitions", func() {
-				topic := consumer.Config.GetStringSlice("queue.topics")[0]
+				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 				part := kafka.TopicPartition{
@@ -182,7 +182,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should receive message", func() {
-				topic := consumer.Config.GetStringSlice("queue.topics")[0]
+				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 				part := kafka.TopicPartition{
@@ -247,12 +247,12 @@ var _ = Describe("Kafka Extension", func() {
 				Expect(err).NotTo(HaveOccurred())
 				cons.loadConfigurationDefaults()
 
-				Expect(cnf.GetStringSlice("queue.topics")).To(Equal([]string{"com.games.test"}))
-				Expect(cnf.GetString("queue.brokers")).To(Equal("localhost:9092"))
-				Expect(cnf.GetString("queue.group")).To(Equal("test"))
-				Expect(cnf.GetInt("queue.sessionTimeout")).To(Equal(6000))
-				Expect(cnf.GetString("queue.offsetResetStrategy")).To(Equal("latest"))
-				Expect(cnf.GetBool("queue.handleAllMessagesBeforeExiting")).To(BeTrue())
+				Expect(cnf.GetStringSlice("extensions.kafkaconsumer.topics")).To(Equal([]string{"com.games.test"}))
+				Expect(cnf.GetString("extensions.kafkaconsumer.brokers")).To(Equal("localhost:9092"))
+				Expect(cnf.GetString("extensions.kafkaconsumer.group")).To(Equal("test"))
+				Expect(cnf.GetInt("extensions.kafkaconsumer.sessionTimeout")).To(Equal(6000))
+				Expect(cnf.GetString("extensions.kafkaconsumer.offsetResetStrategy")).To(Equal("latest"))
+				Expect(cnf.GetBool("extensions.kafkaconsumer.handleAllMessagesBeforeExiting")).To(BeTrue())
 			})
 		})
 

@@ -53,17 +53,17 @@ func NewStatsD(config *viper.Viper, logger *logrus.Logger, clientOrNil ...interf
 }
 
 func (s *StatsD) loadConfigurationDefaults() {
-	s.Config.SetDefault("stats.statsd.host", "localhost:8125")
-	s.Config.SetDefault("stats.statsd.prefix", "test")
-	s.Config.SetDefault("stats.statsd.flushIntervalMs", 5000)
+	s.Config.SetDefault("extensions.statsd.host", "localhost:8125")
+	s.Config.SetDefault("extensions.statsd.prefix", "test")
+	s.Config.SetDefault("extensions.statsd.flushIntervalMs", 5000)
 }
 
 func (s *StatsD) configure(client interfaces.StatsDClient) error {
 	s.loadConfigurationDefaults()
 
-	host := s.Config.GetString("stats.statsd.host")
-	prefix := s.Config.GetString("stats.statsd.prefix")
-	flushIntervalMs := s.Config.GetInt("stats.statsd.flushIntervalMs")
+	host := s.Config.GetString("extensions.statsd.host")
+	prefix := s.Config.GetString("extensions.statsd.prefix")
+	flushIntervalMs := s.Config.GetInt("extensions.statsd.flushIntervalMs")
 	flushPeriod := time.Duration(flushIntervalMs) * time.Millisecond
 
 	l := s.Logger.WithFields(logrus.Fields{

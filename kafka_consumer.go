@@ -76,23 +76,23 @@ func NewKafkaConsumer(
 }
 
 func (q *KafkaConsumer) loadConfigurationDefaults() {
-	q.Config.SetDefault("queue.topics", []string{"com.games.test"})
-	q.Config.SetDefault("queue.brokers", "localhost:9092")
-	q.Config.SetDefault("queue.channelSize", 100)
-	q.Config.SetDefault("queue.group", "test")
-	q.Config.SetDefault("queue.sessionTimeout", 6000)
-	q.Config.SetDefault("queue.offsetResetStrategy", "latest")
-	q.Config.SetDefault("queue.handleAllMessagesBeforeExiting", true)
+	q.Config.SetDefault("extensions.kafkaconsumer.topics", []string{"com.games.test"})
+	q.Config.SetDefault("extensions.kafkaconsumer.brokers", "localhost:9092")
+	q.Config.SetDefault("extensions.kafkaconsumer.channelSize", 100)
+	q.Config.SetDefault("extensions.kafkaconsumer.group", "test")
+	q.Config.SetDefault("extensions.kafkaconsumer.sessionTimeout", 6000)
+	q.Config.SetDefault("extensions.kafkaconsumer.offsetResetStrategy", "latest")
+	q.Config.SetDefault("extensions.kafkaconsumer.handleAllMessagesBeforeExiting", true)
 }
 
 func (q *KafkaConsumer) configure(client interfaces.KafkaConsumerClient) error {
-	q.OffsetResetStrategy = q.Config.GetString("queue.offsetResetStrategy")
-	q.Brokers = q.Config.GetString("queue.brokers")
-	q.ConsumerGroup = q.Config.GetString("queue.group")
-	q.SessionTimeout = q.Config.GetInt("queue.sessionTimeout")
-	q.Topics = q.Config.GetStringSlice("queue.topics")
-	q.ChannelSize = q.Config.GetInt("queue.channelSize")
-	q.HandleAllMessagesBeforeExiting = q.Config.GetBool("queue.handleAllMessagesBeforeExiting")
+	q.OffsetResetStrategy = q.Config.GetString("extensions.kafkaconsumer.offsetResetStrategy")
+	q.Brokers = q.Config.GetString("extensions.kafkaconsumer.brokers")
+	q.ConsumerGroup = q.Config.GetString("extensions.kafkaconsumer.group")
+	q.SessionTimeout = q.Config.GetInt("extensions.kafkaconsumer.sessionTimeout")
+	q.Topics = q.Config.GetStringSlice("extensions.kafkaconsumer.topics")
+	q.ChannelSize = q.Config.GetInt("extensions.kafkaconsumer.channelSize")
+	q.HandleAllMessagesBeforeExiting = q.Config.GetBool("extensions.kafkaconsumer.handleAllMessagesBeforeExiting")
 
 	q.msgChan = make(chan []byte, q.ChannelSize)
 
