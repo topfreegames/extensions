@@ -1,0 +1,10 @@
+{
+    "dependencies": {
+        "github.com/onsi/ginkgo": {
+            "branch": "master"
+        },
+        "github.com/spf13/viper": {
+            "branch": "master"
+        }
+    }
+}
