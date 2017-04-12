@@ -16,7 +16,7 @@ This package contains the common extensions we use in our projects.
 * [librdkafka](https://github.com/edenhill/librdkafka)
   
 ### Changelog
-#### v 1.0.0
+#### v1.0.0
 
 New Extensions:
 
@@ -24,3 +24,7 @@ New Extensions:
 * Statsd
 * Kafka consumer
 * Kafka producer
+
+#### v1.1.0
+
+Dep support.
