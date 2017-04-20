@@ -32,7 +32,7 @@ import (
 func NewViperWithConfigFile(configFile string) (*viper.Viper, error) {
 	v := viper.New()
 	v.SetConfigFile(configFile)
-	v.SetEnvPrefix("pusher")
+	v.SetEnvPrefix("extensions")
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.AutomaticEnv()
 	err := v.ReadInConfig()
