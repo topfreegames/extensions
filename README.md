@@ -11,10 +11,11 @@ This package contains the common extensions we use in our projects.
 * Statsd
 * Kafka Consumer
 * Kafka Producer
+* Redis
 
 ### Dependencias
 * [librdkafka](https://github.com/edenhill/librdkafka)
-  
+
 ### Changelog
 #### v1.0.0
 
@@ -27,4 +28,10 @@ New Extensions:
 
 #### v1.1.0
 
-Dep support.
+* Dep support.
+
+#### v1.2.0
+
+New Extension:
+
+* Redis
