@@ -1,18 +1,26 @@
-hash: 50bcf371950b75786abb9c6ee3e6608727b19016757a99af29ade32b257c2657
-updated: 2017-01-24T15:25:36.857940102-02:00
+hash: e754ad1929ce299e3765134ba4034efc24d941dc65f178a6bc4231b74ad3a8c0
+updated: 2017-04-20T14:31:49.104247666-03:00
 imports:
 - name: github.com/alexcesaro/statsd
   version: 7fea3f0d2fab1ad973e641e51dba45443a311a90
 - name: github.com/certifi/gocertifi
   version: a61bf5eafa3aee233ec8043e9da052447e5463dd
 - name: github.com/confluentinc/confluent-kafka-go
-  version: 1a081c6faa129cee96a011a6f6aa289050044539
+  version: a9b5c269c66e9a2eb5f195563b2f01e65a84c527
   subpackages:
   - kafka
 - name: github.com/fsnotify/fsnotify
   version: fd9ec7deca8bf46ecd2a795baaacf2b3a9be1197
 - name: github.com/getsentry/raven-go
   version: 3f7439d3e74d88e21d196ba20eb61a5a958bc118
+- name: github.com/go-redis/redis
+  version: 15786cf82174d65ac7f478c7faa6d2e055dad8b7
+  subpackages:
+  - internal
+  - internal/consistenthash
+  - internal/hashtag
+  - internal/pool
+  - internal/proto
 - name: github.com/hashicorp/hcl
   version: 37ab263305aaeb501a60eb16863e808d426e37f2
   subpackages:
@@ -30,12 +38,26 @@ imports:
   version: 9c47895dc1ce54302908ab8a43385d1f5df2c11c
 - name: github.com/mitchellh/mapstructure
   version: 5a0325d7fafaac12dda6e7fb8bd222ec1b69875e
+- name: github.com/onsi/gomega
+  version: 334b8f472b3af5d541c5642701c1e29e2126f486
+  subpackages:
+  - format
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/oraclematcher
+  - internal/testingtsupport
+  - matchers
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+  - types
 - name: github.com/pelletier/go-buffruneio
   version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
 - name: github.com/pelletier/go-toml
   version: ce7be745f09fe4ff89af8e3ea744e1deabf20ee3
 - name: github.com/Sirupsen/logrus
-  version: d26492970760ca5d33129d2d799e34be5c4782eb
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
   subpackages:
   - hooks/test
 - name: github.com/spf13/afero
@@ -60,7 +82,7 @@ imports:
   - transform
   - unicode/norm
 - name: gopkg.in/pg.v5
-  version: faf12727feaaedd4622b85af0a9736a434d61a78
+  version: 2246060a2a43f8282ad53295d56d780dbc930b7f
   subpackages:
   - internal
   - internal/parser
@@ -71,7 +93,7 @@ imports:
   version: a5b47d31c556af34a302ce5d659e6fea44d90de0
 testImports:
 - name: github.com/onsi/ginkgo
-  version: 462326b1628e124b23f42e87a8f2750e3c4e2d24
+  version: 77a8c1e5c40d6bb6c5eb4dd4bdce9763564f6298
   subpackages:
   - config
   - internal/codelocation
@@ -80,23 +102,13 @@ testImports:
   - internal/leafnodes
   - internal/remote
   - internal/spec
+  - internal/spec_iterator
   - internal/specrunner
   - internal/suite
   - internal/testingtproxy
   - internal/writer
   - reporters
   - reporters/stenographer
-  - types
-- name: github.com/onsi/gomega
-  version: a78ae492d53aad5a7a232d0d0462c14c400e3ee7
-  subpackages:
-  - format
-  - internal/assertion
-  - internal/asyncassertion
-  - internal/testingtsupport
-  - matchers
-  - matchers/support/goraph/bipartitegraph
-  - matchers/support/goraph/edge
-  - matchers/support/goraph/node
-  - matchers/support/goraph/util
+  - reporters/stenographer/support/go-colorable
+  - reporters/stenographer/support/go-isatty
   - types

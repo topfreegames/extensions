@@ -1,0 +1,127 @@
+memo = "cb596166af09a68dd193df290998950957cc7c7af5b6a714d84be45ef2dc6ac9"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/BurntSushi/toml"
+  packages = ["."]
+  revision = "b26d9c308763d68093482582cea63d69be07a0f0"
+
+[[projects]]
+  name = "github.com/Sirupsen/logrus"
+  packages = [".","hooks/test"]
+  revision = "ba1b36c82c5e05c4f912a88eab0dcd91a171688f"
+  version = "v0.11.5"
+
+[[projects]]
+  name = "github.com/alexcesaro/statsd"
+  packages = ["."]
+  revision = "7fea3f0d2fab1ad973e641e51dba45443a311a90"
+  version = "v2.0.0"
+
+[[projects]]
+  name = "github.com/certifi/gocertifi"
+  packages = ["."]
+  revision = "a9c833d2837d3b16888d55d5aafa9ffe9afb22b0"
+  version = "2017.04.17"
+
+[[projects]]
+  name = "github.com/confluentinc/confluent-kafka-go"
+  packages = ["kafka"]
+  revision = "a9b5c269c66e9a2eb5f195563b2f01e65a84c527"
+  version = "v0.9.4"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/fsnotify/fsnotify"
+  packages = ["."]
+  revision = "30411dbcefb7a1da7e84f75530ad3abe4011b4f8"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/getsentry/raven-go"
+  packages = ["."]
+  revision = "b68337dbf03e7fbb53d9fd9b63fd09b28e8f13f7"
+
+[[projects]]
+  name = "github.com/go-redis/redis"
+  packages = [".","internal","internal/consistenthash","internal/hashtag","internal/pool","internal/proto"]
+  revision = "15786cf82174d65ac7f478c7faa6d2e055dad8b7"
+  version = "v6.2.3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/hashicorp/hcl"
+  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
+  revision = "d7400db7143f8e869812e50a53acd6c8d92af3b8"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/jinzhu/inflection"
+  packages = ["."]
+  revision = "1c35d901db3da928c72a72d8458480cc9ade058f"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/magiconair/properties"
+  packages = ["."]
+  revision = "c265cfa48dda6474e208715ca93e987829f572f8"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  revision = "d2dd0262208475919e1a362f675cfc0e7c10e905"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/onsi/ginkgo"
+  packages = [".","config","internal/codelocation","internal/containernode","internal/failer","internal/leafnodes","internal/remote","internal/spec","internal/spec_iterator","internal/specrunner","internal/suite","internal/testingtproxy","internal/writer","reporters","reporters/stenographer","reporters/stenographer/support/go-colorable","reporters/stenographer/support/go-isatty","types"]
+  revision = "f40a49d81e5c12e90400620b6242fb29a8e7c9d9"
+
+[[projects]]
+  name = "github.com/onsi/gomega"
+  packages = [".","format","internal/assertion","internal/asyncassertion","internal/oraclematcher","internal/testingtsupport","matchers","matchers/support/goraph/bipartitegraph","matchers/support/goraph/edge","matchers/support/goraph/node","matchers/support/goraph/util","types"]
+  revision = "334b8f472b3af5d541c5642701c1e29e2126f486"
+  version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/cast"
+  packages = ["."]
+  revision = "27b586b42e29bec072fe7379259cc719e1289da6"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/jwalterweatherman"
+  packages = ["."]
+  revision = "33c24e77fb80341fe7130ee7c594256ff08ccc46"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "cb88ea77998c3f024757528e3305022ab50b43be"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/viper"
+  packages = ["."]
+  revision = "c1ccc378a054ea8d4e38d8c67f6938d4760b53dd"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "076b546753157f758b316e59bcb51e6807c04057"
+
+[[projects]]
+  name = "gopkg.in/pg.v5"
+  packages = [".","internal","internal/parser","internal/pool","orm","types"]
+  revision = "2246060a2a43f8282ad53295d56d780dbc930b7f"
+  version = "v5.3.3"
+
+[[projects]]
+  branch = "v2"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "a3f3340b5840cee44f372bddb5880fcbc419b46a"

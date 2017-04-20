@@ -1,0 +1,12 @@
+
+[[dependencies]]
+  name = "github.com/go-redis/redis"
+  version = "^6.2.3"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/onsi/ginkgo"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/spf13/viper"

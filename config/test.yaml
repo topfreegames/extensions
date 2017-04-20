@@ -22,3 +22,10 @@ extensions:
     maxRetries: 3
     database: test_db
     connectionTimeout: 100
+  redis:
+    host: localhost
+    port: 6333
+    pass: ""
+    database: 0
+    poolSize: 20
+    connectionTimeout: 100
