@@ -35,17 +35,17 @@ import (
 type Producer struct {
 	Brokers  string
 	Config   *viper.Viper
-	Producer interfaces.ProducerClient
+	Producer interfaces.KafkaProducerClient
 	Logger   *log.Logger
 }
 
 // NewProducer for creating a new Producer instance
-func NewProducer(config *viper.Viper, logger *log.Logger, clientOrNil ...interfaces.ProducerClient) (*Producer, error) {
+func NewProducer(config *viper.Viper, logger *log.Logger, clientOrNil ...interfaces.KafkaProducerClient) (*Producer, error) {
 	q := &Producer{
 		Config: config,
 		Logger: logger,
 	}
-	var producer interfaces.ProducerClient
+	var producer interfaces.KafkaProducerClient
 	if len(clientOrNil) == 1 {
 		producer = clientOrNil[0]
 	}
@@ -57,7 +57,7 @@ func (q *Producer) loadConfigurationDefaults() {
 	q.Config.SetDefault("extensions.kafkaproducer.brokers", "localhost:9941")
 }
 
-func (q *Producer) configure(producer interfaces.ProducerClient) error {
+func (q *Producer) configure(producer interfaces.KafkaProducerClient) error {
 	q.loadConfigurationDefaults()
 	q.Brokers = q.Config.GetString("extensions.kafkaproducer.brokers")
 	c := &kafka.ConfigMap{

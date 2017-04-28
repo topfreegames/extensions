@@ -38,7 +38,7 @@ import (
 type Consumer struct {
 	Brokers                        string
 	Config                         *viper.Viper
-	Consumer                       interfaces.ConsumerClient
+	Consumer                       interfaces.KafkaConsumerClient
 	ConsumerGroup                  string
 	ChannelSize                    int
 	Logger                         *logrus.Logger
@@ -56,7 +56,7 @@ type Consumer struct {
 func NewConsumer(
 	config *viper.Viper,
 	logger *logrus.Logger,
-	clientOrNil ...interfaces.ConsumerClient,
+	clientOrNil ...interfaces.KafkaConsumerClient,
 ) (*Consumer, error) {
 	q := &Consumer{
 		Config:            config,
@@ -64,7 +64,7 @@ func NewConsumer(
 		messagesReceived:  0,
 		pendingMessagesWG: nil,
 	}
-	var client interfaces.ConsumerClient
+	var client interfaces.KafkaConsumerClient
 	if len(clientOrNil) == 1 {
 		client = clientOrNil[0]
 	}
@@ -85,7 +85,7 @@ func (q *Consumer) loadConfigurationDefaults() {
 	q.Config.SetDefault("extensions.kafkaconsumer.handleAllMessagesBeforeExiting", true)
 }
 
-func (q *Consumer) configure(client interfaces.ConsumerClient) error {
+func (q *Consumer) configure(client interfaces.KafkaConsumerClient) error {
 	q.OffsetResetStrategy = q.Config.GetString("extensions.kafkaconsumer.offsetResetStrategy")
 	q.Brokers = q.Config.GetString("extensions.kafkaconsumer.brokers")
 	q.ConsumerGroup = q.Config.GetString("extensions.kafkaconsumer.group")
@@ -108,7 +108,7 @@ func (q *Consumer) configure(client interfaces.ConsumerClient) error {
 	return nil
 }
 
-func (q *Consumer) configureConsumer(client interfaces.ConsumerClient) error {
+func (q *Consumer) configureConsumer(client interfaces.KafkaConsumerClient) error {
 	l := q.Logger.WithFields(logrus.Fields{
 		"method":                          "configureConsumer",
 		"bootstrap.servers":               q.Brokers,

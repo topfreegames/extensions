@@ -33,18 +33,18 @@ import (
 
 // Client identifies uniquely one redis client with a pool of connections
 type Client struct {
-	Client  interfaces.Client
+	Client  interfaces.RedisClient
 	Config  *viper.Viper
 	Options *redis.Options
 }
 
 // NewClient creates and returns a new redis client based on the given settings
-func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Client) (*Client, error) {
+func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.RedisClient) (*Client, error) {
 	client := &Client{
 		Config: config,
 	}
 
-	var cl interfaces.Client
+	var cl interfaces.RedisClient
 	if len(clientOrNil) == 1 {
 		cl = clientOrNil[0]
 	}
@@ -63,7 +63,7 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Cli
 }
 
 // Connect to Redis
-func (c *Client) Connect(prefix string, client interfaces.Client) error {
+func (c *Client) Connect(prefix string, client interfaces.RedisClient) error {
 	host := c.Config.GetString(fmt.Sprintf("%s.host", prefix))
 	port := c.Config.GetInt(fmt.Sprintf("%s.port", prefix))
 	pass := c.Config.GetString(fmt.Sprintf("%s.pass", prefix))

@@ -24,8 +24,8 @@ package interfaces
 
 import "github.com/go-redis/redis"
 
-//Client represents the contract for a redis client
-type Client interface {
+//RedisClient represents the contract for a redis client
+type RedisClient interface {
 	Close() error
 	HGetAll(string) *redis.StringStringMapCmd
 	HMSet(string, map[string]interface{}) *redis.StatusCmd

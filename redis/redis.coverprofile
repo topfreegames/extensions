@@ -1,12 +1,12 @@
 mode: atomic
-github.com/topfreegames/extensions/redis/redis.go:42.103,48.27 3 10
+github.com/topfreegames/extensions/redis/redis.go:42.108,48.27 3 10
 github.com/topfreegames/extensions/redis/redis.go:51.2,52.16 2 10
 github.com/topfreegames/extensions/redis/redis.go:56.2,58.16 3 10
 github.com/topfreegames/extensions/redis/redis.go:62.2,62.20 1 10
 github.com/topfreegames/extensions/redis/redis.go:48.27,50.3 1 10
 github.com/topfreegames/extensions/redis/redis.go:52.16,54.3 1 0
 github.com/topfreegames/extensions/redis/redis.go:58.16,60.3 1 0
-github.com/topfreegames/extensions/redis/redis.go:66.73,80.19 7 10
+github.com/topfreegames/extensions/redis/redis.go:66.78,80.19 7 10
 github.com/topfreegames/extensions/redis/redis.go:86.2,86.12 1 10
 github.com/topfreegames/extensions/redis/redis.go:80.19,82.3 1 0
 github.com/topfreegames/extensions/redis/redis.go:82.3,84.3 1 10
