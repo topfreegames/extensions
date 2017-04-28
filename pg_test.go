@@ -127,7 +127,7 @@ var _ = Describe("PG Extension", func() {
 
 				err = client.WaitForConnection(10)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Timed out waiting for PostgreSQL to connect"))
+				Expect(err.Error()).To(ContainSubstring("timed out waiting for PostgreSQL to connect"))
 			})
 		})
 
