@@ -20,40 +20,41 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package extensions
+package pg
 
 import (
 	"fmt"
 	"time"
 
-	"github.com/go-redis/redis"
+	pg "gopkg.in/pg.v5"
+
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/interfaces"
+	"github.com/topfreegames/extensions/pg/interfaces"
 )
 
-// RedisClient identifies uniquely one redis client with a pool of connections
-type RedisClient struct {
-	Client  interfaces.RedisClient
+// Client is the struct that connects to PostgreSQL
+type Client struct {
 	Config  *viper.Viper
-	Options *redis.Options
+	DB      interfaces.DB
+	Options *pg.Options
 }
 
-// NewRedisClient creates and returns a new redis client based on the given settings
-func NewRedisClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.RedisClient) (*RedisClient, error) {
-	client := &RedisClient{
+// NewClient creates a new client
+func NewClient(prefix string, config *viper.Viper, pgOrNil ...interfaces.DB) (*Client, error) {
+	client := &Client{
 		Config: config,
 	}
 
-	var cl interfaces.RedisClient
-	if len(clientOrNil) == 1 {
-		cl = clientOrNil[0]
+	var db interfaces.DB
+	if len(pgOrNil) == 1 {
+		db = pgOrNil[0]
 	}
-	err := client.Connect(prefix, cl)
+	err := client.Connect(prefix, db)
 	if err != nil {
 		return nil, err
 	}
 
-	timeout := config.GetInt("extensions.pg.connectionTimeout")
+	timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
 	err = client.WaitForConnection(timeout)
 	if err != nil {
 		return nil, err
@@ -62,41 +63,54 @@ func NewRedisClient(prefix string, config *viper.Viper, clientOrNil ...interface
 	return client, nil
 }
 
-// Connect to Redis
-func (c *RedisClient) Connect(prefix string, client interfaces.RedisClient) error {
-	host := c.Config.GetString(fmt.Sprintf("%s.host", prefix))
-	port := c.Config.GetInt(fmt.Sprintf("%s.port", prefix))
+// Connect to PG
+func (c *Client) Connect(prefix string, db interfaces.DB) error {
+	user := c.Config.GetString(fmt.Sprintf("%s.user", prefix))
 	pass := c.Config.GetString(fmt.Sprintf("%s.pass", prefix))
-	database := c.Config.GetInt(fmt.Sprintf("%s.database", prefix))
+	host := c.Config.GetString(fmt.Sprintf("%s.host", prefix))
+	database := c.Config.GetString(fmt.Sprintf("%s.database", prefix))
+	port := c.Config.GetInt(fmt.Sprintf("%s.port", prefix))
 	poolSize := c.Config.GetInt(fmt.Sprintf("%s.poolSize", prefix))
+	maxRetries := c.Config.GetInt(fmt.Sprintf("%s.maxRetries", prefix))
 
-	c.Options = &redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", host, port),
-		Password: pass,
-		DB:       database,
-		PoolSize: poolSize,
+	c.Options = &pg.Options{
+		Addr:       fmt.Sprintf("%s:%d", host, port),
+		User:       user,
+		Password:   pass,
+		Database:   database,
+		PoolSize:   poolSize,
+		MaxRetries: maxRetries,
 	}
 
-	if client == nil {
-		c.Client = redis.NewClient(c.Options)
+	if db == nil {
+		c.DB = pg.Connect(c.Options)
 	} else {
-		c.Client = client
+		c.DB = db
 	}
 
 	return nil
 }
 
-// IsConnected determines if the client is connected to redis
-func (c *RedisClient) IsConnected() bool {
-	res, err := c.Client.Ping().Result()
+// IsConnected determines if the client is connected to PG
+func (c *Client) IsConnected() bool {
+	res, err := c.DB.Exec("select 1")
 	if err != nil {
 		return false
 	}
-	return res == "PONG"
+	return res.RowsReturned() == 1
 }
 
-// WaitForConnection loops until redis is connected
-func (c *RedisClient) WaitForConnection(timeout int) error {
+// Close the connections to PG
+func (c *Client) Close() error {
+	err := c.DB.Close()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// WaitForConnection loops until PG is connected
+func (c *Client) WaitForConnection(timeout int) error {
 	start := time.Now().UnixNano() / 1000000
 	t := int64(timeout)
 
@@ -109,23 +123,14 @@ func (c *RedisClient) WaitForConnection(timeout int) error {
 	}
 
 	if ellapsed() > t {
-		return fmt.Errorf("Timed out waiting for Redis to connect.")
+		return fmt.Errorf("timed out waiting for PostgreSQL to connect")
 	}
 
 	return nil
 }
 
-// Close the connections to redis
-func (c *RedisClient) Close() error {
-	err := c.Client.Close()
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// Cleanup closes redis connection
-func (c *RedisClient) Cleanup() error {
+//Cleanup closes PG connection
+func (c *Client) Cleanup() error {
 	err := c.Close()
 	if err != nil {
 		return err

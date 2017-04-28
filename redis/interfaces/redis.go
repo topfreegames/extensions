@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2016 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,7 +20,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package util
+package interfaces
 
-//Version identifies extensions package version
-const Version = "2.0.0"
+import "github.com/go-redis/redis"
+
+//Client represents the contract for a redis client
+type Client interface {
+	Close() error
+	HGetAll(string) *redis.StringStringMapCmd
+	HMSet(string, map[string]interface{}) *redis.StatusCmd
+	Ping() *redis.StatusCmd
+}

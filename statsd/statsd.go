@@ -20,7 +20,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package extensions
+package statsd
 
 import (
 	"time"
@@ -28,7 +28,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/alexcesaro/statsd"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/interfaces"
+	"github.com/topfreegames/extensions/statsd/interfaces"
 )
 
 // StatsD for sending metrics

@@ -20,7 +20,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package extensions
+package kafka
 
 import (
 	"github.com/Sirupsen/logrus"
@@ -29,21 +29,21 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/mocks"
+	"github.com/topfreegames/extensions/kafka/mocks"
 	"github.com/topfreegames/extensions/util"
 )
 
-var _ = Describe("KafkaProducer Extension", func() {
+var _ = Describe("Producer Extension", func() {
 	var config *viper.Viper
-	var mockProducer *mocks.KafkaProducerClientMock
+	var mockProducer *mocks.ProducerClientMock
 	logger, hook := test.NewNullLogger()
 	logger.Level = logrus.DebugLevel
 
 	BeforeEach(func() {
 		var err error
-		config, err = util.NewViperWithConfigFile("./config/test.yaml")
+		config, err = util.NewViperWithConfigFile("../config/test.yaml")
 		Expect(err).NotTo(HaveOccurred())
-		mockProducer = mocks.NewKafkaProducerClientMock()
+		mockProducer = mocks.NewProducerClientMock()
 		mockProducer.StartConsumingMessagesInProduceChannel()
 		hook.Reset()
 	})
@@ -51,19 +51,19 @@ var _ = Describe("KafkaProducer Extension", func() {
 	Describe("[Unit]", func() {
 		Describe("Handling Message Sent", func() {
 			It("should send message", func() {
-				KafkaProducer, err := NewKafkaProducer(config, logger, mockProducer)
+				Producer, err := NewProducer(config, logger, mockProducer)
 				Expect(err).NotTo(HaveOccurred())
-				KafkaProducer.SendMessage([]byte("test message"), "test-topic")
+				Producer.SendMessage([]byte("test message"), "test-topic")
 				Eventually(func() int {
-					return KafkaProducer.Producer.(*mocks.KafkaProducerClientMock).SentMessages
+					return Producer.Producer.(*mocks.ProducerClientMock).SentMessages
 				}).Should(Equal(1))
 			})
 
 			It("should log kafka responses", func() {
-				KafkaProducer, err := NewKafkaProducer(config, logger, mockProducer)
+				Producer, err := NewProducer(config, logger, mockProducer)
 				Expect(err).NotTo(HaveOccurred())
 				testTopic := "ttopic"
-				KafkaProducer.Producer.Events() <- &kafka.Message{
+				Producer.Producer.Events() <- &kafka.Message{
 					TopicPartition: kafka.TopicPartition{
 						Topic:     &testTopic,
 						Partition: 0,
@@ -81,7 +81,7 @@ var _ = Describe("KafkaProducer Extension", func() {
 	Describe("[Integration]", func() {
 		Describe("Creating new producer", func() {
 			It("should return connected client", func() {
-				kafkaProducer, err := NewKafkaProducer(config, logger)
+				kafkaProducer, err := NewProducer(config, logger)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(kafkaProducer).NotTo(BeNil())
 				Expect(kafkaProducer.Producer).NotTo(BeNil())

@@ -41,3 +41,9 @@ New Extension:
 Bugfixes:
 
 * PG extension bugfix
+
+### v2.0.0
+
+Breaking Changes:
+
+* Each extension has its own package now

@@ -20,32 +20,32 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package extensions
+package kafka
 
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	raven "github.com/getsentry/raven-go"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/interfaces"
+	"github.com/topfreegames/extensions/kafka/interfaces"
 	"github.com/topfreegames/extensions/util"
 )
 
-// KafkaProducer for producing push feedbacks to a kafka queue
-type KafkaProducer struct {
+// Producer for producing push feedbacks to a kafka queue
+type Producer struct {
 	Brokers  string
 	Config   *viper.Viper
-	Producer interfaces.KafkaProducerClient
+	Producer interfaces.ProducerClient
 	Logger   *log.Logger
 }
 
-// NewKafkaProducer for creating a new KafkaProducer instance
-func NewKafkaProducer(config *viper.Viper, logger *log.Logger, clientOrNil ...interfaces.KafkaProducerClient) (*KafkaProducer, error) {
-	q := &KafkaProducer{
+// NewProducer for creating a new Producer instance
+func NewProducer(config *viper.Viper, logger *log.Logger, clientOrNil ...interfaces.ProducerClient) (*Producer, error) {
+	q := &Producer{
 		Config: config,
 		Logger: logger,
 	}
-	var producer interfaces.KafkaProducerClient
+	var producer interfaces.ProducerClient
 	if len(clientOrNil) == 1 {
 		producer = clientOrNil[0]
 	}
@@ -53,11 +53,11 @@ func NewKafkaProducer(config *viper.Viper, logger *log.Logger, clientOrNil ...in
 	return q, err
 }
 
-func (q *KafkaProducer) loadConfigurationDefaults() {
+func (q *Producer) loadConfigurationDefaults() {
 	q.Config.SetDefault("extensions.kafkaproducer.brokers", "localhost:9941")
 }
 
-func (q *KafkaProducer) configure(producer interfaces.KafkaProducerClient) error {
+func (q *Producer) configure(producer interfaces.ProducerClient) error {
 	q.loadConfigurationDefaults()
 	q.Brokers = q.Config.GetString("extensions.kafkaproducer.brokers")
 	c := &kafka.ConfigMap{
@@ -83,7 +83,7 @@ func (q *KafkaProducer) configure(producer interfaces.KafkaProducerClient) error
 	return nil
 }
 
-func (q *KafkaProducer) listenForKafkaResponses() {
+func (q *Producer) listenForKafkaResponses() {
 	l := q.Logger.WithFields(log.Fields{
 		"method": "listenForKafkaResponses",
 	})
@@ -112,7 +112,7 @@ func (q *KafkaProducer) listenForKafkaResponses() {
 }
 
 // SendMessage sends the message to a topic of kafka Queue
-func (q *KafkaProducer) SendMessage(message []byte, topic string) {
+func (q *Producer) SendMessage(message []byte, topic string) {
 	m := &kafka.Message{
 		TopicPartition: kafka.TopicPartition{
 			Topic:     &topic,

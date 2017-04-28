@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2017 TFG Co
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,7 +20,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package util
+package interfaces
 
-//Version identifies extensions package version
-const Version = "2.0.0"
+import "github.com/confluentinc/confluent-kafka-go/kafka"
+
+// ProducerClient interface
+type ProducerClient interface {
+	Events() chan kafka.Event
+	ProduceChannel() chan *kafka.Message
+}
+
+// ConsumerClient interface
+type ConsumerClient interface {
+	SubscribeTopics([]string, kafka.RebalanceCb) error
+	Events() chan kafka.Event
+	Assign([]kafka.TopicPartition) error
+	Unassign() error
+	Close() error
+}

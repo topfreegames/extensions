@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co
+ * Copyright (c) 2016 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,21 +20,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package interfaces
+package statsd
 
-import "github.com/confluentinc/confluent-kafka-go/kafka"
+import (
+	"testing"
 
-// KafkaProducerClient interface
-type KafkaProducerClient interface {
-	Events() chan kafka.Event
-	ProduceChannel() chan *kafka.Message
-}
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
 
-// KafkaConsumerClient interface
-type KafkaConsumerClient interface {
-	SubscribeTopics([]string, kafka.RebalanceCb) error
-	Events() chan kafka.Event
-	Assign([]kafka.TopicPartition) error
-	Unassign() error
-	Close() error
+func TestExtensions(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Statsd Suite")
 }

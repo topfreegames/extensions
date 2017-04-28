@@ -20,7 +20,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package extensions
+package kafka
 
 import (
 	"fmt"
@@ -32,7 +32,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/mocks"
+	"github.com/topfreegames/extensions/kafka/mocks"
 	. "github.com/topfreegames/extensions/testing"
 	"github.com/topfreegames/extensions/util"
 )
@@ -46,8 +46,8 @@ var _ = Describe("Kafka Extension", func() {
 	})
 
 	Describe("[Unit]", func() {
-		var kafkaConsumerClientMock *mocks.KafkaConsumerClientMock
-		var consumer *KafkaConsumer
+		var kafkaConsumerClientMock *mocks.ConsumerClientMock
+		var consumer *Consumer
 
 		startConsuming := func() {
 			go func() {
@@ -65,7 +65,7 @@ var _ = Describe("Kafka Extension", func() {
 		}
 
 		BeforeEach(func() {
-			kafkaConsumerClientMock = mocks.NewKafkaConsumerClientMock()
+			kafkaConsumerClientMock = mocks.NewConsumerClientMock()
 			config := viper.New()
 			config.Set("extensions.kafkaconsumer.topics", []string{"com.games.test"})
 			config.Set("extensions.kafkaconsumer.brokers", "localhost:9941")
@@ -75,7 +75,7 @@ var _ = Describe("Kafka Extension", func() {
 			config.Set("extensions.kafkaconsumer.handleAllMessagesBeforeExiting", true)
 
 			var err error
-			consumer, err = NewKafkaConsumer(config, logger, kafkaConsumerClientMock)
+			consumer, err = NewConsumer(config, logger, kafkaConsumerClientMock)
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -243,7 +243,7 @@ var _ = Describe("Kafka Extension", func() {
 		Describe("Configuration Defaults", func() {
 			It("should configure defaults", func() {
 				cnf := viper.New()
-				cons, err := NewKafkaConsumer(cnf, logger, kafkaConsumerClientMock)
+				cons, err := NewConsumer(cnf, logger, kafkaConsumerClientMock)
 				Expect(err).NotTo(HaveOccurred())
 				cons.loadConfigurationDefaults()
 
@@ -297,7 +297,7 @@ var _ = Describe("Kafka Extension", func() {
 
 		Describe("Creating new client", func() {
 			It("should return connected client", func() {
-				client, err := NewKafkaConsumer(config, logger)
+				client, err := NewConsumer(config, logger)
 				Expect(err).NotTo(HaveOccurred())
 
 				Expect(client.Brokers).NotTo(HaveLen(0))
@@ -309,7 +309,7 @@ var _ = Describe("Kafka Extension", func() {
 
 		Describe("ConsumeLoop", func() {
 			It("should consume message and add it to msgChan", func() {
-				client, err := NewKafkaConsumer(config, logger)
+				client, err := NewConsumer(config, logger)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(client).NotTo(BeNil())
 				defer client.StopConsuming()

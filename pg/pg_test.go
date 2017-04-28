@@ -20,7 +20,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package extensions
+package pg
 
 import (
 	"fmt"
@@ -28,7 +28,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/mocks"
+	"github.com/topfreegames/extensions/pg/mocks"
 )
 
 var _ = Describe("PG Extension", func() {
@@ -36,7 +36,7 @@ var _ = Describe("PG Extension", func() {
 
 	BeforeEach(func() {
 		config = viper.New()
-		config.SetConfigFile("./config/test.yaml")
+		config.SetConfigFile("../config/test.yaml")
 		Expect(config.ReadInConfig()).NotTo(HaveOccurred())
 	})
 
@@ -48,7 +48,7 @@ var _ = Describe("PG Extension", func() {
 
 		Describe("Connect", func() {
 			It("Should use config to load connection details", func() {
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(client.Options).NotTo(BeNil())
 			})
@@ -57,7 +57,7 @@ var _ = Describe("PG Extension", func() {
 		Describe("IsConnected", func() {
 			It("should verify that db is connected", func() {
 				mockDb = mocks.NewPGMock(0, 1)
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(client.IsConnected()).To(BeTrue())
 				Expect(mockDb.Execs).To(HaveLen(2))
@@ -66,7 +66,7 @@ var _ = Describe("PG Extension", func() {
 			It("should not be connected if error", func() {
 				connErr := fmt.Errorf("Could not connect")
 				mockDb = mocks.NewPGMock(0, 1)
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				mockDb.Error = connErr
 				Expect(client.IsConnected()).To(BeFalse())
@@ -75,7 +75,7 @@ var _ = Describe("PG Extension", func() {
 
 			It("should not be connected if zero rows returned", func() {
 				mockDb = mocks.NewPGMock(0, 1)
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				mockDb.RowsReturned = 0
 				Expect(err).NotTo(HaveOccurred())
 				Expect(client.IsConnected()).To(BeFalse())
@@ -86,7 +86,7 @@ var _ = Describe("PG Extension", func() {
 		Describe("Close", func() {
 			It("should close if no errors", func() {
 				mockDb = mocks.NewPGMock(0, 1)
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				mockDb.RowsReturned = 0
 				Expect(err).NotTo(HaveOccurred())
 				err = client.Close()
@@ -97,7 +97,7 @@ var _ = Describe("PG Extension", func() {
 			It("should return error", func() {
 				connErr := fmt.Errorf("Could not close")
 				mockDb = mocks.NewPGMock(0, 1)
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
 				mockDb.Error = connErr
@@ -111,7 +111,7 @@ var _ = Describe("PG Extension", func() {
 		Describe("WaitForConnection", func() {
 			It("should wait for connection", func() {
 				mockDb = mocks.NewPGMock(0, 1)
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
 				err = client.WaitForConnection(1)
@@ -121,7 +121,7 @@ var _ = Describe("PG Extension", func() {
 			It("should error waiting for connection", func() {
 				pErr := fmt.Errorf("Connection failed")
 				mockDb = mocks.NewPGMock(0, 1)
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				mockDb.Error = pErr
 
@@ -134,7 +134,7 @@ var _ = Describe("PG Extension", func() {
 		Describe("Cleanup", func() {
 			It("should close connection", func() {
 				mockDb = mocks.NewPGMock(0, 1)
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				mockDb.RowsReturned = 0
 
@@ -144,16 +144,16 @@ var _ = Describe("PG Extension", func() {
 			})
 
 			It("should return error if error when closing connection", func() {
-				pErr := fmt.Errorf("Failed to close connection.")
+				pErr := fmt.Errorf("failed to close connection")
 				mockDb = mocks.NewPGMock(0, 1)
-				client, err := NewPGClient("db", config, mockDb)
+				client, err := NewClient("db", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				mockDb.Error = pErr
 				mockDb.RowsReturned = 0
 
 				err = client.Cleanup()
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Failed to close connection."))
+				Expect(err.Error()).To(ContainSubstring("failed to close connection"))
 			})
 		})
 	})
@@ -161,7 +161,7 @@ var _ = Describe("PG Extension", func() {
 	Describe("[Integration]", func() {
 		Describe("Creating new client", func() {
 			It("should return connected client", func() {
-				client, err := NewPGClient("db", config)
+				client, err := NewClient("db", config)
 				Expect(err).NotTo(HaveOccurred())
 				defer client.Close()
 				Expect(client).NotTo(BeNil())

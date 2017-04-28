@@ -24,8 +24,8 @@ package mocks
 
 import "github.com/confluentinc/confluent-kafka-go/kafka"
 
-// KafkaProducerClientMock  should be used for tests that need to send messages to Kafka
-type KafkaProducerClientMock struct {
+// ProducerClientMock  should be used for tests that need to send messages to Kafka
+type ProducerClientMock struct {
 	EventsChan   chan kafka.Event
 	ProduceChan  chan *kafka.Message
 	SentMessages int
@@ -41,9 +41,9 @@ func (m *MockEvent) String() string {
 	return string(m.Message.Value)
 }
 
-// NewKafkaProducerClientMock creates a new instance
-func NewKafkaProducerClientMock() *KafkaProducerClientMock {
-	k := &KafkaProducerClientMock{
+// NewProducerClientMock creates a new instance
+func NewProducerClientMock() *ProducerClientMock {
+	k := &ProducerClientMock{
 		EventsChan:   make(chan kafka.Event),
 		ProduceChan:  make(chan *kafka.Message),
 		SentMessages: 0,
@@ -52,7 +52,7 @@ func NewKafkaProducerClientMock() *KafkaProducerClientMock {
 }
 
 // StartConsumingMessagesInProduceChannel starts to consume messages in produce channel and incrementing sentMessages
-func (k *KafkaProducerClientMock) StartConsumingMessagesInProduceChannel() {
+func (k *ProducerClientMock) StartConsumingMessagesInProduceChannel() {
 	go func() {
 		for msg := range k.ProduceChan {
 			k.SentMessages++
@@ -62,17 +62,17 @@ func (k *KafkaProducerClientMock) StartConsumingMessagesInProduceChannel() {
 }
 
 // Events returns the mock events channel
-func (k *KafkaProducerClientMock) Events() chan kafka.Event {
+func (k *ProducerClientMock) Events() chan kafka.Event {
 	return k.EventsChan
 }
 
 // ProduceChannel returns the mock produce channel
-func (k *KafkaProducerClientMock) ProduceChannel() chan *kafka.Message {
+func (k *ProducerClientMock) ProduceChannel() chan *kafka.Message {
 	return k.ProduceChan
 }
 
-// KafkaConsumerClientMock  should be used for tests that need to send messages to Kafka
-type KafkaConsumerClientMock struct {
+// ConsumerClientMock  should be used for tests that need to send messages to Kafka
+type ConsumerClientMock struct {
 	SubscribedTopics   map[string]interface{}
 	EventsChan         chan kafka.Event
 	AssignedPartitions []kafka.TopicPartition
@@ -80,13 +80,13 @@ type KafkaConsumerClientMock struct {
 	Error              error
 }
 
-// NewKafkaConsumerClientMock creates a new instance
-func NewKafkaConsumerClientMock(errorOrNil ...error) *KafkaConsumerClientMock {
+// NewConsumerClientMock creates a new instance
+func NewConsumerClientMock(errorOrNil ...error) *ConsumerClientMock {
 	var err error
 	if len(errorOrNil) == 1 {
 		err = errorOrNil[0]
 	}
-	k := &KafkaConsumerClientMock{
+	k := &ConsumerClientMock{
 		SubscribedTopics:   map[string]interface{}{},
 		EventsChan:         make(chan kafka.Event),
 		AssignedPartitions: []kafka.TopicPartition{},
@@ -97,7 +97,7 @@ func NewKafkaConsumerClientMock(errorOrNil ...error) *KafkaConsumerClientMock {
 }
 
 //SubscribeTopics mock
-func (k *KafkaConsumerClientMock) SubscribeTopics(topics []string, callback kafka.RebalanceCb) error {
+func (k *ConsumerClientMock) SubscribeTopics(topics []string, callback kafka.RebalanceCb) error {
 	if k.Error != nil {
 		return k.Error
 	}
@@ -108,12 +108,12 @@ func (k *KafkaConsumerClientMock) SubscribeTopics(topics []string, callback kafk
 }
 
 //Events mock
-func (k *KafkaConsumerClientMock) Events() chan kafka.Event {
+func (k *ConsumerClientMock) Events() chan kafka.Event {
 	return k.EventsChan
 }
 
 //Assign mock
-func (k *KafkaConsumerClientMock) Assign(partitions []kafka.TopicPartition) error {
+func (k *ConsumerClientMock) Assign(partitions []kafka.TopicPartition) error {
 	if k.Error != nil {
 		return k.Error
 	}
@@ -122,7 +122,7 @@ func (k *KafkaConsumerClientMock) Assign(partitions []kafka.TopicPartition) erro
 }
 
 //Unassign mock
-func (k *KafkaConsumerClientMock) Unassign() error {
+func (k *ConsumerClientMock) Unassign() error {
 	if k.Error != nil {
 		return k.Error
 	}
@@ -131,7 +131,7 @@ func (k *KafkaConsumerClientMock) Unassign() error {
 }
 
 //Close mock
-func (k *KafkaConsumerClientMock) Close() error {
+func (k *ConsumerClientMock) Close() error {
 	if k.Error != nil {
 		return k.Error
 	}

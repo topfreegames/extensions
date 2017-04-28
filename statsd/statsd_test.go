@@ -20,14 +20,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package extensions
+package statsd
 
 import (
 	"github.com/Sirupsen/logrus/hooks/test"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/mocks"
+	"github.com/topfreegames/extensions/statsd/mocks"
 	"github.com/topfreegames/extensions/util"
 )
 
@@ -37,7 +37,7 @@ var _ = Describe("StatsD Extension", func() {
 	logger, hook := test.NewNullLogger()
 	BeforeEach(func() {
 		var err error
-		config, err = util.NewViperWithConfigFile("./config/test.yaml")
+		config, err = util.NewViperWithConfigFile("../config/test.yaml")
 		Expect(err).NotTo(HaveOccurred())
 		mockClient = mocks.NewStatsDClientMock()
 		hook.Reset()

@@ -20,14 +20,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package interfaces
+package pg
 
-import "github.com/go-redis/redis"
+import (
+	"testing"
 
-//RedisClient represents the contract for a redis client
-type RedisClient interface {
-	Close() error
-	HGetAll(string) *redis.StringStringMapCmd
-	HMSet(string, map[string]interface{}) *redis.StatusCmd
-	Ping() *redis.StatusCmd
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
+
+func TestExtensions(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "PG Suite")
 }
