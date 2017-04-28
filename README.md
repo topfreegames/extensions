@@ -35,3 +35,9 @@ New Extensions:
 New Extension:
 
 * Redis
+
+### v1.2.1
+
+Bugfixes:
+
+* PG extension bugfix

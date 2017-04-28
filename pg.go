@@ -54,7 +54,7 @@ func NewPGClient(prefix string, config *viper.Viper, pgOrNil ...interfaces.DB) (
 		return nil, err
 	}
 
-	timeout := config.GetInt("extensions.pg.connectionTimeout")
+	timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
 	err = client.WaitForConnection(timeout)
 	if err != nil {
 		return nil, err
@@ -123,7 +123,7 @@ func (c *PGClient) WaitForConnection(timeout int) error {
 	}
 
 	if ellapsed() > t {
-		return fmt.Errorf("Timed out waiting for PostgreSQL to connect.")
+		return fmt.Errorf("timed out waiting for PostgreSQL to connect")
 	}
 
 	return nil
