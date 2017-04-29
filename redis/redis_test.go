@@ -23,8 +23,10 @@
 package redis
 
 import (
-	"fmt"
+	"time"
 
+	"github.com/go-redis/redis"
+	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
@@ -33,21 +35,26 @@ import (
 
 var _ = Describe("Redis Extension", func() {
 	var config *viper.Viper
+	var mockClient *mocks.MockRedisClient
+	var mockCtrl *gomock.Controller
 
 	BeforeEach(func() {
 		config = viper.New()
 		config.SetConfigFile("../config/test.yaml")
+		mockCtrl = gomock.NewController(GinkgoT())
+		mockClient = mocks.NewMockRedisClient(mockCtrl)
 		Expect(config.ReadInConfig()).NotTo(HaveOccurred())
 	})
 
+	AfterEach(func() {
+		mockCtrl.Finish()
+	})
+
 	Describe("[Unit]", func() {
-		var mockClient *mocks.RedisMock
-		BeforeEach(func() {
-			mockClient = mocks.NewRedisMock("PONG")
-		})
 
 		Describe("Connect", func() {
 			It("Should use config to load connection details", func() {
+				mockClient.EXPECT().Ping()
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(client.Options).NotTo(BeNil())
@@ -56,92 +63,70 @@ var _ = Describe("Redis Extension", func() {
 
 		Describe("IsConnected", func() {
 			It("should verify that db is connected", func() {
+				mockClient.EXPECT().Ping()
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
+				mockClient.EXPECT().Ping()
 				Expect(client.IsConnected()).To(BeTrue())
-				Expect(mockClient.PingCount).NotTo(Equal(0))
-			})
-
-			It("should not be connected if error", func() {
-				connErr := fmt.Errorf("Could not connect")
-				client, err := NewClient("extensions.redis", config, mockClient)
-				Expect(err).NotTo(HaveOccurred())
-				mockClient.Error = connErr
-				Expect(client.IsConnected()).To(BeFalse())
-				Expect(mockClient.PingCount).NotTo(Equal(0))
 			})
 
 			It("should not be connected if something other than 'PONG' returned", func() {
+				mockClient.EXPECT().Ping()
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
-				mockClient.PingReponse = "WHATEVER"
+				mockClient.EXPECT().Ping().Return(&redis.StatusCmd{})
 				Expect(client.IsConnected()).To(BeFalse())
-				Expect(mockClient.PingCount).NotTo(Equal(0))
 			})
 		})
 
 		Describe("Close", func() {
 			It("should close if no errors", func() {
+				mockClient.EXPECT().Ping()
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
+				mockClient.EXPECT().Close()
 				err = client.Close()
 				Expect(err).NotTo(HaveOccurred())
-				Expect(mockClient.Closed).To(BeTrue())
-			})
-
-			It("should return error", func() {
-				connErr := fmt.Errorf("Could not close")
-				client, err := NewClient("extensions.redis", config, mockClient)
-				Expect(err).NotTo(HaveOccurred())
-
-				mockClient.Error = connErr
-
-				err = client.Close()
-				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Could not close"))
 			})
 		})
 
 		Describe("WaitForConnection", func() {
 			It("should wait for connection", func() {
+				mockClient.EXPECT().Ping()
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
 
+				mockClient.EXPECT().Ping()
 				err = client.WaitForConnection(1)
 				Expect(err).NotTo(HaveOccurred())
-			})
-
-			It("should error waiting for connection", func() {
-				pErr := fmt.Errorf("Connection failed")
-				client, err := NewClient("extensions.redis", config, mockClient)
-				Expect(err).NotTo(HaveOccurred())
-				mockClient.Error = pErr
-
-				err = client.WaitForConnection(10)
-				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("timed out waiting for Redis to connect"))
 			})
 		})
 
 		Describe("Cleanup", func() {
 			It("should close connection", func() {
+				mockClient.EXPECT().Ping()
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
+				mockClient.EXPECT().Close()
 				err = client.Cleanup()
 				Expect(err).NotTo(HaveOccurred())
-				Expect(mockClient.Closed).To(BeTrue())
-			})
-
-			It("should return error if error when closing connection", func() {
-				pErr := fmt.Errorf("failed to close connection")
-				client, err := NewClient("extensions.redis", config, mockClient)
-				Expect(err).NotTo(HaveOccurred())
-				mockClient.Error = pErr
-				err = client.Cleanup()
-				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("failed to close connection"))
 			})
 		})
+
+		Describe("EnterCriticalSection", func() {
+			It("should lock in redis", func() {
+				mockClient.EXPECT().Ping()
+				client, err := NewClient("extensions.redis", config, mockClient)
+				Expect(err).NotTo(HaveOccurred())
+				t := 10 * time.Millisecond
+				mockClient.EXPECT().SetNX("mock", gomock.Any(), 10*time.Millisecond).Return(&redis.BoolCmd{})
+				client.EnterCriticalSection(mockClient, "mock", t, t, t)
+				mockClient.EXPECT().Close()
+				err = client.Cleanup()
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
+
 	})
 
 	Describe("[Integration]", func() {
@@ -154,6 +139,45 @@ var _ = Describe("Redis Extension", func() {
 				client.WaitForConnection(10)
 				Expect(client.IsConnected()).To(BeTrue())
 			})
+		})
+
+		Describe("Test locking", func() {
+			It("should get a lock only once", func() {
+				client, err := NewClient("extensions.redis", config)
+				Expect(err).NotTo(HaveOccurred())
+				defer client.Close()
+				Expect(client).NotTo(BeNil())
+				client.WaitForConnection(10)
+				Expect(client.IsConnected()).To(BeTrue())
+				t := 100 * time.Millisecond
+				lock, err := client.EnterCriticalSection(client.Client, "lock", t, t, t)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(lock).NotTo(BeNil())
+				Expect(lock.IsLocked()).To(Equal(true))
+				lock2, err := client.EnterCriticalSection(client.Client, "lock", t, 0, 0)
+				Expect(lock2).To(BeNil())
+			})
+
+			It("should get a lock, unlock and get it again", func() {
+				client, err := NewClient("extensions.redis", config)
+				Expect(err).NotTo(HaveOccurred())
+				defer client.Close()
+				Expect(client).NotTo(BeNil())
+				client.WaitForConnection(10)
+				Expect(client.IsConnected()).To(BeTrue())
+				t := 100 * time.Millisecond
+				lock, err := client.EnterCriticalSection(client.Client, "lock2", t, t, t)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(lock).NotTo(BeNil())
+				Expect(lock.IsLocked()).To(Equal(true))
+				err = client.LeaveCriticalSection(lock)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(lock.IsLocked()).To(Equal(false))
+				lock2, err := client.EnterCriticalSection(client.Client, "lock2", t, 0, 0)
+				Expect(lock2).NotTo(BeNil())
+				Expect(lock2.IsLocked()).To(Equal(true))
+			})
+
 		})
 	})
 })

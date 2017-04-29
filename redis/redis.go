@@ -26,6 +26,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/bsm/redis-lock"
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/redis/interfaces"
@@ -88,11 +89,30 @@ func (c *Client) Connect(prefix string, client interfaces.RedisClient) error {
 
 // IsConnected determines if the client is connected to redis
 func (c *Client) IsConnected() bool {
-	res, err := c.Client.Ping().Result()
-	if err != nil {
-		return false
+	result := c.Client.Ping()
+	if result != nil {
+		res, err := result.Result()
+		if err != nil {
+			return false
+		}
+		return res == "PONG"
 	}
-	return res == "PONG"
+	return true
+}
+
+// EnterCriticalSection locks key using redlock algorithm
+func (c *Client) EnterCriticalSection(client interfaces.RedisClient, key string, lockTimeout, retryTimeout, retryInterval time.Duration) (*lock.Lock, error) {
+	lockOptions := &lock.LockOptions{
+		LockTimeout: lockTimeout,
+		WaitTimeout: retryTimeout,
+		WaitRetry:   retryInterval,
+	}
+	return lock.ObtainLock(client, key, lockOptions)
+}
+
+// LeaveCriticalSection locks key using redlock algorithm
+func (c *Client) LeaveCriticalSection(lock *lock.Lock) error {
+	return lock.Unlock()
 }
 
 // WaitForConnection loops until redis is connected

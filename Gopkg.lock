@@ -1,4 +1,4 @@
-memo = "cb596166af09a68dd193df290998950957cc7c7af5b6a714d84be45ef2dc6ac9"
+memo = "d3ac098fdd3283bb6f0e8cd60bfe59f3c8ba0e56f168d47421c0a7de7d212b42"
 
 [[projects]]
   branch = "master"
@@ -17,6 +17,12 @@ memo = "cb596166af09a68dd193df290998950957cc7c7af5b6a714d84be45ef2dc6ac9"
   packages = ["."]
   revision = "7fea3f0d2fab1ad973e641e51dba45443a311a90"
   version = "v2.0.0"
+
+[[projects]]
+  name = "github.com/bsm/redis-lock"
+  packages = ["."]
+  revision = "0a3c01f764b4864e340afce6ffa26c97da6927bb"
+  version = "v6.0.0"
 
 [[projects]]
   name = "github.com/certifi/gocertifi"
@@ -47,6 +53,12 @@ memo = "cb596166af09a68dd193df290998950957cc7c7af5b6a714d84be45ef2dc6ac9"
   packages = [".","internal","internal/consistenthash","internal/hashtag","internal/pool","internal/proto"]
   revision = "15786cf82174d65ac7f478c7faa6d2e055dad8b7"
   version = "v6.2.3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/mock"
+  packages = ["gomock"]
+  revision = "bd3c8e81be01eef76d4b503f5e687d2d1354d2d9"
 
 [[projects]]
   branch = "master"

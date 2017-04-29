@@ -22,7 +22,11 @@
 
 package interfaces
 
-import "github.com/go-redis/redis"
+import (
+	"time"
+
+	"github.com/go-redis/redis"
+)
 
 //RedisClient represents the contract for a redis client
 type RedisClient interface {
@@ -30,4 +34,6 @@ type RedisClient interface {
 	HGetAll(string) *redis.StringStringMapCmd
 	HMSet(string, map[string]interface{}) *redis.StatusCmd
 	Ping() *redis.StatusCmd
+	SetNX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd
+	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
 }
