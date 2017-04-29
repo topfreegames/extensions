@@ -110,7 +110,7 @@ func (c *Client) EnterCriticalSection(client interfaces.RedisClient, key string,
 	return lock.ObtainLock(client, key, lockOptions)
 }
 
-// LeaveCriticalSection locks key using redlock algorithm
+// LeaveCriticalSection unlocks key
 func (c *Client) LeaveCriticalSection(lock *lock.Lock) error {
 	return lock.Unlock()
 }
