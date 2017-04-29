@@ -23,6 +23,7 @@
 package redis
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -74,7 +75,15 @@ var _ = Describe("Redis Extension", func() {
 				mockClient.EXPECT().Ping()
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
-				mockClient.EXPECT().Ping().Return(&redis.StatusCmd{})
+				mockClient.EXPECT().Ping().Return(redis.NewStatusResult("OK", nil))
+				Expect(client.IsConnected()).To(BeFalse())
+			})
+
+			It("should not be connected if redis error", func() {
+				mockClient.EXPECT().Ping()
+				client, err := NewClient("extensions.redis", config, mockClient)
+				Expect(err).NotTo(HaveOccurred())
+				mockClient.EXPECT().Ping().Return(redis.NewStatusResult("PONG", fmt.Errorf("redis error")))
 				Expect(client.IsConnected()).To(BeFalse())
 			})
 		})
@@ -87,6 +96,15 @@ var _ = Describe("Redis Extension", func() {
 				mockClient.EXPECT().Close()
 				err = client.Close()
 				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should not close if errors", func() {
+				mockClient.EXPECT().Ping()
+				client, err := NewClient("extensions.redis", config, mockClient)
+				Expect(err).NotTo(HaveOccurred())
+				mockClient.EXPECT().Close().Return(fmt.Errorf("redis error"))
+				err = client.Close()
+				Expect(err).To(HaveOccurred())
 			})
 		})
 
