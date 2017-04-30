@@ -57,7 +57,7 @@
 
 [[dependencies]]
   name = "github.com/go-redis/redis"
-  version = "^6.2.3"
+  version = "^6.2.5"
 
 [[dependencies]]
   branch = "master"
