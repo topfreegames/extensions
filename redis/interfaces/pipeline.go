@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2016 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,7 +20,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package util
+package interfaces
 
-//Version identifies extensions package version
-const Version = "2.2.0"
+import (
+	"github.com/go-redis/redis"
+)
+
+//Pipeline represents the contract for a redis pipeline
+type Pipeline interface {
+	HMSet(string, map[string]interface{}) *redis.StatusCmd
+	SAdd(key string, members ...interface{}) *redis.IntCmd
+	SRem(key string, members ...interface{}) *redis.IntCmd
+	Exec() ([]redis.Cmder, error)
+}
