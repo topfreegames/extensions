@@ -54,7 +54,7 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Red
 		return nil, err
 	}
 
-	timeout := config.GetInt("extensions.pg.connectionTimeout")
+	timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
 	err = client.WaitForConnection(timeout)
 	if err != nil {
 		return nil, err
@@ -65,17 +65,10 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Red
 
 // Connect to Redis
 func (c *Client) Connect(prefix string, client interfaces.RedisClient) error {
-	host := c.Config.GetString(fmt.Sprintf("%s.host", prefix))
-	port := c.Config.GetInt(fmt.Sprintf("%s.port", prefix))
-	pass := c.Config.GetString(fmt.Sprintf("%s.pass", prefix))
-	database := c.Config.GetInt(fmt.Sprintf("%s.database", prefix))
-	poolSize := c.Config.GetInt(fmt.Sprintf("%s.poolSize", prefix))
-
-	c.Options = &redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", host, port),
-		Password: pass,
-		DB:       database,
-		PoolSize: poolSize,
+	var err error
+	c.Options, err = redis.ParseURL(c.Config.GetString(fmt.Sprintf("%s.url", prefix)))
+	if err != nil {
+		return err
 	}
 
 	if client == nil {
