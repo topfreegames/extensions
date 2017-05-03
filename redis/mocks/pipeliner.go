@@ -13,6 +13,7 @@ import (
 type MockPipeliner struct {
 	ctrl     *gomock.Controller
 	recorder *_MockPipelinerRecorder
+	redis.Pipeliner
 }
 
 // Recorder for MockPipeliner (not exported)
@@ -2317,3 +2318,5 @@ func (_m *MockPipeliner) pipelined(_param0 func(redis.Pipeliner) error) ([]redis
 func (_mr *_MockPipelinerRecorder) pipelined(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "pipelined", arg0)
 }
+
+var _ redis.Pipeliner = (*MockPipeliner)(nil)
