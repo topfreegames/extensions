@@ -95,9 +95,9 @@ func (_mr *_MockRedisClientRecorder) Eval(arg0, arg1 interface{}, arg2 ...interf
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Eval", _s...)
 }
 
-func (_m *MockRedisClient) TxPipeline() *redis.Pipeline {
+func (_m *MockRedisClient) TxPipeline() redis.Pipeliner {
 	ret := _m.ctrl.Call(_m, "TxPipeline")
-	ret0, _ := ret[0].(*redis.Pipeline)
+	ret0, _ := ret[0].(redis.Pipeliner)
 	return ret0
 }
 

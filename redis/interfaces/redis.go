@@ -36,5 +36,5 @@ type RedisClient interface {
 	Ping() *redis.StatusCmd
 	SetNX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
-	TxPipeline() *redis.Pipeline
+	TxPipeline() redis.Pipeliner
 }

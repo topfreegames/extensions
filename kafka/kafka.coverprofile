@@ -21,9 +21,9 @@ github.com/topfreegames/extensions/kafka/kafka_consumer.go:159.36,161.2 1 13
 github.com/topfreegames/extensions/kafka/kafka_consumer.go:164.51,166.2 1 0
 github.com/topfreegames/extensions/kafka/kafka_consumer.go:169.40,177.16 4 11
 github.com/topfreegames/extensions/kafka/kafka_consumer.go:182.2,184.20 2 10
-github.com/topfreegames/extensions/kafka/kafka_consumer.go:214.2,214.12 1 1
+github.com/topfreegames/extensions/kafka/kafka_consumer.go:214.2,214.12 1 0
 github.com/topfreegames/extensions/kafka/kafka_consumer.go:177.16,180.3 2 1
-github.com/topfreegames/extensions/kafka/kafka_consumer.go:184.20,185.10 1 17
+github.com/topfreegames/extensions/kafka/kafka_consumer.go:184.20,185.10 1 18
 github.com/topfreegames/extensions/kafka/kafka_consumer.go:186.36,187.26 1 9
 github.com/topfreegames/extensions/kafka/kafka_consumer.go:188.34,190.19 2 2
 github.com/topfreegames/extensions/kafka/kafka_consumer.go:193.33,195.19 2 2

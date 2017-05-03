@@ -1,4 +1,4 @@
-memo = "9fac5cd6b7124d69e50695817c9d6c26c796e979abd9e3940610191469d1b048"
+memo = "3e5fe9870858d62e34fd1a09712cda98983ea20bb46fdcc45cc7399b976988a3"
 
 [[projects]]
   branch = "master"
@@ -51,8 +51,8 @@ memo = "9fac5cd6b7124d69e50695817c9d6c26c796e979abd9e3940610191469d1b048"
 [[projects]]
   name = "github.com/go-redis/redis"
   packages = [".","internal","internal/consistenthash","internal/hashtag","internal/pool","internal/proto"]
-  revision = "5d95eaece6a4a3b68e07419504b6f415f74e90bb"
-  version = "v6.2.5"
+  revision = "d371792f33b2c2e6747674b87be1f069aef21778"
+  version = "v6.3.1"
 
 [[projects]]
   branch = "master"
