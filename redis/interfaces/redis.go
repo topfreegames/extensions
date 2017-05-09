@@ -37,4 +37,5 @@ type RedisClient interface {
 	SetNX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
 	TxPipeline() redis.Pipeliner
+	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
 }
