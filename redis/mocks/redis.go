@@ -4,10 +4,9 @@
 package mocks
 
 import (
-	time "time"
-
 	redis "github.com/go-redis/redis"
 	gomock "github.com/golang/mock/gomock"
+	time "time"
 )
 
 // Mock of RedisClient interface
@@ -114,4 +113,14 @@ func (_m *MockRedisClient) ZRangeByScore(key string, opt redis.ZRangeBy) *redis.
 
 func (_mr *_MockRedisClientRecorder) ZRangeByScore(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ZRangeByScore", arg0, arg1)
+}
+
+func (_m *MockRedisClient) SPopN(key string, count int64) *redis.StringSliceCmd {
+	ret := _m.ctrl.Call(_m, "SPopN", key, count)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) SPopN(arg0, arg1 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SPopN", arg0, arg1)
 }

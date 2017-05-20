@@ -38,4 +38,5 @@ type RedisClient interface {
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
 	TxPipeline() redis.Pipeliner
 	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
+	SPopN(key string, count int64) *redis.StringSliceCmd
 }
