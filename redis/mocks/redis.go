@@ -55,6 +55,21 @@ func (_mr *_MockRedisClientRecorder) Eval(arg0, arg1 interface{}, arg2 ...interf
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Eval", _s...)
 }
 
+func (_m *MockRedisClient) EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd {
+	_s := []interface{}{sha1, keys}
+	for _, _x := range args {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "EvalSha", _s...)
+	ret0, _ := ret[0].(*redis.Cmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) EvalSha(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "EvalSha", _s...)
+}
+
 func (_m *MockRedisClient) Get(key string) *redis.StringCmd {
 	ret := _m.ctrl.Call(_m, "Get", key)
 	ret0, _ := ret[0].(*redis.StringCmd)
@@ -93,6 +108,30 @@ func (_m *MockRedisClient) Ping() *redis.StatusCmd {
 
 func (_mr *_MockRedisClientRecorder) Ping() *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Ping")
+}
+
+func (_m *MockRedisClient) ScriptExists(scripts ...string) *redis.BoolSliceCmd {
+	_s := []interface{}{}
+	for _, _x := range scripts {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ScriptExists", _s...)
+	ret0, _ := ret[0].(*redis.BoolSliceCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) ScriptExists(arg0 ...interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ScriptExists", arg0...)
+}
+
+func (_m *MockRedisClient) ScriptLoad(script string) *redis.StringCmd {
+	ret := _m.ctrl.Call(_m, "ScriptLoad", script)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) ScriptLoad(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ScriptLoad", arg0)
 }
 
 func (_m *MockRedisClient) Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd {

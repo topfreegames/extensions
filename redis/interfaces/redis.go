@@ -32,10 +32,13 @@ import (
 type RedisClient interface {
 	Close() error
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
+	EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd
 	Get(key string) *redis.StringCmd
 	HGetAll(string) *redis.StringStringMapCmd
 	HMSet(string, map[string]interface{}) *redis.StatusCmd
 	Ping() *redis.StatusCmd
+	ScriptExists(scripts ...string) *redis.BoolSliceCmd
+	ScriptLoad(script string) *redis.StringCmd
 	Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd
 	SetNX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd
 	SPopN(key string, count int64) *redis.StringSliceCmd
