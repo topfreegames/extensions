@@ -40,6 +40,31 @@ func (_mr *_MockRedisClientRecorder) Close() *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Close")
 }
 
+func (_m *MockRedisClient) Eval(script string, keys []string, args ...interface{}) *redis.Cmd {
+	_s := []interface{}{script, keys}
+	for _, _x := range args {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "Eval", _s...)
+	ret0, _ := ret[0].(*redis.Cmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) Eval(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Eval", _s...)
+}
+
+func (_m *MockRedisClient) Get(key string) *redis.StringCmd {
+	ret := _m.ctrl.Call(_m, "Get", key)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) Get(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Get", arg0)
+}
+
 func (_m *MockRedisClient) HGetAll(_param0 string) *redis.StringStringMapCmd {
 	ret := _m.ctrl.Call(_m, "HGetAll", _param0)
 	ret0, _ := ret[0].(*redis.StringStringMapCmd)
@@ -70,6 +95,16 @@ func (_mr *_MockRedisClientRecorder) Ping() *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Ping")
 }
 
+func (_m *MockRedisClient) Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd {
+	ret := _m.ctrl.Call(_m, "Set", key, value, expiration)
+	ret0, _ := ret[0].(*redis.StatusCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) Set(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Set", arg0, arg1, arg2)
+}
+
 func (_m *MockRedisClient) SetNX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd {
 	ret := _m.ctrl.Call(_m, "SetNX", key, value, expiration)
 	ret0, _ := ret[0].(*redis.BoolCmd)
@@ -80,19 +115,14 @@ func (_mr *_MockRedisClientRecorder) SetNX(arg0, arg1, arg2 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetNX", arg0, arg1, arg2)
 }
 
-func (_m *MockRedisClient) Eval(script string, keys []string, args ...interface{}) *redis.Cmd {
-	_s := []interface{}{script, keys}
-	for _, _x := range args {
-		_s = append(_s, _x)
-	}
-	ret := _m.ctrl.Call(_m, "Eval", _s...)
-	ret0, _ := ret[0].(*redis.Cmd)
+func (_m *MockRedisClient) SPopN(key string, count int64) *redis.StringSliceCmd {
+	ret := _m.ctrl.Call(_m, "SPopN", key, count)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
 	return ret0
 }
 
-func (_mr *_MockRedisClientRecorder) Eval(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
-	_s := append([]interface{}{arg0, arg1}, arg2...)
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "Eval", _s...)
+func (_mr *_MockRedisClientRecorder) SPopN(arg0, arg1 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SPopN", arg0, arg1)
 }
 
 func (_m *MockRedisClient) TxPipeline() redis.Pipeliner {
@@ -113,14 +143,4 @@ func (_m *MockRedisClient) ZRangeByScore(key string, opt redis.ZRangeBy) *redis.
 
 func (_mr *_MockRedisClientRecorder) ZRangeByScore(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ZRangeByScore", arg0, arg1)
-}
-
-func (_m *MockRedisClient) SPopN(key string, count int64) *redis.StringSliceCmd {
-	ret := _m.ctrl.Call(_m, "SPopN", key, count)
-	ret0, _ := ret[0].(*redis.StringSliceCmd)
-	return ret0
-}
-
-func (_mr *_MockRedisClientRecorder) SPopN(arg0, arg1 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "SPopN", arg0, arg1)
 }
