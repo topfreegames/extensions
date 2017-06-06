@@ -31,12 +31,14 @@ import (
 //RedisClient represents the contract for a redis client
 type RedisClient interface {
 	Close() error
+	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
+	Get(key string) *redis.StringCmd
 	HGetAll(string) *redis.StringStringMapCmd
 	HMSet(string, map[string]interface{}) *redis.StatusCmd
 	Ping() *redis.StatusCmd
+	Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd
 	SetNX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd
-	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
+	SPopN(key string, count int64) *redis.StringSliceCmd
 	TxPipeline() redis.Pipeliner
 	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
-	SPopN(key string, count int64) *redis.StringSliceCmd
 }
