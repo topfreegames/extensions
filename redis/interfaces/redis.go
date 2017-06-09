@@ -30,6 +30,7 @@ import (
 
 //RedisClient represents the contract for a redis client
 type RedisClient interface {
+	BLPop(timeout time.Duration, keys ...string) *redis.StringSliceCmd
 	Close() error
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
 	EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd
@@ -37,6 +38,7 @@ type RedisClient interface {
 	HGetAll(string) *redis.StringStringMapCmd
 	HMSet(string, map[string]interface{}) *redis.StatusCmd
 	Ping() *redis.StatusCmd
+	RPush(key string, values ...interface{}) *redis.IntCmd
 	ScriptExists(scripts ...string) *redis.BoolSliceCmd
 	ScriptLoad(script string) *redis.StringCmd
 	Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd

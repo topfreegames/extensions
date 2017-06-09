@@ -30,6 +30,21 @@ func (_m *MockRedisClient) EXPECT() *_MockRedisClientRecorder {
 	return _m.recorder
 }
 
+func (_m *MockRedisClient) BLPop(timeout time.Duration, keys ...string) *redis.StringSliceCmd {
+	_s := []interface{}{timeout}
+	for _, _x := range keys {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "BLPop", _s...)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) BLPop(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0}, arg1...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "BLPop", _s...)
+}
+
 func (_m *MockRedisClient) Close() error {
 	ret := _m.ctrl.Call(_m, "Close")
 	ret0, _ := ret[0].(error)
@@ -108,6 +123,21 @@ func (_m *MockRedisClient) Ping() *redis.StatusCmd {
 
 func (_mr *_MockRedisClientRecorder) Ping() *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Ping")
+}
+
+func (_m *MockRedisClient) RPush(key string, values ...interface{}) *redis.IntCmd {
+	_s := []interface{}{key}
+	for _, _x := range values {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RPush", _s...)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) RPush(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0}, arg1...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RPush", _s...)
 }
 
 func (_m *MockRedisClient) ScriptExists(scripts ...string) *redis.BoolSliceCmd {
