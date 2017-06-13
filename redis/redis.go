@@ -110,22 +110,20 @@ func (c *Client) LeaveCriticalSection(lock *lock.Lock) error {
 
 // WaitForConnection loops until redis is connected
 func (c *Client) WaitForConnection(timeout int) error {
-	start := time.Now().UnixNano() / 1000000
-	t := int64(timeout)
+	t := time.Duration(timeout) * time.Second
+	timeoutChan := time.NewTimer(t).C
+	tickerChan := time.NewTicker(10 * time.Millisecond).C
 
-	ellapsed := func() int64 {
-		return (time.Now().UnixNano() / 1000000) - start
+	for {
+		select {
+		case <-timeoutChan:
+			return fmt.Errorf("timed out waiting for Redis to connect")
+		case <-tickerChan:
+			if c.IsConnected() {
+				return nil
+			}
+		}
 	}
-
-	for !c.IsConnected() && ellapsed() <= t {
-		time.Sleep(10 * time.Millisecond)
-	}
-
-	if ellapsed() > t {
-		return fmt.Errorf("timed out waiting for Redis to connect")
-	}
-
-	return nil
 }
 
 // Close the connections to redis

@@ -57,7 +57,7 @@ var _ = Describe("PG Extension", func() {
 		Describe("Connect", func() {
 			It("Should use config to load connection details", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil)
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(client.Options).NotTo(BeNil())
 			})
@@ -66,14 +66,14 @@ var _ = Describe("PG Extension", func() {
 		Describe("IsConnected", func() {
 			It("should verify that db is connected", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil).Times(2)
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(client.IsConnected()).To(BeTrue())
 			})
 
 			It("should not be connected if error", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil)
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), errors.New("could not connect"))
 				Expect(client.IsConnected()).To(BeFalse())
@@ -81,7 +81,7 @@ var _ = Describe("PG Extension", func() {
 
 			It("should not be connected if zero rows returned", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil)
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 0), nil)
 				Expect(client.IsConnected()).To(BeFalse())
@@ -92,7 +92,7 @@ var _ = Describe("PG Extension", func() {
 			It("should close if no errors", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil)
 				mockDb.EXPECT().Close()
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 				err = client.Close()
 				Expect(err).NotTo(HaveOccurred())
@@ -100,7 +100,7 @@ var _ = Describe("PG Extension", func() {
 
 			It("should return error", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil)
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
 				mockDb.EXPECT().Close().Return(errors.New("could not close"))
@@ -113,7 +113,7 @@ var _ = Describe("PG Extension", func() {
 		Describe("WaitForConnection", func() {
 			It("should wait for connection", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil).Times(2)
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
 				err = client.WaitForConnection(1)
@@ -122,7 +122,7 @@ var _ = Describe("PG Extension", func() {
 
 			It("should error waiting for connection", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil)
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 0), nil).AnyTimes()
@@ -135,7 +135,7 @@ var _ = Describe("PG Extension", func() {
 		Describe("Cleanup", func() {
 			It("should close connection", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil)
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
 				mockDb.EXPECT().Close()
@@ -145,7 +145,7 @@ var _ = Describe("PG Extension", func() {
 
 			It("should return error if error when closing connection", func() {
 				mockDb.EXPECT().Exec("select 1").Return(types.NewResult(nil, 1), nil)
-				client, err := NewClient("db", config, mockDb)
+				client, err := NewClient("extensions.pg", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
 				mockDb.EXPECT().Close().Return(errors.New("failed to close connection"))
@@ -159,7 +159,7 @@ var _ = Describe("PG Extension", func() {
 	Describe("[Integration]", func() {
 		Describe("Creating new client", func() {
 			It("should return connected client", func() {
-				client, err := NewClient("db", config)
+				client, err := NewClient("extensions.pg", config)
 				Expect(err).NotTo(HaveOccurred())
 				defer client.Close()
 				Expect(client).NotTo(BeNil())
