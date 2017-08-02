@@ -46,4 +46,5 @@ type RedisClient interface {
 	SPopN(key string, count int64) *redis.StringSliceCmd
 	TxPipeline() redis.Pipeliner
 	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
+	RPopLPush(source string, destination string) *redis.StringCmd
 }

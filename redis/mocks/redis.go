@@ -213,3 +213,13 @@ func (_m *MockRedisClient) ZRangeByScore(key string, opt redis.ZRangeBy) *redis.
 func (_mr *_MockRedisClientRecorder) ZRangeByScore(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ZRangeByScore", arg0, arg1)
 }
+
+func (_m *MockRedisClient) RPopLPush(source string, destination string) *redis.StringCmd {
+	ret := _m.ctrl.Call(_m, "RPopLPush", source, destination)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) RPopLPush(arg0, arg1 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RPopLPush", arg0, arg1)
+}
