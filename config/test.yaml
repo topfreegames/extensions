@@ -25,3 +25,9 @@ extensions:
   redis:
     url: redis://localhost:6333/0
     connectionTimeout: 100
+  mongo:
+    host: localhost
+    port: 27017
+    user: ""
+    pass: ""
+    database: test
