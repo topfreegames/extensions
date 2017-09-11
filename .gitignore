@@ -32,3 +32,9 @@ vendor/
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 *.coverprofile
+
+# Vim tmp files
+*.swp
+*.swo
+.*.swp
+.*.swo
