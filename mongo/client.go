@@ -73,9 +73,11 @@ func (c *Client) Connect(prefix string, db interfaces.MongoDB) error {
 			return err
 		}
 		mongoDB := session.DB(database)
-		err = mongoDB.Login(user, pass)
-		if err != nil {
-			return err
+		if user != "" && pass != "" {
+			err = mongoDB.Login(user, pass)
+			if err != nil {
+				return err
+			}
 		}
 		c.MongoDB = NewMongo(session, mongoDB)
 	}
