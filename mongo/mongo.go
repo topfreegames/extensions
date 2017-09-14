@@ -44,12 +44,16 @@ func NewMongo(session *mgo.Session, db *mgo.Database) *Mongo {
 
 // Run executes run command on database
 func (m *Mongo) Run(cmd interface{}, result interface{}) error {
-	return m.db.Run(cmd, result)
+	session := m.session.Copy()
+	defer session.Close()
+	return m.db.With(session).Run(cmd, result)
 }
 
-//C returns the collection from databse
-func (m *Mongo) C(name string) interfaces.Collection {
-	return m.db.C(name)
+//C returns the collection from databse and a session
+// This session needs to be closed afterwards
+func (m *Mongo) C(name string) (interfaces.Collection, interfaces.Session) {
+	session := m.session.Copy()
+	return m.db.With(session).C(name), session
 }
 
 //Close closes mongo session
