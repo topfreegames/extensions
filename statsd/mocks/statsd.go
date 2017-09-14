@@ -28,11 +28,13 @@ type StatsDClientMock struct {
 	Gauges  map[string]interface{}
 	Timings map[string]interface{}
 	Closed  bool
+	Flushed bool
 }
 
 //NewStatsDClientMock creates a new instance
 func NewStatsDClientMock() *StatsDClientMock {
 	return &StatsDClientMock{
+		Flushed: false,
 		Closed:  false,
 		Counts:  map[string]int{},
 		Gauges:  map[string]interface{}{},
@@ -58,6 +60,11 @@ func (m *StatsDClientMock) Gauge(bucket string, value interface{}) {
 //Timing stores the count in a map
 func (m *StatsDClientMock) Timing(bucket string, value interface{}) {
 	m.Timings[bucket] = value
+}
+
+//Flush records that it did flush
+func (m *StatsDClientMock) Flush() {
+	m.Flushed = true
 }
 
 //Close records that it is closed

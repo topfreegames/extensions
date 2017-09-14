@@ -109,6 +109,10 @@ func (s *StatsD) ReportGoStats(
 	s.Client.Timing("gc_pause_duration_ms", pauseGCNano/1000000)
 }
 
+func (s *StatsD) Flush() {
+	s.Client.Flush()
+}
+
 //Cleanup closes statsd connection
 func (s *StatsD) Cleanup() error {
 	s.Client.Close()

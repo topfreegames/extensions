@@ -29,4 +29,5 @@ type StatsDClient interface {
 	Gauge(string, interface{})
 	Timing(string, interface{})
 	Close()
+	Flush()
 }
