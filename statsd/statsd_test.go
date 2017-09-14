@@ -75,7 +75,8 @@ var _ = Describe("StatsD Extension", func() {
 				defer statsd.Cleanup()
 
 				Expect(mockClient.Flushed).To(Equal(false))
-				statsd.Flush()
+				err = statsd.Flush()
+				Expect(err).NotTo(HaveOccurred())
 				Expect(mockClient.Flushed).To(Equal(true))
 			})
 		})
