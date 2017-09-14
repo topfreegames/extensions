@@ -68,6 +68,18 @@ var _ = Describe("StatsD Extension", func() {
 			})
 		})
 
+		Describe("Flush call", func() {
+			It("should call flush on statsd client", func() {
+				statsd, err := NewStatsD(config, logger, mockClient)
+				Expect(err).NotTo(HaveOccurred())
+				defer statsd.Cleanup()
+
+				Expect(mockClient.Flushed).To(Equal(false))
+				err = statsd.Flush()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(mockClient.Flushed).To(Equal(true))
+			})
+		})
 	})
 
 	Describe("[Integration]", func() {
