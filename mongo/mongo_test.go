@@ -25,10 +25,10 @@ package mongo_test
 import (
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/mongo/mocks"
 	"gopkg.in/mgo.v2/bson"
 
 	. "github.com/topfreegames/extensions/mongo"
+	"github.com/topfreegames/extensions/mongo/interfaces"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -37,8 +37,8 @@ import (
 var _ = Describe("Mongo", func() {
 	var config *viper.Viper
 	var mockCtrl *gomock.Controller
-	var mockDb *mocks.MockMongoDB
-	var mockColl *mocks.MockCollection
+	var mockDb *interfaces.MockMongoDB
+	var mockColl *interfaces.MockCollection
 
 	BeforeEach(func() {
 		config = viper.New()
@@ -49,8 +49,8 @@ var _ = Describe("Mongo", func() {
 	Describe("[Unit]", func() {
 		BeforeEach(func() {
 			mockCtrl = gomock.NewController(GinkgoT())
-			mockDb = mocks.NewMockMongoDB(mockCtrl)
-			mockColl = mocks.NewMockCollection(mockCtrl)
+			mockDb = interfaces.NewMockMongoDB(mockCtrl)
+			mockColl = interfaces.NewMockCollection(mockCtrl)
 		})
 
 		AfterEach(func() {
@@ -82,10 +82,10 @@ var _ = Describe("Mongo", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				mockDb.EXPECT().Close()
-				mockDb.EXPECT().C(collectionName).Return(mockColl)
+				mockDb.EXPECT().C(collectionName).Return(mockColl, nil)
 				mockColl.EXPECT().Insert(gomock.Any())
 
-				c := client.MongoDB.C(collectionName)
+				c, _ := client.MongoDB.C(collectionName)
 				err = c.Insert(bson.M{})
 				Expect(err).NotTo(HaveOccurred())
 				client.Close()

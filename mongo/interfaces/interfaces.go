@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2017 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -24,8 +24,22 @@ package interfaces
 
 import mgo "gopkg.in/mgo.v2"
 
+//MongoDB represents the contract for a Mongo DB
+type MongoDB interface {
+	Run(cmd interface{}, result interface{}) error
+	C(name string) (Collection, Session)
+	Close()
+}
+
+//Collections represents a mongoDB collection
 type Collection interface {
 	Find(query interface{}) *mgo.Query
 	Insert(docs ...interface{}) error
 	Pipe(pipeline interface{}) *mgo.Pipe
+}
+
+//Session is the mongoDB session
+type Session interface {
+	Copy() *mgo.Session
+	Close()
 }

@@ -27,3 +27,7 @@ setup:
 	@go get -u github.com/onsi/ginkgo/ginkgo
 	@go get github.com/gordonklaus/ineffassign
 	@dep ensure
+
+mongo-mocks:
+	@mockgen -source=mongo/interfaces/interfaces.go -destination=mongo/interfaces/mocks.go -package interfaces
+	@echo 'created mocks on ./mongo/interfaces/mocks.go'
