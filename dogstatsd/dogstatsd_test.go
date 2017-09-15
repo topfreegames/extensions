@@ -36,4 +36,11 @@ var _ = Describe("DogStatsD", func() {
 		d.Count("key", 3, []string{}, 1)
 		Expect(mC.Counts["key"]).To(Equal(int64(7)))
 	})
+
+	It("Gauge", func() {
+		d.Gauge("key", 86.5, []string{}, 1)
+		Expect(mC.Gauges["key"]).To(Equal(float64(86.5)))
+		d.Gauge("key", 42.0, []string{}, 1)
+		Expect(mC.Gauges["key"]).To(Equal(float64(42.0)))
+	})
 })
