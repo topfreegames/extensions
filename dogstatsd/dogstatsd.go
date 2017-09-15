@@ -11,6 +11,7 @@ var Value = true
 
 type DogStatsDClient interface {
 	Increment(name string, tags []string, rate float64) error
+	Count(name string, value int64, tags []string, rate float64) error
 }
 
 type DogStatsD struct {
@@ -25,4 +26,9 @@ func NewDogStatsD(client DogStatsDClient) *DogStatsD {
 
 func (d *DogStatsD) Increment(name string, tags []string, rate float64) error {
 	return d.client.Increment(name, tags, rate)
+}
+
+func (d *DogStatsD) Count(name string, value int64, tags []string,
+	rate float64) error {
+	return d.client.Count(name, value, tags, rate)
 }

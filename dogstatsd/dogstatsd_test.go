@@ -26,8 +26,14 @@ var _ = Describe("DogStatsD", func() {
 		d = dogstatsd.NewDogStatsD(mC)
 	})
 
-	It("test", func() {
+	It("Increment", func() {
 		d.Increment("key", []string{}, 1)
 		Expect(mC.Counts["key"]).To(Equal(int64(1)))
+	})
+
+	It("Count", func() {
+		d.Count("key", 4, []string{}, 1)
+		d.Count("key", 3, []string{}, 1)
+		Expect(mC.Counts["key"]).To(Equal(int64(7)))
 	})
 })

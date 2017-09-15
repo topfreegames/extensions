@@ -21,3 +21,9 @@ func (d *DogStatsDClientMock) Increment(name string, tags []string, rate float64
 	d.Counts[name]++
 	return nil
 }
+
+func (d *DogStatsDClientMock) Count(name string, value int64, tags []string,
+	rate float64) error {
+	d.Counts[name] += value
+	return nil
+}
