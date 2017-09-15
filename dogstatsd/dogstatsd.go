@@ -7,33 +7,37 @@
 
 package dogstatsd
 
-var Value = true
-
-type DogStatsDClient interface {
-	Increment(name string, tags []string, rate float64) error
+// Client is the interface to required dogstatsd functions
+type Client interface {
+	Incr(name string, tags []string, rate float64) error
 	Count(name string, value int64, tags []string, rate float64) error
 	Gauge(name string, value float64, tags []string, rate float64) error
 }
 
+// DogStatsD is a wrapper to a dogstatsd.Client
 type DogStatsD struct {
-	client DogStatsDClient
+	client Client
 }
 
-func NewDogStatsD(client DogStatsDClient) *DogStatsD {
+// NewDogStatsD ctor
+func NewDogStatsD(client Client) *DogStatsD {
 	return &DogStatsD{
 		client: client,
 	}
 }
 
-func (d *DogStatsD) Increment(name string, tags []string, rate float64) error {
-	return d.client.Increment(name, tags, rate)
+// Incr calls Client.Incr
+func (d *DogStatsD) Incr(name string, tags []string, rate float64) error {
+	return d.client.Incr(name, tags, rate)
 }
 
+// Count calls Client.Count
 func (d *DogStatsD) Count(name string, value int64, tags []string,
 	rate float64) error {
 	return d.client.Count(name, value, tags, rate)
 }
 
+// Gauge calls Client.Gauge
 func (d *DogStatsD) Gauge(name string, value float64, tags []string,
 	rate float64) error {
 	return d.client.Gauge(name, value, tags, rate)

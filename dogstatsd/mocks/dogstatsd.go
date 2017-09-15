@@ -7,30 +7,35 @@
 
 package mocks
 
-type DogStatsDClientMock struct {
+// ClientMock is a struct that implements dogstatsd.Client
+type ClientMock struct {
 	Counts map[string]int64
 	Gauges map[string]float64
 }
 
-func NewDogStatsDClientMock() *DogStatsDClientMock {
-	return &DogStatsDClientMock{
+// NewClientMock ctor
+func NewClientMock() *ClientMock {
+	return &ClientMock{
 		Counts: map[string]int64{},
 		Gauges: map[string]float64{},
 	}
 }
 
-func (d *DogStatsDClientMock) Increment(name string, tags []string, rate float64) error {
+// Incr adds 1 to Counts[name]
+func (d *ClientMock) Incr(name string, tags []string, rate float64) error {
 	d.Counts[name]++
 	return nil
 }
 
-func (d *DogStatsDClientMock) Count(name string, value int64, tags []string,
+// Count adds value to Counts[name]
+func (d *ClientMock) Count(name string, value int64, tags []string,
 	rate float64) error {
 	d.Counts[name] += value
 	return nil
 }
 
-func (d *DogStatsDClientMock) Gauge(name string, value float64, tags []string,
+// Gauge sets value to Gauges[name]
+func (d *ClientMock) Gauge(name string, value float64, tags []string,
 	rate float64) error {
 	d.Gauges[name] = value
 	return nil

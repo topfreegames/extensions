@@ -17,17 +17,17 @@ import (
 
 var _ = Describe("DogStatsD", func() {
 	var (
-		mC *mocks.DogStatsDClientMock
+		mC *mocks.ClientMock
 		d  *dogstatsd.DogStatsD
 	)
 
 	BeforeEach(func() {
-		mC = mocks.NewDogStatsDClientMock()
+		mC = mocks.NewClientMock()
 		d = dogstatsd.NewDogStatsD(mC)
 	})
 
-	It("Increment", func() {
-		d.Increment("key", []string{}, 1)
+	It("Incr", func() {
+		d.Incr("key", []string{}, 1)
 		Expect(mC.Counts["key"]).To(Equal(int64(1)))
 	})
 
