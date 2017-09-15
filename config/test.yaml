@@ -31,3 +31,4 @@ extensions:
     user: ""
     pass: ""
     database: test
+    connectionTimeout: 1ms

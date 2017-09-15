@@ -62,6 +62,14 @@ var _ = Describe("Mongo", func() {
 				_, err := NewClient("extensions.mongo", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 			})
+
+			It("Should call dial with timeout if timeout is specified", func() {
+				config.Set("extensions.mongo.port", 80)
+				client, err := NewClient("extensions.mongo", config)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(Equal("no reachable servers"))
+				Expect(client).To(BeNil())
+			})
 		})
 
 		Describe("Close", func() {

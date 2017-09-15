@@ -63,12 +63,21 @@ func (c *Client) Connect(prefix string, db interfaces.MongoDB) error {
 	user := c.Config.GetString(makeKey(prefix, "user"))
 	pass := c.Config.GetString(makeKey(prefix, "pass"))
 	database := c.Config.GetString(makeKey(prefix, "database"))
+	timeout := c.Config.GetDuration(makeKey(prefix, "connectionTimeout"))
 	url := fmt.Sprintf("%s:%d", host, port)
 
 	if db != nil {
 		c.MongoDB = db
 	} else {
-		session, err := mgo.Dial(url)
+		var session *mgo.Session
+		var err error
+
+		if timeout > 0 {
+			session, err = mgo.DialWithTimeout(url, timeout)
+		} else {
+			session, err = mgo.Dial(url)
+		}
+
 		if err != nil {
 			return err
 		}
