@@ -7,6 +7,10 @@
 
 package dogstatsd
 
+import (
+	"github.com/DataDog/datadog-go/statsd"
+)
+
 // Client is the interface to required dogstatsd functions
 type Client interface {
 	Incr(name string, tags []string, rate float64) error
@@ -19,8 +23,19 @@ type DogStatsD struct {
 	client Client
 }
 
-// NewDogStatsD ctor
-func NewDogStatsD(client Client) *DogStatsD {
+// New ctor
+func New(host, prefix string) (*DogStatsD, error) {
+	c, err := statsd.New(host)
+	if err != nil {
+		return nil, err
+	}
+	c.Namespace = prefix
+	d := &DogStatsD{client: c}
+	return d, nil
+}
+
+// NewFromClient ctor
+func NewFromClient(client Client) *DogStatsD {
 	return &DogStatsD{
 		client: client,
 	}

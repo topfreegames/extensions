@@ -23,7 +23,7 @@ var _ = Describe("DogStatsD", func() {
 
 	BeforeEach(func() {
 		mC = mocks.NewClientMock()
-		d = dogstatsd.NewDogStatsD(mC)
+		d = dogstatsd.NewFromClient(mC)
 	})
 
 	It("Incr", func() {
