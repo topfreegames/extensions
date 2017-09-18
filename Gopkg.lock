@@ -8,6 +8,12 @@
   revision = "b26d9c308763d68093482582cea63d69be07a0f0"
 
 [[projects]]
+  name = "github.com/DataDog/datadog-go"
+  packages = ["statsd"]
+  revision = "0ddda6bee21174ef6c4873647cb0d6ec9cba996f"
+  version = "1.1.0"
+
+[[projects]]
   name = "github.com/Sirupsen/logrus"
   packages = [".","hooks/test"]
   revision = "ba1b36c82c5e05c4f912a88eab0dcd91a171688f"
@@ -148,6 +154,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5aa29297291de47bef125e4fa8e8acf7a1e6003a1a1c92b146c68675683b30e1"
+  inputs-digest = "e385a2f7216534cfd701fdcd84ff2f82c1648c3ddd5040639d7619b56154394f"
   solver-name = "gps-cdcl"
   solver-version = 1
