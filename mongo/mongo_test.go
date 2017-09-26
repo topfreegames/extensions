@@ -64,7 +64,7 @@ var _ = Describe("Mongo", func() {
 			})
 
 			It("Should call dial with timeout if timeout is specified", func() {
-				config.Set("extensions.mongo.port", 80)
+				config.Set("extensions.mongo.url", "localhost:80")
 				client, err := NewClient("extensions.mongo", config)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(Equal("no reachable servers"))

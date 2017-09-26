@@ -58,13 +58,11 @@ func makeKey(prefix, sufix string) string {
 
 //Connect connects to mongo database and saves on Client
 func (c *Client) Connect(prefix string, db interfaces.MongoDB) error {
-	host := c.Config.GetString(makeKey(prefix, "host"))
-	port := c.Config.GetInt(makeKey(prefix, "port"))
+	url := c.Config.GetString(makeKey(prefix, "url"))
 	user := c.Config.GetString(makeKey(prefix, "user"))
 	pass := c.Config.GetString(makeKey(prefix, "pass"))
 	database := c.Config.GetString(makeKey(prefix, "database"))
 	timeout := c.Config.GetDuration(makeKey(prefix, "connectionTimeout"))
-	url := fmt.Sprintf("%s:%d", host, port)
 
 	if db != nil {
 		c.MongoDB = db
