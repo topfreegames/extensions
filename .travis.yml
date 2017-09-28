@@ -9,7 +9,7 @@ services:
 - docker
 env:
   matrix:
-  - LIBRDKAFKA_VERSION=v0.9.5
+  - LIBRDKAFKA_VERSION=v0.11.0
   - LIBRDKAFKA_VERSION=master
 cache:
   directories:
