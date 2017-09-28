@@ -23,6 +23,7 @@
 package interfaces
 
 import "github.com/go-pg/pg/orm"
+import "github.com/go-pg/pg"
 
 //DB represents the contract for a Postgres DB
 type DB interface {
@@ -30,4 +31,5 @@ type DB interface {
 	ExecOne(interface{}, ...interface{}) (orm.Result, error)
 	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
 	Close() error
+	Begin() (*pg.Tx, error)
 }
