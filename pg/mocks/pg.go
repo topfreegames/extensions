@@ -4,8 +4,8 @@
 package mocks
 
 import (
+	orm "github.com/go-pg/pg/orm"
 	gomock "github.com/golang/mock/gomock"
-	types "gopkg.in/pg.v5/types"
 )
 
 // Mock of DB interface
@@ -29,13 +29,13 @@ func (_m *MockDB) EXPECT() *_MockDBRecorder {
 	return _m.recorder
 }
 
-func (_m *MockDB) Exec(_param0 interface{}, _param1 ...interface{}) (*types.Result, error) {
+func (_m *MockDB) Exec(_param0 interface{}, _param1 ...interface{}) (orm.Result, error) {
 	_s := []interface{}{_param0}
 	for _, _x := range _param1 {
 		_s = append(_s, _x)
 	}
 	ret := _m.ctrl.Call(_m, "Exec", _s...)
-	ret0, _ := ret[0].(*types.Result)
+	ret0, _ := ret[0].(orm.Result)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -45,13 +45,13 @@ func (_mr *_MockDBRecorder) Exec(arg0 interface{}, arg1 ...interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Exec", _s...)
 }
 
-func (_m *MockDB) ExecOne(_param0 interface{}, _param1 ...interface{}) (*types.Result, error) {
+func (_m *MockDB) ExecOne(_param0 interface{}, _param1 ...interface{}) (orm.Result, error) {
 	_s := []interface{}{_param0}
 	for _, _x := range _param1 {
 		_s = append(_s, _x)
 	}
 	ret := _m.ctrl.Call(_m, "ExecOne", _s...)
-	ret0, _ := ret[0].(*types.Result)
+	ret0, _ := ret[0].(orm.Result)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -61,13 +61,13 @@ func (_mr *_MockDBRecorder) ExecOne(arg0 interface{}, arg1 ...interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ExecOne", _s...)
 }
 
-func (_m *MockDB) Query(_param0 interface{}, _param1 interface{}, _param2 ...interface{}) (*types.Result, error) {
+func (_m *MockDB) Query(_param0 interface{}, _param1 interface{}, _param2 ...interface{}) (orm.Result, error) {
 	_s := []interface{}{_param0, _param1}
 	for _, _x := range _param2 {
 		_s = append(_s, _x)
 	}
 	ret := _m.ctrl.Call(_m, "Query", _s...)
-	ret0, _ := ret[0].(*types.Result)
+	ret0, _ := ret[0].(orm.Result)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

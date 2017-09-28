@@ -22,12 +22,12 @@
 
 package interfaces
 
-import "gopkg.in/pg.v5/types"
+import "github.com/go-pg/pg/orm"
 
 //DB represents the contract for a Postgres DB
 type DB interface {
-	Exec(interface{}, ...interface{}) (*types.Result, error)
-	ExecOne(interface{}, ...interface{}) (*types.Result, error)
-	Query(interface{}, interface{}, ...interface{}) (*types.Result, error)
+	Exec(interface{}, ...interface{}) (orm.Result, error)
+	ExecOne(interface{}, ...interface{}) (orm.Result, error)
+	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
 	Close() error
 }

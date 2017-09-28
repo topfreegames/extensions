@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/BurntSushi/toml"
-  packages = ["."]
-  revision = "b26d9c308763d68093482582cea63d69be07a0f0"
-
-[[projects]]
   name = "github.com/DataDog/datadog-go"
   packages = ["statsd"]
   revision = "0ddda6bee21174ef6c4873647cb0d6ec9cba996f"
@@ -34,44 +28,50 @@
 [[projects]]
   name = "github.com/certifi/gocertifi"
   packages = ["."]
-  revision = "a9c833d2837d3b16888d55d5aafa9ffe9afb22b0"
-  version = "2017.04.17"
+  revision = "3fd9e1adb12b72d2f3f82191d49be9b93c69f67c"
+  version = "2017.07.27"
 
 [[projects]]
   name = "github.com/confluentinc/confluent-kafka-go"
   packages = ["kafka"]
-  revision = "a9b5c269c66e9a2eb5f195563b2f01e65a84c527"
-  version = "v0.9.4"
+  revision = "f696f02dcbb04d95b103c5b848bb15f749a996f7"
+  version = "v0.11.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
-  revision = "30411dbcefb7a1da7e84f75530ad3abe4011b4f8"
+  revision = "629574ca2a5df945712d3079857300b5e4da0236"
+  version = "v1.4.2"
 
 [[projects]]
   branch = "master"
   name = "github.com/getsentry/raven-go"
   packages = ["."]
-  revision = "b68337dbf03e7fbb53d9fd9b63fd09b28e8f13f7"
+  revision = "1452f6376ddb15c546b6d7567e1d9518765391b5"
+
+[[projects]]
+  name = "github.com/go-pg/pg"
+  packages = [".","internal","internal/parser","internal/pool","orm","types"]
+  revision = "0cd2ff625d4d38126c5b6afb9399a3a436883bd1"
+  version = "v6.6.0"
 
 [[projects]]
   name = "github.com/go-redis/redis"
   packages = [".","internal","internal/consistenthash","internal/hashtag","internal/pool","internal/proto"]
-  revision = "d371792f33b2c2e6747674b87be1f069aef21778"
-  version = "v6.3.1"
+  revision = "975882d73d21759d45a4eb49652064083bc23e61"
+  version = "v6.7.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/golang/mock"
   packages = ["gomock"]
-  revision = "bd3c8e81be01eef76d4b503f5e687d2d1354d2d9"
+  revision = "13f360950a79f5864a972c786a10a50e44b69541"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
   packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
-  revision = "d7400db7143f8e869812e50a53acd6c8d92af3b8"
+  revision = "68e816d1c783414e79bc65b3994d9ab6b0a722ab"
 
 [[projects]]
   branch = "master"
@@ -80,58 +80,88 @@
   revision = "1c35d901db3da928c72a72d8458480cc9ade058f"
 
 [[projects]]
-  branch = "master"
   name = "github.com/magiconair/properties"
   packages = ["."]
-  revision = "c265cfa48dda6474e208715ca93e987829f572f8"
+  revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
+  version = "v1.7.3"
 
 [[projects]]
   branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "d2dd0262208475919e1a362f675cfc0e7c10e905"
+  revision = "d0303fe809921458f417bcf828397a65db30a7e4"
 
 [[projects]]
-  branch = "master"
   name = "github.com/onsi/ginkgo"
   packages = [".","config","internal/codelocation","internal/containernode","internal/failer","internal/leafnodes","internal/remote","internal/spec","internal/spec_iterator","internal/specrunner","internal/suite","internal/testingtproxy","internal/writer","reporters","reporters/stenographer","reporters/stenographer/support/go-colorable","reporters/stenographer/support/go-isatty","types"]
-  revision = "f40a49d81e5c12e90400620b6242fb29a8e7c9d9"
+  revision = "9eda700730cba42af70d53180f9dcce9266bc2bc"
+  version = "v1.4.0"
 
 [[projects]]
   name = "github.com/onsi/gomega"
   packages = [".","format","internal/assertion","internal/asyncassertion","internal/oraclematcher","internal/testingtsupport","matchers","matchers/support/goraph/bipartitegraph","matchers/support/goraph/edge","matchers/support/goraph/node","matchers/support/goraph/util","types"]
-  revision = "334b8f472b3af5d541c5642701c1e29e2126f486"
-  version = "v1.1.0"
+  revision = "c893efa28eb45626cdaa76c9f653b62488858837"
+  version = "v1.2.0"
+
+[[projects]]
+  name = "github.com/pelletier/go-buffruneio"
+  packages = ["."]
+  revision = "c37440a7cf42ac63b919c752ca73a85067e05992"
+  version = "v0.2.0"
+
+[[projects]]
+  name = "github.com/pelletier/go-toml"
+  packages = ["."]
+  revision = "5ccdfb18c776b740aecaf085c4d9a2779199c279"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
+  name = "github.com/spf13/afero"
+  packages = [".","mem"]
+  revision = "ee1bd8ee15a1306d1f9201acc41ef39cd9f99a1b"
+
+[[projects]]
   name = "github.com/spf13/cast"
   packages = ["."]
-  revision = "27b586b42e29bec072fe7379259cc719e1289da6"
+  revision = "acbeb36b902d72a7a4c18e8f3241075e7ab763e4"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/spf13/jwalterweatherman"
   packages = ["."]
-  revision = "33c24e77fb80341fe7130ee7c594256ff08ccc46"
+  revision = "12bd96e66386c1960ab0f74ced1362f66f552f7b"
 
 [[projects]]
-  branch = "master"
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "cb88ea77998c3f024757528e3305022ab50b43be"
+  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
+  version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/spf13/viper"
+  packages = ["."]
+  revision = "25b30aa063fc18e48662b86996252eabdcf2f0c7"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
-  name = "github.com/spf13/viper"
-  packages = ["."]
-  revision = "c1ccc378a054ea8d4e38d8c67f6938d4760b53dd"
+  name = "golang.org/x/net"
+  packages = ["html","html/atom","html/charset"]
+  revision = "0a9397675ba34b2845f758fe3cd68828369c6517"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "076b546753157f758b316e59bcb51e6807c04057"
+  revision = "314a259e304ff91bd6985da2a7149bbf91237993"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/text"
+  packages = ["encoding","encoding/charmap","encoding/htmlindex","encoding/internal","encoding/internal/identifier","encoding/japanese","encoding/korean","encoding/simplifiedchinese","encoding/traditionalchinese","encoding/unicode","internal/gen","internal/tag","internal/triegen","internal/ucd","internal/utf8internal","language","runes","transform","unicode/cldr","unicode/norm"]
+  revision = "1cbadb444a806fd9430d14ad08967ed91da4fa0a"
 
 [[projects]]
   branch = "v2"
@@ -140,20 +170,14 @@
   revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
 
 [[projects]]
-  name = "gopkg.in/pg.v5"
-  packages = [".","internal","internal/parser","internal/pool","orm","types"]
-  revision = "2246060a2a43f8282ad53295d56d780dbc930b7f"
-  version = "v5.3.3"
-
-[[projects]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "a3f3340b5840cee44f372bddb5880fcbc419b46a"
+  revision = "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e385a2f7216534cfd701fdcd84ff2f82c1648c3ddd5040639d7619b56154394f"
+  inputs-digest = "541823e831e277ebd9405327256bcbc96b6f75df0ec9a40be6b57e49823e29fe"
   solver-name = "gps-cdcl"
   solver-version = 1

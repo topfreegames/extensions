@@ -26,7 +26,7 @@ import (
 	"fmt"
 	"time"
 
-	pg "gopkg.in/pg.v5"
+	pg "github.com/go-pg/pg"
 
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/pg/interfaces"
