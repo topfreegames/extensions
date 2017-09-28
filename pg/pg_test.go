@@ -25,39 +25,12 @@ package pg
 import (
 	"errors"
 
-	"github.com/go-pg/pg/orm"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/pg/mocks"
 )
-
-type TestResult struct {
-	rowsAffected int
-	rowsReturned int
-	err          error
-}
-
-func (t *TestResult) Model() orm.Model {
-	return nil
-}
-
-func (t *TestResult) RowsReturned() int {
-	return t.rowsReturned
-}
-
-func (t *TestResult) RowsAffected() int {
-	return t.rowsAffected
-}
-
-func NewTestResult(err error, vals int) *TestResult {
-	return &TestResult{
-		rowsAffected: vals,
-		rowsReturned: vals,
-		err:          err,
-	}
-}
 
 var _ = Describe("PG Extension", func() {
 	var config *viper.Viper
