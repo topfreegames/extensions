@@ -223,3 +223,28 @@ func (_m *MockRedisClient) RPopLPush(source string, destination string) *redis.S
 func (_mr *_MockRedisClientRecorder) RPopLPush(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RPopLPush", arg0, arg1)
 }
+
+func (_m *MockRedisClient) SAdd(key string, members ...interface{}) *redis.IntCmd {
+	_s := []interface{}{key}
+	for _, _x := range members {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "SAdd", _s...)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) SAdd(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0}, arg1...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SAdd", _s...)
+}
+
+func (_m *MockRedisClient) SIsMember(key string, member interface{}) *redis.BoolCmd {
+	ret := _m.ctrl.Call(_m, "SIsMember", key, member)
+	ret0, _ := ret[0].(*redis.BoolCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) SIsMember(arg0, arg1 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SIsMember", arg0, arg1)
+}

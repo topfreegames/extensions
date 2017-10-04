@@ -47,4 +47,6 @@ type RedisClient interface {
 	TxPipeline() redis.Pipeliner
 	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
 	RPopLPush(source string, destination string) *redis.StringCmd
+	SAdd(key string, members ...interface{}) *redis.IntCmd
+	SIsMember(key string, member interface{}) *redis.BoolCmd
 }
