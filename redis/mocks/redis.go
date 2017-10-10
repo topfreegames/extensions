@@ -248,3 +248,13 @@ func (_m *MockRedisClient) SIsMember(key string, member interface{}) *redis.Bool
 func (_mr *_MockRedisClientRecorder) SIsMember(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SIsMember", arg0, arg1)
 }
+
+func (_m *MockRedisClient) HGet(key string, field string) *redis.StringCmd {
+	ret := _m.ctrl.Call(_m, "HGet", key, field)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+func (_mr *_MockRedisClientRecorder) HGet(arg0, arg1 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "HGet", arg0, arg1)
+}
