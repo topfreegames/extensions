@@ -7,7 +7,7 @@ memo = "ba40d40e553f731ca8b396f929042fa417e81fb45709066569a35cbb36c152a7"
   version = "1.1.0"
 
 [[projects]]
-  name = "github.com/Sirupsen/logrus"
+  name = "github.com/sirupsen/logrus"
   packages = [".","hooks/test"]
   revision = "ba1b36c82c5e05c4f912a88eab0dcd91a171688f"
   version = "v0.11.5"

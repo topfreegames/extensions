@@ -53,10 +53,59 @@ func (m *Mongo) Run(cmd interface{}, result interface{}) error {
 // This session needs to be closed afterwards
 func (m *Mongo) C(name string) (interfaces.Collection, interfaces.Session) {
 	session := m.session.Copy()
-	return m.db.With(session).C(name), session
+	return &Collection{collection: m.db.With(session).C(name)}, session
 }
 
 //Close closes mongo session
 func (m *Mongo) Close() {
 	m.session.Close()
+}
+
+//Collection holds a mongo collection and implements Collection interface
+type Collection struct {
+	collection *mgo.Collection
+}
+
+//Find executes a find query on Mongo
+func (c *Collection) Find(query interface{}) interfaces.Query {
+	return &Query{
+		query: c.collection.Find(query),
+	}
+}
+
+//Insert calls mongo collection Insert
+func (c *Collection) Insert(docs ...interface{}) error {
+	return c.collection.Insert(docs...)
+}
+
+//Query holds a mongo query and implements Query interface
+type Query struct {
+	query *mgo.Query
+}
+
+//Iter calls query Iter
+func (q *Query) Iter() interfaces.Iter {
+	return &Iter{
+		iter: q.query.Iter(),
+	}
+}
+
+//All calls mongo query All
+func (q *Query) All(result interface{}) error {
+	return q.query.All(result)
+}
+
+//Iter wraps mongo Iter
+type Iter struct {
+	iter *mgo.Iter
+}
+
+//Next calls mongo iter next
+func (i *Iter) Next(result interface{}) bool {
+	return i.iter.Next(result)
+}
+
+//Close calls mongo iter close
+func (i *Iter) Close() error {
+	return i.iter.Close()
 }

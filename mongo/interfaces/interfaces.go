@@ -22,7 +22,9 @@
 
 package interfaces
 
-import mgo "gopkg.in/mgo.v2"
+import (
+	mgo "gopkg.in/mgo.v2"
+)
 
 //MongoDB represents the contract for a Mongo DB
 type MongoDB interface {
@@ -31,15 +33,26 @@ type MongoDB interface {
 	Close()
 }
 
-//Collections represents a mongoDB collection
+//Collection represents a mongoDB collection
 type Collection interface {
-	Find(query interface{}) *mgo.Query
+	Find(query interface{}) Query
 	Insert(docs ...interface{}) error
-	Pipe(pipeline interface{}) *mgo.Pipe
 }
 
 //Session is the mongoDB session
 type Session interface {
 	Copy() *mgo.Session
 	Close()
+}
+
+//Query wraps mongo Query
+type Query interface {
+	Iter() Iter
+	All(result interface{}) error
+}
+
+//Iter wraps mongo Iter
+type Iter interface {
+	Next(result interface{}) bool
+	Close() error
 }

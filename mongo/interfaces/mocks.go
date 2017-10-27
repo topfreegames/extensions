@@ -79,9 +79,9 @@ func (_m *MockCollection) EXPECT() *_MockCollectionRecorder {
 	return _m.recorder
 }
 
-func (_m *MockCollection) Find(query interface{}) *mgo_v2.Query {
+func (_m *MockCollection) Find(query interface{}) Query {
 	ret := _m.ctrl.Call(_m, "Find", query)
-	ret0, _ := ret[0].(*mgo_v2.Query)
+	ret0, _ := ret[0].(Query)
 	return ret0
 }
 
@@ -101,16 +101,6 @@ func (_m *MockCollection) Insert(docs ...interface{}) error {
 
 func (_mr *_MockCollectionRecorder) Insert(arg0 ...interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Insert", arg0...)
-}
-
-func (_m *MockCollection) Pipe(pipeline interface{}) *mgo_v2.Pipe {
-	ret := _m.ctrl.Call(_m, "Pipe", pipeline)
-	ret0, _ := ret[0].(*mgo_v2.Pipe)
-	return ret0
-}
-
-func (_mr *_MockCollectionRecorder) Pipe(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "Pipe", arg0)
 }
 
 // Mock of Session interface
@@ -149,5 +139,87 @@ func (_m *MockSession) Close() {
 }
 
 func (_mr *_MockSessionRecorder) Close() *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Close")
+}
+
+// Mock of Query interface
+type MockQuery struct {
+	ctrl     *gomock.Controller
+	recorder *_MockQueryRecorder
+}
+
+// Recorder for MockQuery (not exported)
+type _MockQueryRecorder struct {
+	mock *MockQuery
+}
+
+func NewMockQuery(ctrl *gomock.Controller) *MockQuery {
+	mock := &MockQuery{ctrl: ctrl}
+	mock.recorder = &_MockQueryRecorder{mock}
+	return mock
+}
+
+func (_m *MockQuery) EXPECT() *_MockQueryRecorder {
+	return _m.recorder
+}
+
+func (_m *MockQuery) Iter() Iter {
+	ret := _m.ctrl.Call(_m, "Iter")
+	ret0, _ := ret[0].(Iter)
+	return ret0
+}
+
+func (_mr *_MockQueryRecorder) Iter() *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Iter")
+}
+
+func (_m *MockQuery) All(result interface{}) error {
+	ret := _m.ctrl.Call(_m, "All", result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockQueryRecorder) All(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "All", arg0)
+}
+
+// Mock of Iter interface
+type MockIter struct {
+	ctrl     *gomock.Controller
+	recorder *_MockIterRecorder
+}
+
+// Recorder for MockIter (not exported)
+type _MockIterRecorder struct {
+	mock *MockIter
+}
+
+func NewMockIter(ctrl *gomock.Controller) *MockIter {
+	mock := &MockIter{ctrl: ctrl}
+	mock.recorder = &_MockIterRecorder{mock}
+	return mock
+}
+
+func (_m *MockIter) EXPECT() *_MockIterRecorder {
+	return _m.recorder
+}
+
+func (_m *MockIter) Next(result interface{}) bool {
+	ret := _m.ctrl.Call(_m, "Next", result)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+func (_mr *_MockIterRecorder) Next(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Next", arg0)
+}
+
+func (_m *MockIter) Close() error {
+	ret := _m.ctrl.Call(_m, "Close")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockIterRecorder) Close() *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Close")
 }
