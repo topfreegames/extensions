@@ -112,14 +112,16 @@ func (c *Client) Close() error {
 // WaitForConnection loops until PG is connected
 func (c *Client) WaitForConnection(timeout int) error {
 	t := time.Duration(timeout) * time.Second
-	timeoutChan := time.NewTimer(t).C
-	tickerChan := time.NewTicker(10 * time.Millisecond).C
+	timeoutTimer := time.NewTimer(t)
+	defer timeoutTimer.Stop()
+	ticker := time.NewTicker(10 * time.Millisecond)
+	defer ticker.Stop()
 
 	for {
 		select {
-		case <-timeoutChan:
+		case <-timeoutTimer.C:
 			return fmt.Errorf("timed out waiting for PostgreSQL to connect")
-		case <-tickerChan:
+		case <-ticker.C:
 			if c.IsConnected() {
 				return nil
 			}
