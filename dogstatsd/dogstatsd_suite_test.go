@@ -8,6 +8,7 @@
 package dogstatsd_test
 
 import (
+	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
@@ -18,3 +19,11 @@ func TestDogstatsd(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Dogstatsd Suite")
 }
+
+var (
+	mockCtrl *gomock.Controller
+)
+
+var _ = BeforeEach(func() {
+	mockCtrl = gomock.NewController(GinkgoT())
+})

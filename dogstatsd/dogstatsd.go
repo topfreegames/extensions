@@ -8,6 +8,8 @@
 package dogstatsd
 
 import (
+	"time"
+
 	"github.com/DataDog/datadog-go/statsd"
 )
 
@@ -16,6 +18,7 @@ type Client interface {
 	Incr(name string, tags []string, rate float64) error
 	Count(name string, value int64, tags []string, rate float64) error
 	Gauge(name string, value float64, tags []string, rate float64) error
+	Timing(name string, value time.Duration, tags []string, rate float64) error
 }
 
 // DogStatsD is a wrapper to a dogstatsd.Client
@@ -56,4 +59,10 @@ func (d *DogStatsD) Count(name string, value int64, tags []string,
 func (d *DogStatsD) Gauge(name string, value float64, tags []string,
 	rate float64) error {
 	return d.client.Gauge(name, value, tags, rate)
+}
+
+// Timing calls Client.Timing
+func (d *DogStatsD) Timing(name string, value time.Duration, tags []string,
+	rate float64) error {
+	return d.client.Timing(name, value, tags, rate)
 }

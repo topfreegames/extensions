@@ -109,6 +109,7 @@ func (s *StatsD) ReportGoStats(
 	s.Client.Timing("gc_pause_duration_ms", pauseGCNano/1000000)
 }
 
+//Flush calls Flush from dogstatsd
 func (s *StatsD) Flush() error {
 	s.Client.Flush()
 	return nil

@@ -8,39 +8,51 @@
 package dogstatsd_test
 
 import (
+	"time"
+
 	"github.com/topfreegames/extensions/dogstatsd"
 	"github.com/topfreegames/extensions/dogstatsd/mocks"
 
 	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("DogStatsD", func() {
 	var (
-		mC *mocks.ClientMock
+		mC *mocks.MockClient
 		d  *dogstatsd.DogStatsD
 	)
 
 	BeforeEach(func() {
-		mC = mocks.NewClientMock()
+		mC = mocks.NewMockClient(mockCtrl)
 		d = dogstatsd.NewFromClient(mC)
 	})
 
 	It("Incr", func() {
+		mC.EXPECT().Incr("key", []string{}, float64(1))
 		d.Incr("key", []string{}, 1)
-		Expect(mC.Counts["key"]).To(Equal(int64(1)))
 	})
 
 	It("Count", func() {
+		mC.EXPECT().Count("key", int64(4), []string{}, float64(1))
+		mC.EXPECT().Count("key", int64(3), []string{}, float64(1))
 		d.Count("key", 4, []string{}, 1)
 		d.Count("key", 3, []string{}, 1)
-		Expect(mC.Counts["key"]).To(Equal(int64(7)))
 	})
 
 	It("Gauge", func() {
+		mC.EXPECT().Gauge("key", 86.5, []string{}, float64(1))
 		d.Gauge("key", 86.5, []string{}, 1)
-		Expect(mC.Gauges["key"]).To(Equal(float64(86.5)))
+		mC.EXPECT().Gauge("key", 42.0, []string{}, float64(1))
 		d.Gauge("key", 42.0, []string{}, 1)
-		Expect(mC.Gauges["key"]).To(Equal(float64(42.0)))
+	})
+
+	It("Timing", func() {
+		mC.EXPECT().Timing("key", 100*time.Millisecond,
+			[]string{}, float64(1))
+		d.Timing("key", 100*time.Millisecond, []string{}, 1)
+
+		mC.EXPECT().Timing("key", 200*time.Millisecond,
+			[]string{}, float64(1))
+		d.Timing("key", 200*time.Millisecond, []string{}, 1)
 	})
 })
