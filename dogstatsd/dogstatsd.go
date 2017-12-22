@@ -23,7 +23,7 @@ type Client interface {
 
 // DogStatsD is a wrapper to a dogstatsd.Client
 type DogStatsD struct {
-	client Client
+	Client Client
 }
 
 // New ctor
@@ -33,36 +33,36 @@ func New(host, prefix string) (*DogStatsD, error) {
 		return nil, err
 	}
 	c.Namespace = prefix
-	d := &DogStatsD{client: c}
+	d := &DogStatsD{Client: c}
 	return d, nil
 }
 
 // NewFromClient ctor
-func NewFromClient(client Client) *DogStatsD {
+func NewFromClient(C Client) *DogStatsD {
 	return &DogStatsD{
-		client: client,
+		Client: C,
 	}
 }
 
 // Incr calls Client.Incr
 func (d *DogStatsD) Incr(name string, tags []string, rate float64) error {
-	return d.client.Incr(name, tags, rate)
+	return d.Client.Incr(name, tags, rate)
 }
 
 // Count calls Client.Count
 func (d *DogStatsD) Count(name string, value int64, tags []string,
 	rate float64) error {
-	return d.client.Count(name, value, tags, rate)
+	return d.Client.Count(name, value, tags, rate)
 }
 
 // Gauge calls Client.Gauge
 func (d *DogStatsD) Gauge(name string, value float64, tags []string,
 	rate float64) error {
-	return d.client.Gauge(name, value, tags, rate)
+	return d.Client.Gauge(name, value, tags, rate)
 }
 
 // Timing calls Client.Timing
 func (d *DogStatsD) Timing(name string, value time.Duration, tags []string,
 	rate float64) error {
-	return d.client.Timing(name, value, tags, rate)
+	return d.Client.Timing(name, value, tags, rate)
 }
