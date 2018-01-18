@@ -33,3 +33,12 @@ type DB interface {
 	Close() error
 	Begin() (*pg.Tx, error)
 }
+
+//Tx represents the contract for a Postgres Tx
+type Tx interface {
+	Exec(interface{}, ...interface{}) (orm.Result, error)
+	ExecOne(interface{}, ...interface{}) (orm.Result, error)
+	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
+	Rollback() error
+	Commit() error
+}
