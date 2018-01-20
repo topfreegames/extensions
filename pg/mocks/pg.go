@@ -7,6 +7,7 @@ import (
 	pg "github.com/go-pg/pg"
 	orm "github.com/go-pg/pg/orm"
 	gomock "github.com/golang/mock/gomock"
+	"github.com/topfreegames/extensions/pg/interfaces"
 )
 
 // Mock of DB interface
@@ -186,4 +187,36 @@ func (_m *MockTx) Commit() error {
 
 func (_mr *_MockTxRecorder) Commit() *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Commit")
+}
+
+// Mock of TxWrapper interface
+type MockTxWrapper struct {
+	ctrl     *gomock.Controller
+	recorder *_MockTxWrapperRecorder
+}
+
+// Recorder for MockTxWrapper (not exported)
+type _MockTxWrapperRecorder struct {
+	mock *MockTxWrapper
+}
+
+func NewMockTxWrapper(ctrl *gomock.Controller) *MockTxWrapper {
+	mock := &MockTxWrapper{ctrl: ctrl}
+	mock.recorder = &_MockTxWrapperRecorder{mock}
+	return mock
+}
+
+func (_m *MockTxWrapper) EXPECT() *_MockTxWrapperRecorder {
+	return _m.recorder
+}
+
+func (_m *MockTxWrapper) DbBegin(db interfaces.DB) (interfaces.Tx, error) {
+	ret := _m.ctrl.Call(_m, "DbBegin", db)
+	ret0, _ := ret[0].(interfaces.Tx)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockTxWrapperRecorder) DbBegin(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DbBegin", arg0)
 }

@@ -22,10 +22,12 @@
 
 package interfaces
 
-import "github.com/go-pg/pg/orm"
-import "github.com/go-pg/pg"
+import (
+	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/orm"
+)
 
-//DB represents the contract for a Postgres DB
+// DB represents the contract for a Postgres DB
 type DB interface {
 	Exec(interface{}, ...interface{}) (orm.Result, error)
 	ExecOne(interface{}, ...interface{}) (orm.Result, error)
@@ -34,11 +36,16 @@ type DB interface {
 	Begin() (*pg.Tx, error)
 }
 
-//Tx represents the contract for a Postgres Tx
+// Tx represents the contract for a Postgres Tx
 type Tx interface {
 	Exec(interface{}, ...interface{}) (orm.Result, error)
 	ExecOne(interface{}, ...interface{}) (orm.Result, error)
 	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
 	Rollback() error
 	Commit() error
+}
+
+// TxWrapper is the interface for mocking pg transactions
+type TxWrapper interface {
+	DbBegin(db DB) (Tx, error)
 }

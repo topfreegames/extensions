@@ -34,32 +34,49 @@ import (
 
 // Client is the struct that connects to PostgreSQL
 type Client struct {
-	Config  *viper.Viper
-	DB      interfaces.DB
-	Options *pg.Options
+	Config    *viper.Viper
+	DB        interfaces.DB
+	Options   *pg.Options
+	TxWrapper interfaces.TxWrapper
+}
+
+// TxWrapper is the struct for the TxWrapper
+type TxWrapper struct{}
+
+// DbBegin is a wrapper for returning db transactions
+func (t *TxWrapper) DbBegin(db interfaces.DB) (interfaces.Tx, error) {
+	return db.Begin()
 }
 
 // NewClient creates a new client
-func NewClient(prefix string, config *viper.Viper, pgOrNil ...interfaces.DB) (*Client, error) {
+func NewClient(prefix string, config *viper.Viper, pgOrNil interfaces.DB, txOrNil interfaces.TxWrapper) (*Client, error) {
 	client := &Client{
 		Config: config,
 	}
 
 	var db interfaces.DB
-	if len(pgOrNil) == 1 {
-		db = pgOrNil[0]
+	if pgOrNil != nil {
+		db = pgOrNil
+	}
+	var tx interfaces.TxWrapper
+	if txOrNil != nil {
+		tx = txOrNil
+		client.TxWrapper = tx
+	} else {
+		client.TxWrapper = &TxWrapper{}
 	}
 	err := client.Connect(prefix, db)
 	if err != nil {
 		return nil, err
 	}
 
-	timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
-	err = client.WaitForConnection(timeout)
-	if err != nil {
-		return nil, err
+	if pgOrNil == nil {
+		timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
+		err = client.WaitForConnection(timeout)
+		if err != nil {
+			return nil, err
+		}
 	}
-
 	return client, nil
 }
 
@@ -132,8 +149,5 @@ func (c *Client) WaitForConnection(timeout int) error {
 //Cleanup closes PG connection
 func (c *Client) Cleanup() error {
 	err := c.Close()
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
