@@ -1,6 +1,7 @@
 language: go
 go:
 - 1.8
+- 1.9
 sudo: false
 addons:
   postgresql: '9.5'
@@ -9,7 +10,7 @@ services:
 - docker
 env:
   matrix:
-  - LIBRDKAFKA_VERSION=v0.11.0
+  - LIBRDKAFKA_VERSION=v0.11.3
   - LIBRDKAFKA_VERSION=master
 cache:
   directories:
