@@ -72,3 +72,7 @@
 [[constraint]]
   branch = "v2"
   name = "gopkg.in/mgo.v2"
+
+[[constraint]]
+  name = "github.com/Shopify/sarama"
+  version = "1.15.0"

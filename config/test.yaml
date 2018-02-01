@@ -8,6 +8,8 @@ extensions:
     sessionTimeout: 6000
     offsetResetStrategy: latest
     handleAllMessagesBeforeExiting: true
+  kafkaproducer:
+    brokers: "localhost:9941"
   statsd:
     host: "localhost:40001"
     prefix: "push"

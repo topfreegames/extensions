@@ -23,11 +23,11 @@
 package kafka
 
 import (
-	"github.com/sirupsen/logrus"
-	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/kafka/mocks"
 	"github.com/topfreegames/extensions/util"
@@ -53,7 +53,7 @@ var _ = Describe("Producer Extension", func() {
 			It("should send message", func() {
 				Producer, err := NewProducer(config, logger, mockProducer)
 				Expect(err).NotTo(HaveOccurred())
-				Producer.SendMessage([]byte("test message"), "test-topic")
+				Producer.SendAsync([]byte("test message"), "test-topic")
 				Eventually(func() int {
 					return Producer.Producer.(*mocks.ProducerClientMock).SentMessages
 				}).Should(Equal(1))

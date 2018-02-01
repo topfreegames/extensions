@@ -23,9 +23,9 @@
 package kafka
 
 import (
-	log "github.com/sirupsen/logrus"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	raven "github.com/getsentry/raven-go"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/kafka/interfaces"
 	"github.com/topfreegames/extensions/util"
@@ -96,7 +96,7 @@ func (q *Producer) listenForKafkaResponses() {
 					"version":   util.Version,
 					"extension": "kafka-producer",
 				})
-				l.WithError(m.TopicPartition.Error).Error("error sending feedback to kafka")
+				l.WithError(m.TopicPartition.Error).Error("error sending message to kafka")
 			} else {
 				l.WithFields(log.Fields{
 					"topic":     *m.TopicPartition.Topic,
@@ -111,8 +111,8 @@ func (q *Producer) listenForKafkaResponses() {
 	}
 }
 
-// SendMessage sends the message to a topic of kafka Queue
-func (q *Producer) SendMessage(message []byte, topic string) {
+// SendAsync sends the message to a topic of kafka Queue
+func (q *Producer) SendAsync(message []byte, topic string) {
 	m := &kafka.Message{
 		TopicPartition: kafka.TopicPartition{
 			Topic:     &topic,
