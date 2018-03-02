@@ -56,5 +56,13 @@ var _ = Describe("DogStatsD", func() {
 				[]string{}, float64(1))
 			d.Timing("key", 200*time.Millisecond, []string{}, 1)
 		})
+
+		It("Histogram", func() {
+			mC.EXPECT().Histogram("key", float64(100), []string{}, float64(1))
+			d.Histogram("key", 100, []string{}, 1)
+
+			mC.EXPECT().Histogram("key", float64(200), []string{}, float64(1))
+			d.Histogram("key", 200, []string{}, 1)
+		})
 	})
 })

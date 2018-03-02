@@ -68,3 +68,13 @@ func (_m *MockClient) Timing(name string, value time.Duration, tags []string, ra
 func (_mr *_MockClientRecorder) Timing(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Timing", arg0, arg1, arg2, arg3)
 }
+
+func (_m *MockClient) Histogram(name string, value float64, tags []string, rate float64) error {
+	ret := _m.ctrl.Call(_m, "Histogram", name, value, tags, rate)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockClientRecorder) Histogram(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Histogram", arg0, arg1, arg2, arg3)
+}
