@@ -32,22 +32,33 @@ import (
 type RedisClient interface {
 	BLPop(timeout time.Duration, keys ...string) *redis.StringSliceCmd
 	Close() error
+	Del(keys ...string) *redis.IntCmd
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
 	EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd
+	Exists(keys ...string) *redis.IntCmd
 	Get(key string) *redis.StringCmd
+	HGet(key, field string) *redis.StringCmd
 	HGetAll(string) *redis.StringStringMapCmd
 	HMSet(string, map[string]interface{}) *redis.StatusCmd
 	Ping() *redis.StatusCmd
+	RPopLPush(source string, destination string) *redis.StringCmd
 	RPush(key string, values ...interface{}) *redis.IntCmd
+	SAdd(key string, members ...interface{}) *redis.IntCmd
 	ScriptExists(scripts ...string) *redis.BoolSliceCmd
 	ScriptLoad(script string) *redis.StringCmd
 	Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd
 	SetNX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd
-	SPopN(key string, count int64) *redis.StringSliceCmd
-	TxPipeline() redis.Pipeliner
-	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
-	RPopLPush(source string, destination string) *redis.StringCmd
-	SAdd(key string, members ...interface{}) *redis.IntCmd
 	SIsMember(key string, member interface{}) *redis.BoolCmd
-	HGet(key, field string) *redis.StringCmd
+	SMembers(key string) *redis.StringSliceCmd
+	SPopN(key string, count int64) *redis.StringSliceCmd
+	TTL(key string) *redis.DurationCmd
+	TxPipeline() redis.Pipeliner
+	ZCard(key string) *redis.IntCmd
+	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
+	ZRangeWithScores(key string, start, stop int64) *redis.ZSliceCmd
+	ZRank(key, member string) *redis.IntCmd
+	ZRem(key string, members ...interface{}) *redis.IntCmd
+	ZRevRangeWithScores(key string, start, stop int64) *redis.ZSliceCmd
+	ZRevRank(key, member string) *redis.IntCmd
+	ZScore(key, member string) *redis.FloatCmd
 }
