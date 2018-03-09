@@ -26,25 +26,26 @@ import (
 	"fmt"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/engine"
+	"github.com/labstack/echo/engine/standard"
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/jaeger/util"
 )
 
+// NewEcho creates a Jaeger middleware for Echo
 func NewEcho() func(echo.HandlerFunc) echo.HandlerFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			tracer := opentracing.GlobalTracer()
-			request := c.Request()
 
-			header := request.Header()
-			method := request.Method()
+			request := c.Request()
 			route := c.Path()
+
+			method := request.Method()
 			url := request.URL()
 
-			parent, err := tracer.Extract(opentracing.HTTPHeaders, header)
-			if err != nil {
-				// TODO: error handling
-			}
+			header := getCarrier(request)
+			parent, _ := tracer.Extract(opentracing.HTTPHeaders, header)
 
 			operationName := fmt.Sprintf("HTTP %s %s", method, route)
 			reference := opentracing.ChildOf(parent)
@@ -65,7 +66,7 @@ func NewEcho() func(echo.HandlerFunc) echo.HandlerFunc {
 			ctx = opentracing.ContextWithSpan(ctx, span)
 			c.SetStdContext(ctx)
 
-			err = next(c)
+			err := next(c)
 			if err != nil {
 				message := err.Error()
 				util.LogError(span, message)
@@ -79,4 +80,11 @@ func NewEcho() func(echo.HandlerFunc) echo.HandlerFunc {
 			return err
 		}
 	}
+}
+
+func getCarrier(request engine.Request) opentracing.HTTPHeadersCarrier {
+	if header, ok := request.Header().(*standard.Header); ok {
+		return opentracing.HTTPHeadersCarrier(header.Header)
+	}
+	return nil
 }

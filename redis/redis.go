@@ -65,6 +65,7 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Red
 	return client, nil
 }
 
+// Trace creates a Redis client that sends traces to Jaeger
 func (c *Client) Trace(ctx context.Context) interfaces.RedisClient {
 	copy := c.Client.WithContext(ctx)
 	jaeger.InstrumentRedis(copy)

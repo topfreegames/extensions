@@ -29,6 +29,7 @@ import (
 	"github.com/opentracing/opentracing-go/log"
 )
 
+// LogError logs an error to a Jaeger span
 func LogError(span opentracing.Span, message string) {
 	span.SetTag("error", true)
 	span.LogFields(
@@ -37,6 +38,7 @@ func LogError(span opentracing.Span, message string) {
 	)
 }
 
+// LogPanic logs a panic to a Jaeger span
 func LogPanic(span opentracing.Span) {
 	if err := recover(); err != nil {
 		message := fmt.Sprint(err)

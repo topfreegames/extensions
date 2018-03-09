@@ -28,11 +28,13 @@ import (
 	"github.com/topfreegames/extensions/jaeger/middleware"
 )
 
+// InstrumentEcho adds Jaeger instrumentation on an Echo app
 func InstrumentEcho(app *echo.Echo) {
 	middleware := middleware.NewEcho()
 	app.Use(middleware)
 }
 
+// InstrumentRedis adds Jaeger instrumentation on a Redis client
 func InstrumentRedis(client *redis.Client) {
 	middleware := middleware.NewRedis(client)
 	client.WrapProcess(middleware)
