@@ -23,12 +23,14 @@
 package redis
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/bsm/redis-lock"
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
+	"github.com/topfreegames/extensions/jaeger"
 	"github.com/topfreegames/extensions/redis/interfaces"
 )
 
@@ -54,6 +56,8 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Red
 		return nil, err
 	}
 
+	client.Client = client.Trace(nil)
+
 	timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
 	err = client.WaitForConnection(timeout)
 	if err != nil {
@@ -61,6 +65,15 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Red
 	}
 
 	return client, nil
+}
+
+func (c *Client) Trace(ctx context.Context) interfaces.RedisClient {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	copy := c.Client.WithContext(ctx)
+	jaeger.InstrumentRedis(copy)
+	return copy
 }
 
 // Connect to Redis

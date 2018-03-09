@@ -26,10 +26,6 @@
   version = "1.1.0"
 
 [[constraint]]
-  name = "github.com/Sirupsen/logrus"
-  version = "0.11.5"
-
-[[constraint]]
   name = "github.com/alexcesaro/statsd"
   version = "2.0.0"
 
@@ -76,3 +72,7 @@
 [[constraint]]
   name = "github.com/Shopify/sarama"
   version = "1.15.0"
+
+[[constraint]]
+  name = "github.com/labstack/echo"
+  version = "2.0.0"
