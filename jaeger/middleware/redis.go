@@ -30,6 +30,7 @@ import (
 	"github.com/topfreegames/extensions/jaeger/util"
 )
 
+// NewRedis create a Jaeger middleware for Redis
 func NewRedis(client *redis.Client) func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 	return func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 		return func(cmd redis.Cmder) error {
