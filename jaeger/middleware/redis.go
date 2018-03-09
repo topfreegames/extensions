@@ -62,12 +62,11 @@ func NewRedis(client *redis.Client) func(old func(cmd redis.Cmder) error) func(c
 }
 
 func parseShort(cmd redis.Cmder) string {
-	array := strings.Split(cmd.String(), " ")
+	array := strings.Split(parseLong(cmd), " ")
 	return array[0]
 }
 
 func parseLong(cmd redis.Cmder) string {
 	array := strings.Split(cmd.String(), ":")
-	length := len(array)
-	return strings.Join(array[:length-1], ":")
+	return array[0]
 }
