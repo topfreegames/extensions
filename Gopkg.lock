@@ -151,6 +151,7 @@
     ".",
     "context",
     "engine",
+    "engine/standard",
     "log"
   ]
   revision = "e08070379af60f5b9c0fb5bb2d1527ba9624fe43"
@@ -427,6 +428,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cb55b22183b76de7b0ebaa635ba6326c395859fb51b17d27e47dd559f57fba4c"
+  inputs-digest = "9456da868c7e2a218fbdd81ab7f1a5998a11e6880ffb2516ce88557a07f3a355"
   solver-name = "gps-cdcl"
   solver-version = 1
