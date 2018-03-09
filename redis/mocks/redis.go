@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	redis "github.com/go-redis/redis"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
@@ -61,6 +62,18 @@ func (m *MockRedisClient) Close() error {
 // Close indicates an expected call of Close
 func (mr *MockRedisClientMockRecorder) Close() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockRedisClient)(nil).Close))
+}
+
+// Context mocks base method
+func (m *MockRedisClient) Context() context.Context {
+	ret := m.ctrl.Call(m, "Context")
+	ret0, _ := ret[0].(context.Context)
+	return ret0
+}
+
+// Context indicates an expected call of Context
+func (mr *MockRedisClientMockRecorder) Context() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockRedisClient)(nil).Context))
 }
 
 // Del mocks base method
@@ -345,6 +358,18 @@ func (m *MockRedisClient) TxPipeline() redis.Pipeliner {
 // TxPipeline indicates an expected call of TxPipeline
 func (mr *MockRedisClientMockRecorder) TxPipeline() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TxPipeline", reflect.TypeOf((*MockRedisClient)(nil).TxPipeline))
+}
+
+// WithContext mocks base method
+func (m *MockRedisClient) WithContext(arg0 context.Context) *redis.Client {
+	ret := m.ctrl.Call(m, "WithContext", arg0)
+	ret0, _ := ret[0].(*redis.Client)
+	return ret0
+}
+
+// WithContext indicates an expected call of WithContext
+func (mr *MockRedisClientMockRecorder) WithContext(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockRedisClient)(nil).WithContext), arg0)
 }
 
 // ZCard mocks base method

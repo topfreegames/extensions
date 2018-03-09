@@ -23,6 +23,7 @@
 package interfaces
 
 import (
+	"context"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -32,6 +33,7 @@ import (
 type RedisClient interface {
 	BLPop(timeout time.Duration, keys ...string) *redis.StringSliceCmd
 	Close() error
+	Context() context.Context
 	Del(keys ...string) *redis.IntCmd
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
 	EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd
@@ -53,6 +55,7 @@ type RedisClient interface {
 	SPopN(key string, count int64) *redis.StringSliceCmd
 	TTL(key string) *redis.DurationCmd
 	TxPipeline() redis.Pipeliner
+	WithContext(context.Context) *redis.Client
 	ZCard(key string) *redis.IntCmd
 	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
 	ZRangeWithScores(key string, start, stop int64) *redis.ZSliceCmd
