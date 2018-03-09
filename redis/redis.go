@@ -56,8 +56,6 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Red
 		return nil, err
 	}
 
-	client.Client = client.Trace(nil)
-
 	timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
 	err = client.WaitForConnection(timeout)
 	if err != nil {
@@ -68,9 +66,6 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Red
 }
 
 func (c *Client) Trace(ctx context.Context) interfaces.RedisClient {
-	if ctx == nil {
-		ctx = context.Background()
-	}
 	copy := c.Client.WithContext(ctx)
 	jaeger.InstrumentRedis(copy)
 	return copy
