@@ -20,71 +20,59 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package middleware
+package redis
 
 import (
-	"fmt"
+	"strings"
 
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine"
-	"github.com/labstack/echo/engine/standard"
+	"github.com/go-redis/redis"
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger/util"
+	"github.com/topfreegames/extensions/jaeger"
 )
 
-// NewEcho creates a Jaeger middleware for Echo
-func NewEcho() func(echo.HandlerFunc) echo.HandlerFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			tracer := opentracing.GlobalTracer()
+// Instrument adds Jaeger instrumentation on a Redis client
+func Instrument(client *redis.Client) {
+	middleware := makeMiddleware(client)
+	client.WrapProcess(middleware)
+}
 
-			request := c.Request()
-			route := c.Path()
+func makeMiddleware(client *redis.Client) func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
+	return func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
+		return func(cmd redis.Cmder) error {
+			ctx := client.Context()
+			parent := opentracing.SpanFromContext(ctx).Context()
 
-			method := request.Method()
-			url := request.URL()
-
-			header := getCarrier(request)
-			parent, _ := tracer.Extract(opentracing.HTTPHeaders, header)
-
-			operationName := fmt.Sprintf("HTTP %s %s", method, route)
+			operationName := "redis " + parseShort(cmd)
 			reference := opentracing.ChildOf(parent)
 			tags := opentracing.Tags{
-				"http.method":   method,
-				"http.host":     request.Host(),
-				"http.pathname": url.Path(),
-				"http.query":    url.QueryString(),
+				"db.instance":  client.Options().DB,
+				"db.statement": parseLong(cmd),
+				"db.type":      "redis",
 
-				"span.kind": "server",
+				"span.kind": "client",
 			}
 
 			span := opentracing.StartSpan(operationName, reference, tags)
 			defer span.Finish()
-			defer util.LogPanic(span)
+			defer jaeger.LogPanic(span)
 
-			ctx := c.StdContext()
-			ctx = opentracing.ContextWithSpan(ctx, span)
-			c.SetStdContext(ctx)
-
-			err := next(c)
+			err := old(cmd)
 			if err != nil {
 				message := err.Error()
-				util.LogError(span, message)
+				jaeger.LogError(span, message)
 			}
-
-			response := c.Response()
-			statusCode := response.Status()
-
-			span.SetTag("http.status_code", statusCode)
 
 			return err
 		}
 	}
 }
 
-func getCarrier(request engine.Request) opentracing.HTTPHeadersCarrier {
-	if header, ok := request.Header().(*standard.Header); ok {
-		return opentracing.HTTPHeadersCarrier(header.Header)
-	}
-	return nil
+func parseShort(cmd redis.Cmder) string {
+	array := strings.Split(parseLong(cmd), " ")
+	return array[0]
+}
+
+func parseLong(cmd redis.Cmder) string {
+	array := strings.Split(cmd.String(), ":")
+	return array[0]
 }

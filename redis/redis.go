@@ -30,7 +30,7 @@ import (
 	"github.com/bsm/redis-lock"
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/jaeger"
+	jredis "github.com/topfreegames/extensions/jaeger/redis"
 	"github.com/topfreegames/extensions/redis/interfaces"
 )
 
@@ -68,7 +68,7 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Red
 // Trace creates a Redis client that sends traces to Jaeger
 func (c *Client) Trace(ctx context.Context) interfaces.RedisClient {
 	copy := c.Client.WithContext(ctx)
-	jaeger.InstrumentRedis(copy)
+	jredis.Instrument(copy)
 	return copy
 }
 
