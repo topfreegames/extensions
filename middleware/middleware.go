@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"git.topfreegames.com/topfreegames/adspot/oauth2"
 	"github.com/asaskevich/govalidator"
 	"github.com/gorilla/mux"
 	uuid "github.com/satori/go.uuid"
@@ -175,106 +174,6 @@ func Validator() func(http.Handler) http.Handler {
 				return
 			}
 			next.ServeHTTP(w, r)
-		})
-	}
-}
-
-func oauth2login(a *oauth2.Authenticator, r *http.Request) (string, error) {
-	state := r.FormValue("state")
-	code := r.FormValue("code")
-
-	if state == "" && code == "" {
-		return "", errors.New("No state or code were sent")
-	}
-
-	if state != "" {
-		return a.AuthCodeURL(state), nil
-	}
-
-	t, err := a.ExchangeCodeForToken(code)
-	if err != nil {
-		return "", err
-	}
-	return t.AccessToken, nil
-}
-
-func oauth2logout(a *oauth2.Authenticator, r *http.Request) error {
-	accessToken :=
-		strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
-	return a.TS.Delete(accessToken)
-}
-
-// OAuth2Paths describe paths used by OAuth2 middleware
-type OAuth2Paths struct {
-	// Whitelist is in mux.CurrentRoute(r).GetPathTemplate() format
-	Whitelist []string
-	Login     string
-	Logout    string
-}
-
-// OAuth2 middleware
-func OAuth2(
-	enabled bool, authenticator *oauth2.Authenticator, paths OAuth2Paths,
-) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if !enabled {
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			switch r.URL.Path {
-			case paths.Login:
-				r, err := oauth2login(authenticator, r)
-				if err != nil {
-					writeStatus(w, http.StatusInternalServerError)
-					return
-				}
-				write(w, http.StatusOK, r)
-				return
-			case paths.Logout:
-				err := oauth2logout(authenticator, r)
-				if err != nil {
-					writeStatus(w, http.StatusInternalServerError)
-					return
-				}
-				writeStatus(w, http.StatusAccepted)
-				return
-			}
-
-			pathTemplate, err := mux.CurrentRoute(r).GetPathTemplate()
-			if err != nil {
-				writeStatus(w, http.StatusInternalServerError)
-				return
-			}
-
-			for _, p := range paths.Whitelist {
-				if p == pathTemplate {
-					next.ServeHTTP(w, r)
-					return
-				}
-			}
-
-			l := GetLogger(r.Context()).(logrus.FieldLogger)
-			accessToken :=
-				strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
-
-			token, err := authenticator.TS.Get(accessToken)
-			if err != nil {
-				l.Error(err)
-				write(w, http.StatusForbidden, "Authorization token doesn't exist")
-				return
-			}
-
-			email, err := authenticator.Authenticate(token)
-			if err != nil {
-				l.Error(err)
-				write(w, http.StatusForbidden, "Authorization token is invalid")
-				return
-			}
-
-			ctx := context.WithValue(r.Context(), ctxKeys.oauth2, email)
-			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }

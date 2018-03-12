@@ -37,8 +37,8 @@ type DogStatsD struct {
 
 func loadDefaultConfigsDogStatsD(config *viper.Viper) {
 	config.SetDefault("extensions.dogstatsd.host", "localhost:8125")
-	config.SetDefault("extensions.dogstatsd.prefix", "adspot_dev.")
-	config.SetDefault("extensions.dogstatsd.tags_prefix", "adspot_.")
+	config.SetDefault("extensions.dogstatsd.prefix", "middleware_dev.")
+	config.SetDefault("extensions.dogstatsd.tags_prefix", "middleware_.")
 	config.SetDefault("extensions.dogstatsd.rate", "1")
 }
 
