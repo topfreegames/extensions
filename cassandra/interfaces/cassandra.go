@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2018 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,7 +20,19 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package util
+package interfaces
 
-//Version identifies extensions package version
-const Version = "5.5.0"
+import "github.com/gocql/gocql"
+
+// DB represents the contract for a Cassandra DB
+type DB interface {
+	CreateSession() (*gocql.Session, error)
+}
+
+// Session represents the contract for a cassandra session
+type Session interface {
+	Close() bool
+	Query(string, ...interface{}) *gocql.Query
+	ExecuteBatch(*gocql.Batch) error
+	NewBatch(gocql.BatchType) *gocql.Batch
+}

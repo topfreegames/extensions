@@ -1,5 +1,8 @@
 ---
 extensions:
+  cassandra:
+    hosts: "localhost:4042"
+    keyspace: "test"
   kafkaconsumer:
     topics:
       - "com.games.test"
