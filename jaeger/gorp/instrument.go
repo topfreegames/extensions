@@ -20,75 +20,41 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package gorp
+package gopr
 
 import (
-	"fmt"
+	"context"
+	"strings"
 
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine"
-	"github.com/labstack/echo/engine/standard"
+	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/jaeger"
 )
 
-// Instrument adds Jaeger instrumentation on an Echo app
-func Instrument(app *echo.Echo) {
-	middleware := makeMiddleware()
-	app.Use(middleware)
-}
+func Trace(ctx context.Context, query string, next func() error) {
+	parent := opentracing.SpanFromContext(ctx).Context()
 
-func makeMiddleware() func(echo.HandlerFunc) echo.HandlerFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			tracer := opentracing.GlobalTracer()
+	operationName := "SQL " + parse(query)
+	reference := opentracing.ChildOf(parent)
+	tags := opentracing.Tags{
+		"db.instance":  "dunno",
+		"db.statement": query,
+		"db.type":      "postgres",
 
-			request := c.Request()
-			route := c.Path()
+		"span.kind": "client",
+	}
 
-			method := request.Method()
-			url := request.URL()
+	span := opentracing.StartSpan(operationName, reference, tags)
+	defer span.Finish()
+	defer jaeger.LogPanic(span)
 
-			header := getCarrier(request)
-			parent, _ := tracer.Extract(opentracing.HTTPHeaders, header)
-
-			operationName := fmt.Sprintf("HTTP %s %s", method, route)
-			reference := opentracing.ChildOf(parent)
-			tags := opentracing.Tags{
-				"http.method":   method,
-				"http.host":     request.Host(),
-				"http.pathname": url.Path(),
-				"http.query":    url.QueryString(),
-
-				"span.kind": "server",
-			}
-
-			span := opentracing.StartSpan(operationName, reference, tags)
-			defer span.Finish()
-			defer jaeger.LogPanic(span)
-
-			ctx := c.StdContext()
-			ctx = opentracing.ContextWithSpan(ctx, span)
-			c.SetStdContext(ctx)
-
-			err := next(c)
-			if err != nil {
-				message := err.Error()
-				jaeger.LogError(span, message)
-			}
-
-			response := c.Response()
-			statusCode := response.Status()
-
-			span.SetTag("http.status_code", statusCode)
-
-			return err
-		}
+	err := next()
+	if err != nil {
+		message := err.Error()
+		jaeger.LogError(span, message)
 	}
 }
 
-func getCarrier(request engine.Request) opentracing.HTTPHeadersCarrier {
-	if header, ok := request.Header().(*standard.Header); ok {
-		return opentracing.HTTPHeadersCarrier(header.Header)
-	}
-	return nil
+func parse(query string) string {
+	array := strings.Split(query, " ")
+	return array[0]
 }

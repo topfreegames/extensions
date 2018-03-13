@@ -23,17 +23,58 @@
 package gorp
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/go-gorp/gorp"
-	_ "github.com/topfreegames/extensions/jaeger/gorp"
+	jgorp "github.com/topfreegames/extensions/jaeger/gorp"
 )
 
-// Echo is the top-level framework instance.
 type DbMap struct {
 	*gorp.DbMap
+	ctx context.Context
+}
+
+func (m *DbMap) WithContext(ctx context.Context) gorp.SqlExecutor {
+	copy := DbMap{m.DbMap, ctx}
+	return copy.WithContext(ctx)
 }
 
 func (m *DbMap) Exec(query string, args ...interface{}) (sql.Result, error) {
+	var result sql.Result
+	var err error
 
+	jgorp.Trace(m.ctx, query, func() error {
+		result, err = m.DbMap.Exec(query, args)
+		return err
+	})
+
+	return result, err
+}
+
+// func (m *DbMap) Prepare(query string) (*sql.Stmt, error) {
+// 	return m.DbMap.Prepare(query)
+// }
+
+func (m *DbMap) Query(query string, args ...interface{}) (*sql.Rows, error) {
+	var result *sql.Rows
+	var err error
+
+	jgorp.Trace(m.ctx, query, func() error {
+		result, err = m.DbMap.Query(query, args)
+		return err
+	})
+
+	return result, err
+}
+
+func (m *DbMap) QueryRow(query string, args ...interface{}) *sql.Row {
+	var result *sql.Row
+
+	jgorp.Trace(m.ctx, query, func() error {
+		result = m.DbMap.QueryRow(query, args)
+		return nil
+	})
+
+	return result
 }
