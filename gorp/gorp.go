@@ -25,10 +25,18 @@ package gorp
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"regexp"
 
 	"github.com/go-gorp/gorp"
 	jgorp "github.com/topfreegames/extensions/jaeger/gorp"
 )
+
+func format(query string, args []interface{}) string {
+	re := regexp.MustCompile("\\$(\\d+)")
+	template := re.ReplaceAllString(query, "%[$1]v")
+	return fmt.Sprintf(template, args...)
+}
 
 type DbMap struct {
 	*gorp.DbMap
@@ -46,7 +54,7 @@ func (m *DbMap) Exec(query string, args ...interface{}) (sql.Result, error) {
 	var result sql.Result
 	var err error
 
-	jgorp.Trace(m.ctx, query, args, func() error {
+	jgorp.Trace(m.ctx, format(query, args), func() error {
 		result, err = m.DbMap.Exec(query, args...)
 		return err
 	})
@@ -54,19 +62,32 @@ func (m *DbMap) Exec(query string, args ...interface{}) (sql.Result, error) {
 	return result, err
 }
 
-// func (m *DbMap) Begin() (*gorp.Transaction, error) {
-// 	return m.DbMap.Begin()
-// }
+func (m *DbMap) Begin() (*Transaction, error) {
+	var inner *gorp.Transaction
+	var err error
 
-// func (m *DbMap) Prepare(query string) (*sql.Stmt, error) {
-// 	return m.DbMap.Prepare(query)
-// }
+	jgorp.Trace(m.ctx, "BEGIN", func() error {
+		inner, err = m.DbMap.Begin()
+		return err
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := &Transaction{
+		inner.WithContext(m.ctx).(*gorp.Transaction),
+		m.ctx,
+	}
+
+	return result, err
+}
 
 func (m *DbMap) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	var result *sql.Rows
 	var err error
 
-	jgorp.Trace(m.ctx, query, args, func() error {
+	jgorp.Trace(m.ctx, format(query, args), func() error {
 		result, err = m.DbMap.Query(query, args...)
 		return err
 	})
@@ -77,10 +98,79 @@ func (m *DbMap) Query(query string, args ...interface{}) (*sql.Rows, error) {
 func (m *DbMap) QueryRow(query string, args ...interface{}) *sql.Row {
 	var result *sql.Row
 
-	jgorp.Trace(m.ctx, query, args, func() error {
+	jgorp.Trace(m.ctx, format(query, args), func() error {
 		result = m.DbMap.QueryRow(query, args...)
 		return nil
 	})
 
 	return result
+}
+
+type Transaction struct {
+	*gorp.Transaction
+	ctx context.Context
+}
+
+func (t *Transaction) WithContext(ctx context.Context) gorp.SqlExecutor {
+	return &Transaction{
+		t.Transaction.WithContext(ctx).(*gorp.Transaction),
+		ctx,
+	}
+}
+
+func (t *Transaction) Exec(query string, args ...interface{}) (sql.Result, error) {
+	var result sql.Result
+	var err error
+
+	jgorp.Trace(t.ctx, format(query, args), func() error {
+		result, err = t.Transaction.Exec(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (t *Transaction) Query(query string, args ...interface{}) (*sql.Rows, error) {
+	var result *sql.Rows
+	var err error
+
+	jgorp.Trace(t.ctx, format(query, args), func() error {
+		result, err = t.Transaction.Query(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (t *Transaction) QueryRow(query string, args ...interface{}) *sql.Row {
+	var result *sql.Row
+
+	jgorp.Trace(t.ctx, format(query, args), func() error {
+		result = t.Transaction.QueryRow(query, args...)
+		return nil
+	})
+
+	return result
+}
+
+func (t *Transaction) Commit() error {
+	var err error
+
+	jgorp.Trace(t.ctx, "COMMIT", func() error {
+		err = t.Transaction.Commit()
+		return err
+	})
+
+	return err
+}
+
+func (t *Transaction) Rollback() error {
+	var err error
+
+	jgorp.Trace(t.ctx, "ROLLBACK", func() error {
+		err = t.Transaction.Rollback()
+		return err
+	})
+
+	return err
 }

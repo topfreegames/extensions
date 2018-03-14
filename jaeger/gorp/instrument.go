@@ -24,15 +24,13 @@ package gorp
 
 import (
 	"context"
-	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/jaeger"
 )
 
-func Trace(ctx context.Context, query string, args []interface{}, next func() error) {
+func Trace(ctx context.Context, query string, next func() error) {
 	var parent opentracing.SpanContext
 
 	if ctx == nil {
@@ -43,11 +41,11 @@ func Trace(ctx context.Context, query string, args []interface{}, next func() er
 		parent = span.Context()
 	}
 
-	operationName := "SQL " + parseShort(query)
+	operationName := "SQL " + parse(query)
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
 		"db.instance":  "dunno",
-		"db.statement": parseLong(query, args),
+		"db.statement": query,
 		"db.type":      "postgres",
 
 		"span.kind": "client",
@@ -64,13 +62,7 @@ func Trace(ctx context.Context, query string, args []interface{}, next func() er
 	}
 }
 
-func parseShort(query string) string {
+func parse(query string) string {
 	array := strings.Split(query, " ")
 	return array[0]
-}
-
-func parseLong(query string, args []interface{}) string {
-	re := regexp.MustCompile("\\$(\\d+)")
-	template := re.ReplaceAllString(query, "%[$1]v")
-	return fmt.Sprintf(template, args...)
 }
