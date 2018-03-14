@@ -36,8 +36,10 @@ type DbMap struct {
 }
 
 func (m *DbMap) WithContext(ctx context.Context) gorp.SqlExecutor {
-	copy := DbMap{m.DbMap, ctx}
-	return copy.WithContext(ctx)
+	return &DbMap{
+		m.DbMap.WithContext(ctx).(*gorp.DbMap),
+		ctx,
+	}
 }
 
 func (m *DbMap) Exec(query string, args ...interface{}) (sql.Result, error) {
