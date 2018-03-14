@@ -20,24 +20,34 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package gopr
+package gorp
 
 import (
 	"context"
+	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/jaeger"
 )
 
-func Trace(ctx context.Context, query string, next func() error) {
-	parent := opentracing.SpanFromContext(ctx).Context()
+func Trace(ctx context.Context, query string, args []interface{}, next func() error) {
+	var parent opentracing.SpanContext
 
-	operationName := "SQL " + parse(query)
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		parent = span.Context()
+	}
+
+	operationName := "SQL " + parseShort(query)
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
 		"db.instance":  "dunno",
-		"db.statement": query,
+		"db.statement": parseLong(query, args),
 		"db.type":      "postgres",
 
 		"span.kind": "client",
@@ -54,7 +64,13 @@ func Trace(ctx context.Context, query string, next func() error) {
 	}
 }
 
-func parse(query string) string {
+func parseShort(query string) string {
 	array := strings.Split(query, " ")
 	return array[0]
+}
+
+func parseLong(query string, args []interface{}) string {
+	re := regexp.MustCompile("\\$(\\d+)")
+	template := re.ReplaceAllString(query, "%[$1]v")
+	return fmt.Sprintf(template, args...)
 }

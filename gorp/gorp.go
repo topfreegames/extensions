@@ -44,13 +44,17 @@ func (m *DbMap) Exec(query string, args ...interface{}) (sql.Result, error) {
 	var result sql.Result
 	var err error
 
-	jgorp.Trace(m.ctx, query, func() error {
-		result, err = m.DbMap.Exec(query, args)
+	jgorp.Trace(m.ctx, query, args, func() error {
+		result, err = m.DbMap.Exec(query, args...)
 		return err
 	})
 
 	return result, err
 }
+
+// func (m *DbMap) Begin() (*gorp.Transaction, error) {
+// 	return m.DbMap.Begin()
+// }
 
 // func (m *DbMap) Prepare(query string) (*sql.Stmt, error) {
 // 	return m.DbMap.Prepare(query)
@@ -60,8 +64,8 @@ func (m *DbMap) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	var result *sql.Rows
 	var err error
 
-	jgorp.Trace(m.ctx, query, func() error {
-		result, err = m.DbMap.Query(query, args)
+	jgorp.Trace(m.ctx, query, args, func() error {
+		result, err = m.DbMap.Query(query, args...)
 		return err
 	})
 
@@ -71,8 +75,8 @@ func (m *DbMap) Query(query string, args ...interface{}) (*sql.Rows, error) {
 func (m *DbMap) QueryRow(query string, args ...interface{}) *sql.Row {
 	var result *sql.Row
 
-	jgorp.Trace(m.ctx, query, func() error {
-		result = m.DbMap.QueryRow(query, args)
+	jgorp.Trace(m.ctx, query, args, func() error {
+		result = m.DbMap.QueryRow(query, args...)
 		return nil
 	})
 
