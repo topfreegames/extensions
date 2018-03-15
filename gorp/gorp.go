@@ -33,9 +33,9 @@ import (
 	jgorp "github.com/topfreegames/extensions/jaeger/gorp"
 )
 
-func New(Inner *gorp.DbMap) *Database {
+func New(inner *gorp.DbMap, name string) *Database {
 	return &Database{
-		executor: &executor{Inner, nil},
+		executor: &executor{nil, inner, name},
 	}
 }
 
@@ -50,11 +50,11 @@ func (d *Database) WithContext(ctx context.Context) gorp.SqlExecutor {
 }
 
 func (d *Database) Begin() (interfaces.Transaction, error) {
-	var Inner *gorp.Transaction
+	var inner *gorp.Transaction
 	var err error
 
-	jgorp.Trace(d.ctx, "BEGIN", func() error {
-		Inner, err = d.Inner().Begin()
+	jgorp.Trace(d.ctx, d.executor.name, "BEGIN", func() error {
+		inner, err = d.Inner().Begin()
 		return err
 	})
 
@@ -63,7 +63,7 @@ func (d *Database) Begin() (interfaces.Transaction, error) {
 	}
 
 	result := &Transaction{
-		executor: &executor{Inner, d.ctx},
+		executor: &executor{d.ctx, inner, d.executor.name},
 	}
 
 	return result, err
@@ -74,7 +74,7 @@ func (d *Database) Close() error {
 }
 
 func (d *Database) Inner() *gorp.DbMap {
-	return d.executor.Inner.(*gorp.DbMap)
+	return d.executor.inner.(*gorp.DbMap)
 }
 
 type Transaction struct {
@@ -90,7 +90,7 @@ func (t *Transaction) WithContext(ctx context.Context) gorp.SqlExecutor {
 func (t *Transaction) Commit() error {
 	var err error
 
-	jgorp.Trace(t.ctx, "COMMIT", func() error {
+	jgorp.Trace(t.ctx, t.executor.name, "COMMIT", func() error {
 		err = t.Inner().Commit()
 		return err
 	})
@@ -101,7 +101,7 @@ func (t *Transaction) Commit() error {
 func (t *Transaction) Rollback() error {
 	var err error
 
-	jgorp.Trace(t.ctx, "ROLLBACK", func() error {
+	jgorp.Trace(t.ctx, t.executor.name, "ROLLBACK", func() error {
 		err = t.Inner().Rollback()
 		return err
 	})
@@ -110,43 +110,44 @@ func (t *Transaction) Rollback() error {
 }
 
 func (t *Transaction) Inner() *gorp.Transaction {
-	return t.executor.Inner.(*gorp.Transaction)
+	return t.executor.inner.(*gorp.Transaction)
 }
 
 type executor struct {
-	Inner gorp.SqlExecutor
 	ctx   context.Context
+	inner gorp.SqlExecutor
+	name  string
 }
 
 func (e *executor) WithContext(ctx context.Context) gorp.SqlExecutor {
 	return &executor{
-		Inner: e.Inner.WithContext(ctx),
+		inner: e.inner.WithContext(ctx),
 		ctx:   ctx,
 	}
 }
 
 func (e *executor) Get(i interface{}, keys ...interface{}) (interface{}, error) {
-	return e.Inner.Get(i, keys...)
+	return e.inner.Get(i, keys...)
 }
 
 func (e *executor) Insert(list ...interface{}) error {
-	return e.Inner.Insert(list...)
+	return e.inner.Insert(list...)
 }
 
 func (e *executor) Update(list ...interface{}) (int64, error) {
-	return e.Inner.Update(list...)
+	return e.inner.Update(list...)
 }
 
 func (e *executor) Delete(list ...interface{}) (int64, error) {
-	return e.Inner.Delete(list...)
+	return e.inner.Delete(list...)
 }
 
 func (e *executor) Exec(query string, args ...interface{}) (sql.Result, error) {
 	var result sql.Result
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result, err = e.Inner.Exec(query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result, err = e.inner.Exec(query, args...)
 		return err
 	})
 
@@ -157,8 +158,8 @@ func (e *executor) Select(i interface{}, query string, args ...interface{}) ([]i
 	var result []interface{}
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result, err = e.Inner.Select(i, query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result, err = e.inner.Select(i, query, args...)
 		return err
 	})
 
@@ -169,8 +170,8 @@ func (e *executor) SelectInt(query string, args ...interface{}) (int64, error) {
 	var result int64
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result, err = e.Inner.SelectInt(query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result, err = e.inner.SelectInt(query, args...)
 		return err
 	})
 
@@ -181,8 +182,8 @@ func (e *executor) SelectNullInt(query string, args ...interface{}) (sql.NullInt
 	var result sql.NullInt64
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result, err = e.Inner.SelectNullInt(query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result, err = e.inner.SelectNullInt(query, args...)
 		return err
 	})
 
@@ -193,8 +194,8 @@ func (e *executor) SelectFloat(query string, args ...interface{}) (float64, erro
 	var result float64
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result, err = e.Inner.SelectFloat(query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result, err = e.inner.SelectFloat(query, args...)
 		return err
 	})
 
@@ -205,8 +206,8 @@ func (e *executor) SelectNullFloat(query string, args ...interface{}) (sql.NullF
 	var result sql.NullFloat64
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result, err = e.Inner.SelectNullFloat(query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result, err = e.inner.SelectNullFloat(query, args...)
 		return err
 	})
 
@@ -217,8 +218,8 @@ func (e *executor) SelectStr(query string, args ...interface{}) (string, error) 
 	var result string
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result, err = e.Inner.SelectStr(query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result, err = e.inner.SelectStr(query, args...)
 		return err
 	})
 
@@ -229,8 +230,8 @@ func (e *executor) SelectNullStr(query string, args ...interface{}) (sql.NullStr
 	var result sql.NullString
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result, err = e.Inner.SelectNullStr(query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result, err = e.inner.SelectNullStr(query, args...)
 		return err
 	})
 
@@ -240,8 +241,8 @@ func (e *executor) SelectNullStr(query string, args ...interface{}) (sql.NullStr
 func (e *executor) SelectOne(holder interface{}, query string, args ...interface{}) error {
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		err = e.Inner.SelectOne(holder, query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		err = e.inner.SelectOne(holder, query, args...)
 		return err
 	})
 
@@ -252,8 +253,8 @@ func (e *executor) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	var result *sql.Rows
 	var err error
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result, err = e.Inner.Query(query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result, err = e.inner.Query(query, args...)
 		return err
 	})
 
@@ -263,8 +264,8 @@ func (e *executor) Query(query string, args ...interface{}) (*sql.Rows, error) {
 func (e *executor) QueryRow(query string, args ...interface{}) *sql.Row {
 	var result *sql.Row
 
-	jgorp.Trace(e.ctx, format(query, args), func() error {
-		result = e.Inner.QueryRow(query, args...)
+	jgorp.Trace(e.ctx, e.name, format(query, args), func() error {
+		result = e.inner.QueryRow(query, args...)
 		return nil
 	})
 

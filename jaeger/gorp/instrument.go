@@ -30,7 +30,7 @@ import (
 	"github.com/topfreegames/extensions/jaeger"
 )
 
-func Trace(ctx context.Context, query string, next func() error) {
+func Trace(ctx context.Context, name string, query string, next func() error) {
 	var parent opentracing.SpanContext
 
 	if ctx == nil {
@@ -44,7 +44,7 @@ func Trace(ctx context.Context, query string, next func() error) {
 	operationName := "SQL " + parse(query)
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
-		"db.instance":  "dunno",
+		"db.instance":  name,
 		"db.statement": query,
 		"db.type":      "postgres",
 
