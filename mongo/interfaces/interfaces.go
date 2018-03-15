@@ -30,13 +30,17 @@ import (
 type MongoDB interface {
 	Run(cmd interface{}, result interface{}) error
 	C(name string) (Collection, Session)
+	Clone() MongoDB
 	Close()
 }
 
 //Collection represents a mongoDB collection
 type Collection interface {
 	Find(query interface{}) Query
+	FindId(id interface{}) Query
 	Insert(docs ...interface{}) error
+	UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error)
+	RemoveId(id interface{}) error
 }
 
 //Session is the mongoDB session
@@ -49,6 +53,7 @@ type Session interface {
 type Query interface {
 	Iter() Iter
 	All(result interface{}) error
+	One(result interface{}) error
 }
 
 //Iter wraps mongo Iter

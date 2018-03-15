@@ -56,6 +56,18 @@ func (m *Mongo) C(name string) (interfaces.Collection, interfaces.Session) {
 	return &Collection{collection: m.db.With(session).C(name)}, session
 }
 
+//Clone clones mongo session
+func (m *Mongo) Clone() interfaces.MongoDB {
+	if m == nil {
+		return nil
+	}
+
+	return &Mongo{
+		m.session.Clone(),
+		m.db,
+	}
+}
+
 //Close closes mongo session
 func (m *Mongo) Close() {
 	m.session.Close()
@@ -73,9 +85,23 @@ func (c *Collection) Find(query interface{}) interfaces.Query {
 	}
 }
 
+func (c *Collection) FindId(id interface{}) interfaces.Query {
+	return &Query{
+		query: c.collection.FindId(id),
+	}
+}
+
 //Insert calls mongo collection Insert
 func (c *Collection) Insert(docs ...interface{}) error {
 	return c.collection.Insert(docs...)
+}
+
+func (c *Collection) UpsertId(id interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
+	return c.collection.UpsertId(id, update)
+}
+
+func (c *Collection) RemoveId(id interface{}) error {
+	return c.collection.RemoveId(id)
 }
 
 //Query holds a mongo query and implements Query interface
@@ -93,6 +119,10 @@ func (q *Query) Iter() interfaces.Iter {
 //All calls mongo query All
 func (q *Query) All(result interface{}) error {
 	return q.query.All(result)
+}
+
+func (q *Query) One(result interface{}) error {
+	return q.query.One(result)
 }
 
 //Iter wraps mongo Iter
