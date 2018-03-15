@@ -29,45 +29,32 @@ import (
 	"regexp"
 
 	"github.com/go-gorp/gorp"
+	"github.com/topfreegames/extensions/gorp/interfaces"
 	jgorp "github.com/topfreegames/extensions/jaeger/gorp"
 )
 
-func format(query string, args []interface{}) string {
-	re := regexp.MustCompile("\\$(\\d+)")
-	template := re.ReplaceAllString(query, "%[$1]v")
-	return fmt.Sprintf(template, args...)
-}
-
-type DbMap struct {
-	*gorp.DbMap
-	ctx context.Context
-}
-
-func (m *DbMap) WithContext(ctx context.Context) gorp.SqlExecutor {
-	return &DbMap{
-		m.DbMap.WithContext(ctx).(*gorp.DbMap),
-		ctx,
+func New(Inner *gorp.DbMap) *Database {
+	return &Database{
+		executor: &executor{Inner, nil},
 	}
 }
 
-func (m *DbMap) Exec(query string, args ...interface{}) (sql.Result, error) {
-	var result sql.Result
-	var err error
-
-	jgorp.Trace(m.ctx, format(query, args), func() error {
-		result, err = m.DbMap.Exec(query, args...)
-		return err
-	})
-
-	return result, err
+type Database struct {
+	*executor
 }
 
-func (m *DbMap) Begin() (*Transaction, error) {
-	var inner *gorp.Transaction
+func (d *Database) WithContext(ctx context.Context) gorp.SqlExecutor {
+	return &Database{
+		executor: d.executor.WithContext(ctx).(*executor),
+	}
+}
+
+func (d *Database) Begin() (interfaces.Transaction, error) {
+	var Inner *gorp.Transaction
 	var err error
 
-	jgorp.Trace(m.ctx, "BEGIN", func() error {
-		inner, err = m.DbMap.Begin()
+	jgorp.Trace(d.ctx, "BEGIN", func() error {
+		Inner, err = d.Inner().Begin()
 		return err
 	})
 
@@ -76,88 +63,35 @@ func (m *DbMap) Begin() (*Transaction, error) {
 	}
 
 	result := &Transaction{
-		inner.WithContext(m.ctx).(*gorp.Transaction),
-		m.ctx,
+		executor: &executor{Inner, d.ctx},
 	}
 
 	return result, err
 }
 
-func (m *DbMap) Query(query string, args ...interface{}) (*sql.Rows, error) {
-	var result *sql.Rows
-	var err error
-
-	jgorp.Trace(m.ctx, format(query, args), func() error {
-		result, err = m.DbMap.Query(query, args...)
-		return err
-	})
-
-	return result, err
+func (d *Database) Close() error {
+	return d.Inner().Db.Close()
 }
 
-func (m *DbMap) QueryRow(query string, args ...interface{}) *sql.Row {
-	var result *sql.Row
-
-	jgorp.Trace(m.ctx, format(query, args), func() error {
-		result = m.DbMap.QueryRow(query, args...)
-		return nil
-	})
-
-	return result
+func (d *Database) Inner() *gorp.DbMap {
+	return d.executor.Inner.(*gorp.DbMap)
 }
 
 type Transaction struct {
-	*gorp.Transaction
-	ctx context.Context
+	*executor
 }
 
 func (t *Transaction) WithContext(ctx context.Context) gorp.SqlExecutor {
 	return &Transaction{
-		t.Transaction.WithContext(ctx).(*gorp.Transaction),
-		ctx,
+		executor: t.executor.WithContext(ctx).(*executor),
 	}
-}
-
-func (t *Transaction) Exec(query string, args ...interface{}) (sql.Result, error) {
-	var result sql.Result
-	var err error
-
-	jgorp.Trace(t.ctx, format(query, args), func() error {
-		result, err = t.Transaction.Exec(query, args...)
-		return err
-	})
-
-	return result, err
-}
-
-func (t *Transaction) Query(query string, args ...interface{}) (*sql.Rows, error) {
-	var result *sql.Rows
-	var err error
-
-	jgorp.Trace(t.ctx, format(query, args), func() error {
-		result, err = t.Transaction.Query(query, args...)
-		return err
-	})
-
-	return result, err
-}
-
-func (t *Transaction) QueryRow(query string, args ...interface{}) *sql.Row {
-	var result *sql.Row
-
-	jgorp.Trace(t.ctx, format(query, args), func() error {
-		result = t.Transaction.QueryRow(query, args...)
-		return nil
-	})
-
-	return result
 }
 
 func (t *Transaction) Commit() error {
 	var err error
 
 	jgorp.Trace(t.ctx, "COMMIT", func() error {
-		err = t.Transaction.Commit()
+		err = t.Inner().Commit()
 		return err
 	})
 
@@ -168,9 +102,177 @@ func (t *Transaction) Rollback() error {
 	var err error
 
 	jgorp.Trace(t.ctx, "ROLLBACK", func() error {
-		err = t.Transaction.Rollback()
+		err = t.Inner().Rollback()
 		return err
 	})
 
 	return err
+}
+
+func (t *Transaction) Inner() *gorp.Transaction {
+	return t.executor.Inner.(*gorp.Transaction)
+}
+
+type executor struct {
+	Inner gorp.SqlExecutor
+	ctx   context.Context
+}
+
+func (e *executor) WithContext(ctx context.Context) gorp.SqlExecutor {
+	return &executor{
+		Inner: e.Inner.WithContext(ctx),
+		ctx:   ctx,
+	}
+}
+
+func (e *executor) Get(i interface{}, keys ...interface{}) (interface{}, error) {
+	return e.Inner.Get(i, keys...)
+}
+
+func (e *executor) Insert(list ...interface{}) error {
+	return e.Inner.Insert(list...)
+}
+
+func (e *executor) Update(list ...interface{}) (int64, error) {
+	return e.Inner.Update(list...)
+}
+
+func (e *executor) Delete(list ...interface{}) (int64, error) {
+	return e.Inner.Delete(list...)
+}
+
+func (e *executor) Exec(query string, args ...interface{}) (sql.Result, error) {
+	var result sql.Result
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result, err = e.Inner.Exec(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (e *executor) Select(i interface{}, query string, args ...interface{}) ([]interface{}, error) {
+	var result []interface{}
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result, err = e.Inner.Select(i, query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (e *executor) SelectInt(query string, args ...interface{}) (int64, error) {
+	var result int64
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result, err = e.Inner.SelectInt(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (e *executor) SelectNullInt(query string, args ...interface{}) (sql.NullInt64, error) {
+	var result sql.NullInt64
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result, err = e.Inner.SelectNullInt(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (e *executor) SelectFloat(query string, args ...interface{}) (float64, error) {
+	var result float64
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result, err = e.Inner.SelectFloat(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (e *executor) SelectNullFloat(query string, args ...interface{}) (sql.NullFloat64, error) {
+	var result sql.NullFloat64
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result, err = e.Inner.SelectNullFloat(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (e *executor) SelectStr(query string, args ...interface{}) (string, error) {
+	var result string
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result, err = e.Inner.SelectStr(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (e *executor) SelectNullStr(query string, args ...interface{}) (sql.NullString, error) {
+	var result sql.NullString
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result, err = e.Inner.SelectNullStr(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (e *executor) SelectOne(holder interface{}, query string, args ...interface{}) error {
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		err = e.Inner.SelectOne(holder, query, args...)
+		return err
+	})
+
+	return err
+}
+
+func (e *executor) Query(query string, args ...interface{}) (*sql.Rows, error) {
+	var result *sql.Rows
+	var err error
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result, err = e.Inner.Query(query, args...)
+		return err
+	})
+
+	return result, err
+}
+
+func (e *executor) QueryRow(query string, args ...interface{}) *sql.Row {
+	var result *sql.Row
+
+	jgorp.Trace(e.ctx, format(query, args), func() error {
+		result = e.Inner.QueryRow(query, args...)
+		return nil
+	})
+
+	return result
+}
+
+func format(query string, args []interface{}) string {
+	re := regexp.MustCompile("\\$(\\d+)")
+	template := re.ReplaceAllString(query, "%[$1]v")
+	return fmt.Sprintf(template, args...)
 }

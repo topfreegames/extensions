@@ -20,50 +20,22 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package gorp
+package interfaces
 
 import (
-	"context"
-	"regexp"
+	"database/sql/driver"
 
-	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger"
+	"github.com/go-gorp/gorp"
 )
 
-func Trace(ctx context.Context, query string, next func() error) {
-	var parent opentracing.SpanContext
+type Database interface {
+	gorp.SqlExecutor
 
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
-	if span := opentracing.SpanFromContext(ctx); span != nil {
-		parent = span.Context()
-	}
-
-	operationName := "SQL " + parse(query)
-	reference := opentracing.ChildOf(parent)
-	tags := opentracing.Tags{
-		"db.instance":  "dunno",
-		"db.statement": query,
-		"db.type":      "postgres",
-
-		"span.kind": "client",
-	}
-
-	span := opentracing.StartSpan(operationName, reference, tags)
-	defer span.Finish()
-	defer jaeger.LogPanic(span)
-
-	err := next()
-	if err != nil {
-		message := err.Error()
-		jaeger.LogError(span, message)
-	}
+	Begin() (Transaction, error)
+	Close() error
 }
 
-func parse(query string) string {
-	re := regexp.MustCompile("\\s")
-	array := re.Split(query, 2)
-	return array[0]
+type Transaction interface {
+	driver.Tx
+	gorp.SqlExecutor
 }
