@@ -58,18 +58,6 @@ func (mr *MockMongoDBMockRecorder) C(name interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "C", reflect.TypeOf((*MockMongoDB)(nil).C), name)
 }
 
-// Clone mocks base method
-func (m *MockMongoDB) Clone() MongoDB {
-	ret := m.ctrl.Call(m, "Clone")
-	ret0, _ := ret[0].(MongoDB)
-	return ret0
-}
-
-// Clone indicates an expected call of Clone
-func (mr *MockMongoDBMockRecorder) Clone() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Clone", reflect.TypeOf((*MockMongoDB)(nil).Clone))
-}
-
 // Close mocks base method
 func (m *MockMongoDB) Close() {
 	m.ctrl.Call(m, "Close")

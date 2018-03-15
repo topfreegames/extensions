@@ -56,18 +56,6 @@ func (m *Mongo) C(name string) (interfaces.Collection, interfaces.Session) {
 	return &Collection{collection: m.db.With(session).C(name)}, session
 }
 
-//Clone clones mongo session
-func (m *Mongo) Clone() interfaces.MongoDB {
-	if m == nil {
-		return nil
-	}
-
-	return &Mongo{
-		m.session.Clone(),
-		m.db,
-	}
-}
-
 //Close closes mongo session
 func (m *Mongo) Close() {
 	m.session.Close()
@@ -96,7 +84,7 @@ func (c *Collection) Insert(docs ...interface{}) error {
 	return c.collection.Insert(docs...)
 }
 
-func (c *Collection) UpsertId(id interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
+func (c *Collection) UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error) {
 	return c.collection.UpsertId(id, update)
 }
 

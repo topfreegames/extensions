@@ -30,7 +30,6 @@ import (
 type MongoDB interface {
 	Run(cmd interface{}, result interface{}) error
 	C(name string) (Collection, Session)
-	Clone() MongoDB
 	Close()
 }
 
