@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2018 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,43 +20,52 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package interfaces
+package gorp
 
 import (
-	mgo "gopkg.in/mgo.v2"
+	"context"
+	"regexp"
+	"strings"
+
+	"github.com/opentracing/opentracing-go"
+	"github.com/topfreegames/extensions/jaeger"
 )
 
-//MongoDB represents the contract for a Mongo DB
-type MongoDB interface {
-	Run(cmd interface{}, result interface{}) error
-	C(name string) (Collection, Session)
-	Close()
+func Trace(ctx context.Context, name string, query string, next func() error) {
+	var parent opentracing.SpanContext
+
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		parent = span.Context()
+	}
+
+	operationName := "SQL " + parse(query)
+	reference := opentracing.ChildOf(parent)
+	tags := opentracing.Tags{
+		"db.instance":  name,
+		"db.statement": query,
+		"db.type":      "postgres",
+
+		"span.kind": "client",
+	}
+
+	span := opentracing.StartSpan(operationName, reference, tags)
+	defer span.Finish()
+	defer jaeger.LogPanic(span)
+
+	err := next()
+	if err != nil {
+		message := err.Error()
+		jaeger.LogError(span, message)
+	}
 }
 
-//Collection represents a mongoDB collection
-type Collection interface {
-	Find(query interface{}) Query
-	FindId(id interface{}) Query
-	Insert(docs ...interface{}) error
-	UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error)
-	RemoveId(id interface{}) error
-}
-
-//Session is the mongoDB session
-type Session interface {
-	Copy() *mgo.Session
-	Close()
-}
-
-//Query wraps mongo Query
-type Query interface {
-	Iter() Iter
-	All(result interface{}) error
-	One(result interface{}) error
-}
-
-//Iter wraps mongo Iter
-type Iter interface {
-	Next(result interface{}) bool
-	Close() error
+func parse(query string) string {
+	re := regexp.MustCompile("\\s+")
+	array := re.Split(" "+query, 3)
+	command := array[1]
+	return strings.ToUpper(command)
 }

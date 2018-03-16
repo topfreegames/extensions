@@ -98,6 +98,12 @@
   revision = "1452f6376ddb15c546b6d7567e1d9518765391b5"
 
 [[projects]]
+  name = "github.com/go-gorp/gorp"
+  packages = ["."]
+  revision = "4df78490a9aa9a78b9b02b0c913df8dc1954faee"
+  version = "2.1"
+
+[[projects]]
   name = "github.com/go-pg/pg"
   packages = [
     ".",
@@ -517,6 +523,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7ccac0bf8354e805a9dfcfa6530cd0b0777935025fb7f636f68cc117ebdba5f9"
+  inputs-digest = "189c08c6a173bb67eca4954f172e203b84f2bf88986d851c7e068c95a98e2f6f"
   solver-name = "gps-cdcl"
   solver-version = 1

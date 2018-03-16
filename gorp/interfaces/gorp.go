@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2018 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -23,40 +23,19 @@
 package interfaces
 
 import (
-	mgo "gopkg.in/mgo.v2"
+	"database/sql/driver"
+
+	"github.com/go-gorp/gorp"
 )
 
-//MongoDB represents the contract for a Mongo DB
-type MongoDB interface {
-	Run(cmd interface{}, result interface{}) error
-	C(name string) (Collection, Session)
-	Close()
-}
+type Database interface {
+	gorp.SqlExecutor
 
-//Collection represents a mongoDB collection
-type Collection interface {
-	Find(query interface{}) Query
-	FindId(id interface{}) Query
-	Insert(docs ...interface{}) error
-	UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error)
-	RemoveId(id interface{}) error
-}
-
-//Session is the mongoDB session
-type Session interface {
-	Copy() *mgo.Session
-	Close()
-}
-
-//Query wraps mongo Query
-type Query interface {
-	Iter() Iter
-	All(result interface{}) error
-	One(result interface{}) error
-}
-
-//Iter wraps mongo Iter
-type Iter interface {
-	Next(result interface{}) bool
+	Begin() (Transaction, error)
 	Close() error
+}
+
+type Transaction interface {
+	driver.Tx
+	gorp.SqlExecutor
 }
