@@ -26,6 +26,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"reflect"
 	"regexp"
 
 	"github.com/go-gorp/gorp"
@@ -123,23 +124,66 @@ func (e *executor) WithContext(ctx context.Context) gorp.SqlExecutor {
 	return &executor{
 		inner: e.inner.WithContext(ctx),
 		ctx:   ctx,
+		name:  e.name,
 	}
 }
 
 func (e *executor) Get(i interface{}, keys ...interface{}) (interface{}, error) {
-	return e.inner.Get(i, keys...)
+	var result interface{}
+	var err error
+
+	query := fmt.Sprintf("SELECT <type:%T keys:%v>", i, keys)
+
+	jgorp.Trace(e.ctx, e.name, query, func() error {
+		result, err = e.inner.Get(i, keys...)
+		return err
+	})
+
+	return result, err
 }
 
 func (e *executor) Insert(list ...interface{}) error {
-	return e.inner.Insert(list...)
+	var err error
+
+	types := types(list)
+	query := fmt.Sprintf("MULTI-INSERT <objects:%v>", types)
+
+	jgorp.Trace(e.ctx, e.name, query, func() error {
+		err = e.inner.Insert(list...)
+		return err
+	})
+
+	return err
 }
 
 func (e *executor) Update(list ...interface{}) (int64, error) {
-	return e.inner.Update(list...)
+	var result int64
+	var err error
+
+	types := types(list)
+	query := fmt.Sprintf("MULTI-UPDATE <objects:%v>", types)
+
+	jgorp.Trace(e.ctx, e.name, query, func() error {
+		result, err = e.inner.Update(list...)
+		return err
+	})
+
+	return result, err
 }
 
 func (e *executor) Delete(list ...interface{}) (int64, error) {
-	return e.inner.Delete(list...)
+	var result int64
+	var err error
+
+	types := types(list)
+	query := fmt.Sprintf("MULTI-DELETE <objects:%v>", types)
+
+	jgorp.Trace(e.ctx, e.name, query, func() error {
+		result, err = e.inner.Delete(list...)
+		return err
+	})
+
+	return result, err
 }
 
 func (e *executor) Exec(query string, args ...interface{}) (sql.Result, error) {
@@ -276,4 +320,12 @@ func format(query string, args []interface{}) string {
 	re := regexp.MustCompile("\\$(\\d+)")
 	template := re.ReplaceAllString(query, "%[$1]v")
 	return fmt.Sprintf(template, args...)
+}
+
+func types(list []interface{}) []reflect.Type {
+	var result []reflect.Type
+	for _, val := range list {
+		result = append(result, reflect.TypeOf(val))
+	}
+	return result
 }

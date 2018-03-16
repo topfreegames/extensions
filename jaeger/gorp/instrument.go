@@ -25,6 +25,7 @@ package gorp
 import (
 	"context"
 	"regexp"
+	"strings"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/jaeger"
@@ -63,7 +64,8 @@ func Trace(ctx context.Context, name string, query string, next func() error) {
 }
 
 func parse(query string) string {
-	re := regexp.MustCompile("\\s")
-	array := re.Split(query, 2)
-	return array[0]
+	re := regexp.MustCompile("\\s+")
+	array := re.Split(" "+query, 3)
+	command := array[1]
+	return strings.ToUpper(command)
 }
