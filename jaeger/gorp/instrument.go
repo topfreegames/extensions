@@ -31,6 +31,7 @@ import (
 	"github.com/topfreegames/extensions/jaeger"
 )
 
+// Trace wraps a gorp database call and reports it to Jaeger
 func Trace(ctx context.Context, name string, query string, next func() error) {
 	var parent opentracing.SpanContext
 

@@ -34,22 +34,26 @@ import (
 	jgorp "github.com/topfreegames/extensions/jaeger/gorp"
 )
 
+// New wraps and instruments an existing connection to a database
 func New(inner *gorp.DbMap, name string) *Database {
 	return &Database{
 		executor: &executor{nil, inner, name},
 	}
 }
 
+// Database wraps a gorp database connection
 type Database struct {
 	*executor
 }
 
+// WithContext creates a shallow copy that uses the given context
 func (d *Database) WithContext(ctx context.Context) gorp.SqlExecutor {
 	return &Database{
 		executor: d.executor.WithContext(ctx).(*executor),
 	}
 }
 
+// Begin starts a gorp Transaction
 func (d *Database) Begin() (interfaces.Transaction, error) {
 	var inner *gorp.Transaction
 	var err error
@@ -70,24 +74,29 @@ func (d *Database) Begin() (interfaces.Transaction, error) {
 	return result, err
 }
 
+// Close closes the database, releasing any open resources
 func (d *Database) Close() error {
 	return d.Inner().Db.Close()
 }
 
+// Inner returns the wrapped gorp database
 func (d *Database) Inner() *gorp.DbMap {
 	return d.executor.inner.(*gorp.DbMap)
 }
 
+// Transaction wraps a gorp transaction
 type Transaction struct {
 	*executor
 }
 
+// WithContext creates a shallow copy that uses the given context
 func (t *Transaction) WithContext(ctx context.Context) gorp.SqlExecutor {
 	return &Transaction{
 		executor: t.executor.WithContext(ctx).(*executor),
 	}
 }
 
+// Commit commits the underlying database transaction
 func (t *Transaction) Commit() error {
 	var err error
 
@@ -99,6 +108,7 @@ func (t *Transaction) Commit() error {
 	return err
 }
 
+// Rollback rolls back the underlying database transaction
 func (t *Transaction) Rollback() error {
 	var err error
 
@@ -110,6 +120,7 @@ func (t *Transaction) Rollback() error {
 	return err
 }
 
+// Inner returns the wrapped gorp transaction
 func (t *Transaction) Inner() *gorp.Transaction {
 	return t.executor.inner.(*gorp.Transaction)
 }
@@ -120,6 +131,7 @@ type executor struct {
 	name  string
 }
 
+// WithContext creates a shallow copy that uses the given context
 func (e *executor) WithContext(ctx context.Context) gorp.SqlExecutor {
 	return &executor{
 		inner: e.inner.WithContext(ctx),
@@ -128,6 +140,7 @@ func (e *executor) WithContext(ctx context.Context) gorp.SqlExecutor {
 	}
 }
 
+// Get runs a SQL SELECT to fetch a single row from the table based on the primary key(s)
 func (e *executor) Get(i interface{}, keys ...interface{}) (interface{}, error) {
 	var result interface{}
 	var err error
@@ -142,6 +155,7 @@ func (e *executor) Get(i interface{}, keys ...interface{}) (interface{}, error) 
 	return result, err
 }
 
+// Insert runs a SQL INSERT statement for each element in list
 func (e *executor) Insert(list ...interface{}) error {
 	var err error
 
@@ -156,6 +170,7 @@ func (e *executor) Insert(list ...interface{}) error {
 	return err
 }
 
+// Update runs a SQL UPDATE statement for each element in list
 func (e *executor) Update(list ...interface{}) (int64, error) {
 	var result int64
 	var err error
@@ -171,6 +186,7 @@ func (e *executor) Update(list ...interface{}) (int64, error) {
 	return result, err
 }
 
+// Delete runs a SQL DELETE statement for each element in list
 func (e *executor) Delete(list ...interface{}) (int64, error) {
 	var result int64
 	var err error
@@ -186,6 +202,7 @@ func (e *executor) Delete(list ...interface{}) (int64, error) {
 	return result, err
 }
 
+// Exec runs an arbitrary SQL statement
 func (e *executor) Exec(query string, args ...interface{}) (sql.Result, error) {
 	var result sql.Result
 	var err error
@@ -198,6 +215,7 @@ func (e *executor) Exec(query string, args ...interface{}) (sql.Result, error) {
 	return result, err
 }
 
+// Select runs an arbitrary SQL query, binding the columns in the result to fields on the struct specified by i
 func (e *executor) Select(i interface{}, query string, args ...interface{}) ([]interface{}, error) {
 	var result []interface{}
 	var err error
@@ -210,6 +228,7 @@ func (e *executor) Select(i interface{}, query string, args ...interface{}) ([]i
 	return result, err
 }
 
+// SelectInt is a convenience wrapper around the gorp.SelectInt function
 func (e *executor) SelectInt(query string, args ...interface{}) (int64, error) {
 	var result int64
 	var err error
@@ -222,6 +241,7 @@ func (e *executor) SelectInt(query string, args ...interface{}) (int64, error) {
 	return result, err
 }
 
+// SelectNullInt is a convenience wrapper around the gorp.SelectNullInt function
 func (e *executor) SelectNullInt(query string, args ...interface{}) (sql.NullInt64, error) {
 	var result sql.NullInt64
 	var err error
@@ -234,6 +254,7 @@ func (e *executor) SelectNullInt(query string, args ...interface{}) (sql.NullInt
 	return result, err
 }
 
+// SelectFloat is a convenience wrapper around the gorp.SelectFloat function
 func (e *executor) SelectFloat(query string, args ...interface{}) (float64, error) {
 	var result float64
 	var err error
@@ -246,6 +267,7 @@ func (e *executor) SelectFloat(query string, args ...interface{}) (float64, erro
 	return result, err
 }
 
+// SelectNullFloat is a convenience wrapper around the gorp.SelectNullFloat function
 func (e *executor) SelectNullFloat(query string, args ...interface{}) (sql.NullFloat64, error) {
 	var result sql.NullFloat64
 	var err error
@@ -258,6 +280,7 @@ func (e *executor) SelectNullFloat(query string, args ...interface{}) (sql.NullF
 	return result, err
 }
 
+// SelectStr is a convenience wrapper around the gorp.SelectStr function
 func (e *executor) SelectStr(query string, args ...interface{}) (string, error) {
 	var result string
 	var err error
@@ -270,6 +293,7 @@ func (e *executor) SelectStr(query string, args ...interface{}) (string, error) 
 	return result, err
 }
 
+// SelectNullStr is a convenience wrapper around the gorp.SelectNullStr function
 func (e *executor) SelectNullStr(query string, args ...interface{}) (sql.NullString, error) {
 	var result sql.NullString
 	var err error
@@ -282,6 +306,7 @@ func (e *executor) SelectNullStr(query string, args ...interface{}) (sql.NullStr
 	return result, err
 }
 
+// SelectOne is a convenience wrapper around the gorp.SelectOne function
 func (e *executor) SelectOne(holder interface{}, query string, args ...interface{}) error {
 	var err error
 

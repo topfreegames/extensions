@@ -73,6 +73,7 @@ func (c *Collection) Find(query interface{}) interfaces.Query {
 	}
 }
 
+//FindId is a conveniene method to execute a find by id query on Mongo
 func (c *Collection) FindId(id interface{}) interfaces.Query {
 	return &Query{
 		query: c.collection.FindId(id),
@@ -84,10 +85,12 @@ func (c *Collection) Insert(docs ...interface{}) error {
 	return c.collection.Insert(docs...)
 }
 
+//UpsertId calls mongo collection UpsertId
 func (c *Collection) UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error) {
 	return c.collection.UpsertId(id, update)
 }
 
+//RemoveId calls mongo collection RemoveId
 func (c *Collection) RemoveId(id interface{}) error {
 	return c.collection.RemoveId(id)
 }
@@ -109,6 +112,7 @@ func (q *Query) All(result interface{}) error {
 	return q.query.All(result)
 }
 
+//One calls mongo query One
 func (q *Query) One(result interface{}) error {
 	return q.query.One(result)
 }

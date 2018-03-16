@@ -28,6 +28,7 @@ import (
 	"github.com/go-gorp/gorp"
 )
 
+// Database represents a gorp database connection
 type Database interface {
 	gorp.SqlExecutor
 
@@ -35,6 +36,7 @@ type Database interface {
 	Close() error
 }
 
+// Transaction represents a gorp transaction
 type Transaction interface {
 	driver.Tx
 	gorp.SqlExecutor
