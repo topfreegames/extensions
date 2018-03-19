@@ -59,7 +59,7 @@ func GetBody(ctx context.Context) interface{} {
 func Version(v string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("X-Adspot-Version", v)
+			w.Header().Set("X-Version", v)
 			next.ServeHTTP(w, r)
 		})
 	}
