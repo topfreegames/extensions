@@ -86,6 +86,15 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/eclipse/paho.mqtt.golang"
+  packages = [
+    ".",
+    "packets"
+  ]
+  revision = "aff15770515e3c57fc6109da73d42b0d46f7f483"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "629574ca2a5df945712d3079857300b5e4da0236"
@@ -427,7 +436,9 @@
     "context/ctxhttp",
     "html",
     "html/atom",
-    "html/charset"
+    "html/charset",
+    "proxy",
+    "websocket"
   ]
   revision = "0a9397675ba34b2845f758fe3cd68828369c6517"
 
@@ -523,6 +534,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "189c08c6a173bb67eca4954f172e203b84f2bf88986d851c7e068c95a98e2f6f"
+  inputs-digest = "33d83c1aba7bdad4e02ab56c58fa224e196abe3baaa7a768b3a0d06d2de417c1"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2018 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,7 +20,42 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package util
+package http
 
-//Version identifies extensions package version
-const Version = "5.7.0"
+import (
+	"net/http"
+
+	"github.com/opentracing/opentracing-go"
+	"github.com/topfreegames/extensions/jaeger"
+)
+
+// Trace wraps an HTTP request and reports it to Jaeger
+func Trace(req *http.Request, next func() error) {
+	var parent opentracing.SpanContext
+
+	ctx := req.Context()
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		parent = span.Context()
+	}
+
+	operationName := "HTTP " + req.Method
+	reference := opentracing.ChildOf(parent)
+	tags := opentracing.Tags{
+		"http.method":   req.Method,
+		"http.host":     req.Host,
+		"http.pathname": req.URL.Path,
+		"http.query":    req.URL.RawQuery,
+
+		"span.kind": "client",
+	}
+
+	span := opentracing.StartSpan(operationName, reference, tags)
+	defer span.Finish()
+	defer jaeger.LogPanic(span)
+
+	err := next()
+	if err != nil {
+		message := err.Error()
+		jaeger.LogError(span, message)
+	}
+}

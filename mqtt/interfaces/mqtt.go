@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2018 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,7 +20,19 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package util
+package interfaces
 
-//Version identifies extensions package version
-const Version = "5.7.0"
+import (
+	"context"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+)
+
+// Client represents an MQTT client
+type Client interface {
+	Connect() mqtt.Token
+	IsConnected() bool
+	Publish(topic string, qos byte, retained bool, payload interface{}) mqtt.Token
+	Subscribe(topic string, qos byte, callback mqtt.MessageHandler) mqtt.Token
+	WithContext(ctx context.Context) Client
+}

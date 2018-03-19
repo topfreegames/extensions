@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2018 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,7 +20,41 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package util
+package http
 
-//Version identifies extensions package version
-const Version = "5.7.0"
+import (
+	"net/http"
+
+	jaeger "github.com/topfreegames/extensions/jaeger/http"
+)
+
+// Instrument instruments the internal transport object
+func Instrument(client *http.Client) {
+	inner := getTransport(client)
+	client.Transport = &Transport{inner}
+}
+
+func getTransport(client *http.Client) http.RoundTripper {
+	if client.Transport == nil {
+		return http.DefaultTransport
+	}
+	return client.Transport
+}
+
+// Transport instruments another RoundTripper
+type Transport struct {
+	inner http.RoundTripper
+}
+
+// RoundTrip executes a single HTTP transaction
+func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
+	var resp *http.Response
+	var err error
+
+	jaeger.Trace(req, func() error {
+		resp, err = t.inner.RoundTrip(req)
+		return err
+	})
+
+	return resp, err
+}
