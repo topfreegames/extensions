@@ -28,7 +28,7 @@ type Token struct {
 // get, update and create tokens somewhere
 type TokenStorage interface {
 	Get(string) (*Token, error)
-	Update(string, *oauth2.Token) error
+	Update(*Token) error
 	Create(*Token) error
 	Delete(string) error
 }
@@ -106,7 +106,9 @@ func (a *Authenticator) Authenticate(token *Token) (string, error) {
 		return "", errors.New("Authorization token is invalid")
 	}
 	if t.AccessToken != token.AccessToken {
-		a.TS.Update(token.AccessToken, t)
+		token.AccessToken = t.AccessToken
+		token.Expiry = t.Expiry
+		a.TS.Update(token)
 	}
 	return token.Email, nil
 }
@@ -195,11 +197,11 @@ func (p *PGTokenStorage) Get(accessToken string) (*Token, error) {
 }
 
 // Update method
-func (p *PGTokenStorage) Update(oldAccessToken string, t *oauth2.Token) error {
+func (p *PGTokenStorage) Update(t *Token) error {
 	_, err := p.DB.Exec(
 		fmt.Sprintf(`UPDATE %s SET (access_token, expiry) = (?, ?)
-								WHERE access_token = ?`, p.TableName),
-		t.AccessToken, t.Expiry, oldAccessToken,
+								WHERE refresh_token = ?`, p.TableName),
+		t.AccessToken, t.Expiry, t.RefreshToken,
 	)
 	return err
 }

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 
@@ -134,7 +135,7 @@ func DB(db pg.DB) func(http.Handler) http.Handler {
 }
 
 // BodyParser middleware
-func BodyParser(getHolder func() interface{}) func(http.Handler) http.Handler {
+func BodyParser(holder interface{}) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			l := GetLogger(r.Context())
@@ -149,14 +150,16 @@ func BodyParser(getHolder func() interface{}) func(http.Handler) http.Handler {
 				writeStatus(w, http.StatusInternalServerError)
 				return
 			}
-			holder := getHolder()
-			err = json.Unmarshal(bts, holder)
+			h := reflect.New(
+				reflect.Indirect(reflect.ValueOf(holder)).Type(),
+			).Interface()
+			err = json.Unmarshal(bts, h)
 			if err != nil {
 				l.Error(err)
 				writeStatus(w, http.StatusInternalServerError)
 				return
 			}
-			ctx := context.WithValue(r.Context(), ctxKeys.body, holder)
+			ctx := context.WithValue(r.Context(), ctxKeys.body, h)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
@@ -223,10 +226,13 @@ func OAuth2(
 				return
 			}
 
+			l := GetLogger(r.Context())
+
 			switch r.URL.Path {
 			case paths.Login:
 				r, err := oauth2login(authenticator, r)
 				if err != nil {
+					l.Error(err)
 					writeStatus(w, http.StatusInternalServerError)
 					return
 				}
@@ -235,6 +241,7 @@ func OAuth2(
 			case paths.Logout:
 				err := oauth2logout(authenticator, r)
 				if err != nil {
+					l.Error(err)
 					writeStatus(w, http.StatusInternalServerError)
 					return
 				}
@@ -244,6 +251,7 @@ func OAuth2(
 
 			pathTemplate, err := mux.CurrentRoute(r).GetPathTemplate()
 			if err != nil {
+				l.Error(err)
 				writeStatus(w, http.StatusInternalServerError)
 				return
 			}
@@ -255,7 +263,6 @@ func OAuth2(
 				}
 			}
 
-			l := GetLogger(r.Context()).(logrus.FieldLogger)
 			accessToken :=
 				strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 
@@ -273,6 +280,7 @@ func OAuth2(
 				return
 			}
 
+			w.Header().Set("X-Access-Token", token.AccessToken)
 			ctx := context.WithValue(r.Context(), ctxKeys.oauth2, email)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
