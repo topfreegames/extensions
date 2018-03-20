@@ -24,10 +24,10 @@ package echo
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine"
-	"github.com/labstack/echo/engine/standard"
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/jaeger"
 )
@@ -88,8 +88,13 @@ func makeMiddleware() func(echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func getCarrier(request engine.Request) opentracing.HTTPHeadersCarrier {
-	if header, ok := request.Header().(*standard.Header); ok {
-		return opentracing.HTTPHeadersCarrier(header.Header)
+	original := request.Header()
+	copy := make(http.Header)
+
+	for _, key := range original.Keys() {
+		value := original.Get(key)
+		copy.Set(key, value)
 	}
-	return nil
+
+	return opentracing.HTTPHeadersCarrier(copy)
 }
