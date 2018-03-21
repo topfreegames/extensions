@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2018 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,46 +20,49 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package interfaces
+package mongo
 
 import (
 	"context"
+	"fmt"
 
-	mgo "gopkg.in/mgo.v2"
+	"github.com/opentracing/opentracing-go"
+	"github.com/topfreegames/extensions/jaeger"
 )
 
-//MongoDB represents the contract for a Mongo DB
-type MongoDB interface {
-	Run(cmd interface{}, result interface{}) error
-	C(name string) (Collection, Session)
-	Close()
-	WithContext(ctx context.Context) MongoDB
+// Trace wraps a MongoDB query and reports it to Jaeger
+func Trace(ctx context.Context, database, collection, method, args string, next func() error) {
+	var parent opentracing.SpanContext
+
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		parent = span.Context()
+	}
+
+	operationName := "MongoDB " + method
+	reference := opentracing.ChildOf(parent)
+	tags := opentracing.Tags{
+		"db.instance":  database,
+		"db.statement": format(database, collection, method, args),
+		"db.type":      "mongodb",
+
+		"span.kind": "client",
+	}
+
+	span := opentracing.StartSpan(operationName, reference, tags)
+	defer span.Finish()
+	defer jaeger.LogPanic(span)
+
+	err := next()
+	if err != nil {
+		message := err.Error()
+		jaeger.LogError(span, message)
+	}
 }
 
-//Collection represents a mongoDB collection
-type Collection interface {
-	Find(query interface{}) Query
-	FindId(id interface{}) Query
-	Insert(docs ...interface{}) error
-	UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error)
-	RemoveId(id interface{}) error
-}
-
-//Session is the mongoDB session
-type Session interface {
-	Copy() *mgo.Session
-	Close()
-}
-
-//Query wraps mongo Query
-type Query interface {
-	Iter() Iter
-	All(result interface{}) error
-	One(result interface{}) error
-}
-
-//Iter wraps mongo Iter
-type Iter interface {
-	Next(result interface{}) bool
-	Close() error
+func format(database, collection, method, args string) string {
+	return fmt.Sprintf("%s.%s.%s(%s)", database, collection, method, args)
 }

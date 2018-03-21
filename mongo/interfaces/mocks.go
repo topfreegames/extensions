@@ -5,6 +5,7 @@
 package interfaces
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	mgo_v2 "gopkg.in/mgo.v2"
 	reflect "reflect"
@@ -66,6 +67,18 @@ func (m *MockMongoDB) Close() {
 // Close indicates an expected call of Close
 func (mr *MockMongoDBMockRecorder) Close() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockMongoDB)(nil).Close))
+}
+
+// WithContext mocks base method
+func (m *MockMongoDB) WithContext(ctx context.Context) MongoDB {
+	ret := m.ctrl.Call(m, "WithContext", ctx)
+	ret0, _ := ret[0].(MongoDB)
+	return ret0
+}
+
+// WithContext indicates an expected call of WithContext
+func (mr *MockMongoDBMockRecorder) WithContext(ctx interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockMongoDB)(nil).WithContext), ctx)
 }
 
 // MockCollection is a mock of Collection interface
