@@ -28,6 +28,13 @@ import (
 	jaeger "github.com/topfreegames/extensions/jaeger/http"
 )
 
+// New creates and instruments an HTTP client
+func New() *http.Client {
+	client := &http.Client{}
+	Instrument(client)
+	return client
+}
+
 // Instrument instruments the internal transport object
 func Instrument(client *http.Client) {
 	inner := getTransport(client)
