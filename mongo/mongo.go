@@ -105,9 +105,9 @@ func (c *Collection) Find(query interface{}) interfaces.Query {
 		ctx:   c.ctx,
 		query: c.collection.Find(query),
 
-		database:   c.collection.Database.Name,
-		collection: c.collection.FullName,
-		args:       formatArgs(query),
+		database: c.collection.Database.Name,
+		prefix:   c.collection.FullName,
+		args:     formatArgs(query),
 	}
 }
 
@@ -117,9 +117,9 @@ func (c *Collection) FindId(id interface{}) interfaces.Query {
 		ctx:   c.ctx,
 		query: c.collection.FindId(id),
 
-		database:   c.collection.Database.Name,
-		collection: c.collection.FullName,
-		args:       formatArgs(bson.D{{Name: "_id", Value: id}}),
+		database: c.collection.Database.Name,
+		prefix:   c.collection.FullName,
+		args:     formatArgs(bson.D{{Name: "_id", Value: id}}),
 	}
 }
 
@@ -177,9 +177,9 @@ type Query struct {
 	ctx   context.Context
 	query *mgo.Query
 
-	database   string
-	collection string
-	args       string
+	database string
+	prefix   string
+	args     string
 }
 
 //Iter calls query Iter
@@ -193,7 +193,7 @@ func (q *Query) Iter() interfaces.Iter {
 func (q *Query) All(result interface{}) error {
 	var err error
 
-	jaeger.Trace(q.ctx, q.database, q.collection, "find", q.args, func() error {
+	jaeger.Trace(q.ctx, q.database, q.prefix, "find", q.args, func() error {
 		err = q.query.All(result)
 		return err
 	})
@@ -205,7 +205,7 @@ func (q *Query) All(result interface{}) error {
 func (q *Query) One(result interface{}) error {
 	var err error
 
-	jaeger.Trace(q.ctx, q.database, q.collection, "findOne", q.args, func() error {
+	jaeger.Trace(q.ctx, q.database, q.prefix, "findOne", q.args, func() error {
 		err = q.query.One(result)
 		return err
 	})

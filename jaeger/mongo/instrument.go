@@ -31,7 +31,7 @@ import (
 )
 
 // Trace wraps a MongoDB query and reports it to Jaeger
-func Trace(ctx context.Context, database, collection, method, args string, next func() error) {
+func Trace(ctx context.Context, database, prefix, method, args string, next func() error) {
 	var parent opentracing.SpanContext
 
 	if ctx == nil {
@@ -46,7 +46,7 @@ func Trace(ctx context.Context, database, collection, method, args string, next 
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
 		"db.instance":  database,
-		"db.statement": format(collection, method, args),
+		"db.statement": format(prefix, method, args),
 		"db.type":      "mongodb",
 
 		"span.kind": "client",
@@ -63,6 +63,6 @@ func Trace(ctx context.Context, database, collection, method, args string, next 
 	}
 }
 
-func format(collection, method, args string) string {
-	return fmt.Sprintf("%s.%s(%s)", collection, method, args)
+func format(prefix, method, args string) string {
+	return fmt.Sprintf("%s.%s(%s)", prefix, method, args)
 }
