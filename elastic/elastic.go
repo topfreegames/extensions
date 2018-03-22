@@ -20,48 +20,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package http
+package elastic
 
 import (
-	"net/http"
-
-	jaeger "github.com/topfreegames/extensions/jaeger/http"
+	"github.com/topfreegames/extensions/http"
+	"gopkg.in/olivere/elastic.v5"
 )
 
-// New creates and instruments an HTTP client
-func New() *http.Client {
-	client := &http.Client{}
-	Instrument(client)
-	return client
-}
-
-// Instrument instruments the internal transport object
-func Instrument(client *http.Client) {
-	inner := getTransport(client)
-	client.Transport = &Transport{inner}
-}
-
-func getTransport(client *http.Client) http.RoundTripper {
-	if client.Transport == nil {
-		return http.DefaultTransport
-	}
-	return client.Transport
-}
-
-// Transport instruments another RoundTripper
-type Transport struct {
-	inner http.RoundTripper
-}
-
-// RoundTrip executes a single HTTP transaction
-func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
-	var resp *http.Response
-	var err error
-
-	jaeger.Trace(req, func() error {
-		resp, err = t.inner.RoundTrip(req)
-		return err
-	})
-
-	return resp, err
+func NewClient(options ...elastic.ClientOptionFunc) (*elastic.Client, error) {
+	client := http.New()
+	option := elastic.SetHttpClient(client)
+	options = append(options, option)
+	return elastic.NewClient(options...)
 }

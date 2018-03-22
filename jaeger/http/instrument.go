@@ -23,6 +23,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/opentracing/opentracing-go"
@@ -38,7 +39,7 @@ func Trace(req *http.Request, next func() error) {
 		parent = span.Context()
 	}
 
-	operationName := "HTTP " + req.Method
+	operationName := fmt.Sprintf("HTTP %s %s", req.Method, req.Host)
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
 		"http.method":   req.Method,
@@ -52,6 +53,9 @@ func Trace(req *http.Request, next func() error) {
 	span := opentracing.StartSpan(operationName, reference, tags)
 	defer span.Finish()
 	defer jaeger.LogPanic(span)
+
+	tracer := opentracing.GlobalTracer()
+	tracer.Inject(span.Context(), opentracing.HTTPHeaders, &req.Header)
 
 	err := next()
 	if err != nil {

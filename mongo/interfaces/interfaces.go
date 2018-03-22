@@ -23,6 +23,8 @@
 package interfaces
 
 import (
+	"context"
+
 	mgo "gopkg.in/mgo.v2"
 )
 
@@ -31,6 +33,7 @@ type MongoDB interface {
 	Run(cmd interface{}, result interface{}) error
 	C(name string) (Collection, Session)
 	Close()
+	WithContext(ctx context.Context) MongoDB
 }
 
 //Collection represents a mongoDB collection

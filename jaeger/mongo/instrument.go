@@ -20,48 +20,49 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package http
+package mongo
 
 import (
-	"net/http"
+	"context"
+	"fmt"
 
-	jaeger "github.com/topfreegames/extensions/jaeger/http"
+	"github.com/opentracing/opentracing-go"
+	"github.com/topfreegames/extensions/jaeger"
 )
 
-// New creates and instruments an HTTP client
-func New() *http.Client {
-	client := &http.Client{}
-	Instrument(client)
-	return client
-}
+// Trace wraps a MongoDB query and reports it to Jaeger
+func Trace(ctx context.Context, database, prefix, method, args string, next func() error) {
+	var parent opentracing.SpanContext
 
-// Instrument instruments the internal transport object
-func Instrument(client *http.Client) {
-	inner := getTransport(client)
-	client.Transport = &Transport{inner}
-}
-
-func getTransport(client *http.Client) http.RoundTripper {
-	if client.Transport == nil {
-		return http.DefaultTransport
+	if ctx == nil {
+		ctx = context.Background()
 	}
-	return client.Transport
+
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		parent = span.Context()
+	}
+
+	operationName := "MongoDB " + method
+	reference := opentracing.ChildOf(parent)
+	tags := opentracing.Tags{
+		"db.instance":  database,
+		"db.statement": format(prefix, method, args),
+		"db.type":      "mongodb",
+
+		"span.kind": "client",
+	}
+
+	span := opentracing.StartSpan(operationName, reference, tags)
+	defer span.Finish()
+	defer jaeger.LogPanic(span)
+
+	err := next()
+	if err != nil {
+		message := err.Error()
+		jaeger.LogError(span, message)
+	}
 }
 
-// Transport instruments another RoundTripper
-type Transport struct {
-	inner http.RoundTripper
-}
-
-// RoundTrip executes a single HTTP transaction
-func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
-	var resp *http.Response
-	var err error
-
-	jaeger.Trace(req, func() error {
-		resp, err = t.inner.RoundTrip(req)
-		return err
-	})
-
-	return resp, err
+func format(prefix, method, args string) string {
+	return fmt.Sprintf("%s.%s(%s)", prefix, method, args)
 }

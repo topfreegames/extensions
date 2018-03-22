@@ -213,7 +213,6 @@
     ".",
     "context",
     "engine",
-    "engine/standard",
     "log"
   ]
   revision = "e08070379af60f5b9c0fb5bb2d1527ba9624fe43"
@@ -233,6 +232,17 @@
   packages = ["."]
   revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
   version = "v1.7.3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mailru/easyjson"
+  packages = [
+    ".",
+    "buffer",
+    "jlexer",
+    "jwriter"
+  ]
+  revision = "517203d186eb343d3df4068565cc0446b450d2c4"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -329,6 +339,12 @@
   packages = ["xxHash32"]
   revision = "f051bb7f1d1aaf1b5a665d74fb6b0217712c69f7"
   version = "v0.1.1"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   branch = "master"
@@ -526,6 +542,16 @@
   revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
 
 [[projects]]
+  name = "gopkg.in/olivere/elastic.v5"
+  packages = [
+    ".",
+    "config",
+    "uritemplates"
+  ]
+  revision = "dbe820f35164384c998099db63481b583d53f73b"
+  version = "v5.0.66"
+
+[[projects]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -534,6 +560,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "33d83c1aba7bdad4e02ab56c58fa224e196abe3baaa7a768b3a0d06d2de417c1"
+  inputs-digest = "3859052a2ba9ead1f4aa3d94ac66bff8f8d87071a8b695747a836528e9569788"
   solver-name = "gps-cdcl"
   solver-version = 1
