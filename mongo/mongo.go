@@ -66,7 +66,10 @@ func (m *Mongo) Run(cmd interface{}, result interface{}) error {
 	session := m.session.Copy()
 	defer session.Close()
 
-	jaeger.Trace(m.ctx, m.db.Name, "", "run", "", func() error {
+	database := m.db.Name
+	args := formatArgs(cmd)
+
+	jaeger.Trace(m.ctx, database, database, "runCommand", args, func() error {
 		err = m.db.With(session).Run(cmd, result)
 		return err
 	})
@@ -103,7 +106,7 @@ func (c *Collection) Find(query interface{}) interfaces.Query {
 		query: c.collection.Find(query),
 
 		database:   c.collection.Database.Name,
-		collection: c.collection.Name,
+		collection: c.collection.FullName,
 		args:       formatArgs(query),
 	}
 }
@@ -115,7 +118,7 @@ func (c *Collection) FindId(id interface{}) interfaces.Query {
 		query: c.collection.FindId(id),
 
 		database:   c.collection.Database.Name,
-		collection: c.collection.Name,
+		collection: c.collection.FullName,
 		args:       formatArgs(bson.D{{Name: "_id", Value: id}}),
 	}
 }
@@ -125,7 +128,7 @@ func (c *Collection) Insert(docs ...interface{}) error {
 	var err error
 
 	database := c.collection.Database.Name
-	collection := c.collection.Name
+	collection := c.collection.FullName
 	args := formatArgs(docs)
 
 	jaeger.Trace(c.ctx, database, collection, "insert", args, func() error {
@@ -142,7 +145,7 @@ func (c *Collection) UpsertId(id interface{}, update interface{}) (*mgo.ChangeIn
 	var err error
 
 	database := c.collection.Database.Name
-	collection := c.collection.Name
+	collection := c.collection.FullName
 	args := formatArgs(bson.D{{Name: "_id", Value: id}}, update)
 
 	jaeger.Trace(c.ctx, database, collection, "updateOne", args, func() error {
@@ -158,7 +161,7 @@ func (c *Collection) RemoveId(id interface{}) error {
 	var err error
 
 	database := c.collection.Database.Name
-	collection := c.collection.Name
+	collection := c.collection.FullName
 	args := formatArgs(bson.D{{Name: "_id", Value: id}})
 
 	jaeger.Trace(c.ctx, database, collection, "remove", args, func() error {
