@@ -33,12 +33,13 @@ import (
 
 // Client is the struct that connects to Cassandra
 type Client struct {
-	Config *viper.Viper
-	DB     interfaces.DB
+	Config  *viper.Viper
+	DB      interfaces.DB
+	Session interfaces.Session
 }
 
 // NewClient returns a new Cassandra client
-func NewClient(prefix string, config *viper.Viper, cqlOrNil interfaces.DB) (*Client, error) {
+func NewClient(prefix string, config *viper.Viper, cqlOrNil interfaces.DB, sessOrNil interfaces.Session) (*Client, error) {
 	client := &Client{
 		Config: config,
 	}
@@ -50,6 +51,12 @@ func NewClient(prefix string, config *viper.Viper, cqlOrNil interfaces.DB) (*Cli
 	err := client.Connect(prefix, db)
 	if err != nil {
 		return nil, err
+	}
+	if sessOrNil != nil {
+		client.Session = sessOrNil
+	} else {
+		session := c.DB.CreateSession()
+		client.Session = session
 	}
 	return client, nil
 }
