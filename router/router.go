@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2018 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,7 +20,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package util
+package router
 
-//Version identifies extensions package version
-const Version = "5.13.0"
+import (
+	"github.com/gorilla/mux"
+	"github.com/topfreegames/extensions/middleware"
+)
+
+// NewRouter creates an instance of mux.Router with jaeger middleware.
+func NewRouter() *mux.Router {
+	r := mux.NewRouter()
+	r.Use(middleware.Jaeger())
+	return r
+}
