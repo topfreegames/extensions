@@ -34,6 +34,7 @@ var _ = Describe("Cassandra Extension", func() {
 	var config *viper.Viper
 	var mockCtrl *gomock.Controller
 	var mockDb *mocks.MockDB
+	var mockSession *mocks.MockSession
 
 	BeforeEach(func() {
 		config = viper.New()
@@ -45,6 +46,7 @@ var _ = Describe("Cassandra Extension", func() {
 		BeforeEach(func() {
 			mockCtrl = gomock.NewController(GinkgoT())
 			mockDb = mocks.NewMockDB(mockCtrl)
+			mockSession = mocks.NewMockSession(mockCtrl)
 		})
 
 		AfterEach(func() {
@@ -53,19 +55,9 @@ var _ = Describe("Cassandra Extension", func() {
 
 		Describe("Connect", func() {
 			It("Should use config to load connection details", func() {
-				client, err := NewClient("extensions.cassandra", config, mockDb)
+				client, err := NewClient("extensions.cassandra", config, mockDb, mockSession)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(client.Config).NotTo(BeNil())
-			})
-		})
-	})
-
-	Describe("[Integration]", func() {
-		Describe("Creating new client", func() {
-			It("should return connected client", func() {
-				client, err := NewClient("extensions.cassandra", config, nil)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(client).NotTo(BeNil())
 			})
 		})
 	})

@@ -31,7 +31,7 @@ type DB interface {
 
 // Session represents the contract for a cassandra session
 type Session interface {
-	Close() bool
+	Close()
 	Query(string, ...interface{}) *gocql.Query
 	ExecuteBatch(*gocql.Batch) error
 	NewBatch(gocql.BatchType) *gocql.Batch

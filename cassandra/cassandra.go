@@ -55,7 +55,10 @@ func NewClient(prefix string, config *viper.Viper, cqlOrNil interfaces.DB, sessO
 	if sessOrNil != nil {
 		client.Session = sessOrNil
 	} else {
-		session := c.DB.CreateSession()
+		session, err := client.DB.CreateSession()
+		if err != nil {
+			return nil, err
+		}
 		client.Session = session
 	}
 	return client, nil

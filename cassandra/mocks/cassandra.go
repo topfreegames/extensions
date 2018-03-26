@@ -69,10 +69,8 @@ func (_m *MockSession) EXPECT() *MockSessionMockRecorder {
 }
 
 // Close mocks base method
-func (_m *MockSession) Close() bool {
-	ret := _m.ctrl.Call(_m, "Close")
-	ret0, _ := ret[0].(bool)
-	return ret0
+func (_m *MockSession) Close() {
+	_m.ctrl.Call(_m, "Close")
 }
 
 // Close indicates an expected call of Close
