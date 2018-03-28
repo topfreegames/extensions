@@ -38,6 +38,12 @@
   version = "v8"
 
 [[projects]]
+  name = "github.com/bitly/go-simplejson"
+  packages = ["."]
+  revision = "aabad6e819789e569bd6aabf444c935aa9ba1e44"
+  version = "v0.5.0"
+
+[[projects]]
   name = "github.com/bsm/redis-lock"
   packages = ["."]
   revision = "0a3c01f764b4864e340afce6ffa26c97da6927bb"
@@ -99,6 +105,15 @@
   packages = ["."]
   revision = "629574ca2a5df945712d3079857300b5e4da0236"
   version = "v1.4.2"
+
+[[projects]]
+  name = "github.com/garyburd/redigo"
+  packages = [
+    "internal",
+    "redis"
+  ]
+  revision = "a69d19351219b6dd56f274f96d85a7014a2ec34e"
+  version = "v1.6.0"
 
 [[projects]]
   branch = "master"
@@ -206,6 +221,11 @@
   name = "github.com/jinzhu/inflection"
   packages = ["."]
   revision = "1c35d901db3da928c72a72d8458480cc9ade058f"
+
+[[projects]]
+  name = "github.com/jrallison/go-workers"
+  packages = ["."]
+  revision = "dbf81d0b75bbe2fd90ef66a07643dd70cb42a88a"
 
 [[projects]]
   name = "github.com/labstack/echo"
@@ -401,6 +421,42 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/topfreegames/extensions"
+  packages = [
+    "cassandra/interfaces",
+    "cassandra/mocks",
+    "dogstatsd",
+    "dogstatsd/mocks",
+    "gorp/interfaces",
+    "http",
+    "jaeger",
+    "jaeger/echo",
+    "jaeger/gorp",
+    "jaeger/http",
+    "jaeger/mongo",
+    "jaeger/mqtt",
+    "jaeger/redis",
+    "kafka/interfaces",
+    "kafka/mocks",
+    "middleware",
+    "mongo",
+    "mongo/interfaces",
+    "mqtt/interfaces",
+    "oauth2",
+    "pg/interfaces",
+    "pg/mocks",
+    "redis/interfaces",
+    "redis/mocks",
+    "regex",
+    "statsd/interfaces",
+    "statsd/mocks",
+    "testing",
+    "util"
+  ]
+  revision = "08fc30486832386f7a27c2d9bd4c48b0e43e7cdf"
+  version = "v5.10.0"
+
+[[projects]]
   name = "github.com/uber/jaeger-client-go"
   packages = [
     ".",
@@ -560,6 +616,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3859052a2ba9ead1f4aa3d94ac66bff8f8d87071a8b695747a836528e9569788"
+  inputs-digest = "0e4c1347af1896c059fe91028c87a73bcd277fc58aff8dace079c2cc99c7d36e"
   solver-name = "gps-cdcl"
   solver-version = 1
