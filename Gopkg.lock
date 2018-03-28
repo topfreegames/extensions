@@ -421,42 +421,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/topfreegames/extensions"
-  packages = [
-    "cassandra/interfaces",
-    "cassandra/mocks",
-    "dogstatsd",
-    "dogstatsd/mocks",
-    "gorp/interfaces",
-    "http",
-    "jaeger",
-    "jaeger/echo",
-    "jaeger/gorp",
-    "jaeger/http",
-    "jaeger/mongo",
-    "jaeger/mqtt",
-    "jaeger/redis",
-    "kafka/interfaces",
-    "kafka/mocks",
-    "middleware",
-    "mongo",
-    "mongo/interfaces",
-    "mqtt/interfaces",
-    "oauth2",
-    "pg/interfaces",
-    "pg/mocks",
-    "redis/interfaces",
-    "redis/mocks",
-    "regex",
-    "statsd/interfaces",
-    "statsd/mocks",
-    "testing",
-    "util"
-  ]
-  revision = "08fc30486832386f7a27c2d9bd4c48b0e43e7cdf"
-  version = "v5.10.0"
-
-[[projects]]
   name = "github.com/uber/jaeger-client-go"
   packages = [
     ".",
@@ -616,6 +580,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0e4c1347af1896c059fe91028c87a73bcd277fc58aff8dace079c2cc99c7d36e"
+  inputs-digest = "6c3a9d8a30da43e57991112dd537964f60cf84dc73df3451e8abc5335d71ffc9"
   solver-name = "gps-cdcl"
   solver-version = 1
