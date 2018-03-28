@@ -76,3 +76,7 @@
 [[constraint]]
   name = "github.com/labstack/echo"
   version = "2.0.0"
+
+[[constraint]]
+  name = "github.com/jrallison/go-workers"
+  revision = "dbf81d0b75bbe2fd90ef66a07643dd70cb42a88a"
