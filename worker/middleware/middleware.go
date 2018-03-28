@@ -32,12 +32,12 @@ func (m *ResponseTimeMetricsMiddleware) Call(queue string, message *workers.Msg,
 		timeElapsed := time.Since(startTime)
 
 		if r := recover(); r != nil {
-			tags = append(tags, "success:false")
+			tags = append(tags, "status:success")
 			m.DDStatsD.Timing(metricName, timeElapsed, tags...)
 
 			panic(r)
 		} else {
-			tags = append(tags, "success:true")
+			tags = append(tags, "status:failure")
 			m.DDStatsD.Timing(metricName, timeElapsed, tags...)
 		}
 	}()
