@@ -34,6 +34,7 @@ type DB interface {
 	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
 	Close() error
 	Begin() (*pg.Tx, error)
+	Model(model ...interface{}) *orm.Query
 }
 
 // Tx represents the contract for a Postgres Tx

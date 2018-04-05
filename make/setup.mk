@@ -28,7 +28,7 @@ setup:
 	@go get github.com/gordonklaus/ineffassign
 	@dep ensure
 
-mocks: mongo-mocks dog-mocks
+mocks: mongo-mocks dog-mocks pg-mocks
 
 mongo-mocks:
 	@mockgen -source=mongo/interfaces/interfaces.go -destination=mongo/interfaces/mocks.go -package interfaces
@@ -37,3 +37,7 @@ mongo-mocks:
 dog-mocks:
 	@mockgen -source=dogstatsd/dogstatsd.go -destination=dogstatsd/mocks/dogstatsd.go -package mocks
 	@echo 'created dog mocks on ./dogstatsd/mocks/dogstatsd.go'
+
+pg-mocks:
+	@mockgen -source=pg/interfaces/pg.go -destination=pg/mocks/pg.go -package mocks
+	@echo 'created pg mocks on ./pg/mocks/pg.go'
