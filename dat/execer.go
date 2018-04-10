@@ -122,12 +122,8 @@ func (jex *Execer) QueryStruct(dest interface{}) error {
 		return err
 	}
 
-	fmt.Printf("TRACED %s\n", fullSQL)
 	jaeger.Trace(jex.ctx, fullSQL, func() error {
 		err = jex.ex.QueryStruct(dest)
-		if err != nil {
-			fmt.Println(err)
-		}
 		return err
 	})
 
