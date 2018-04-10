@@ -31,7 +31,7 @@ import (
 )
 
 // Trace wraps a Dat/PosgreSQL query and reports it to Jaeger
-func Trace(ctx context.Context, query string, next func() error) {
+func Trace(ctx context.Context, statement string, next func() error) {
 	var parent opentracing.SpanContext
 
 	if ctx == nil {
@@ -42,12 +42,13 @@ func Trace(ctx context.Context, query string, next func() error) {
 		parent = span.Context()
 	}
 
-	operation := strings.Fields(query)[0]
+	operation := strings.Fields(statement)[0]
 	operationName := "SQL " + operation
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
 		"db.operation": operation,
-		"db.query":     query,
+		"db.type":      "postgres",
+		"db.statement": statement,
 
 		"span.kind": "client",
 	}
