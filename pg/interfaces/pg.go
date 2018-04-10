@@ -27,11 +27,15 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
-// DB represents the contract for a Postgres DB
-type DB interface {
+type Queryable interface {
 	Exec(interface{}, ...interface{}) (orm.Result, error)
 	ExecOne(interface{}, ...interface{}) (orm.Result, error)
 	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
+}
+
+// DB represents the contract for a Postgres DB
+type DB interface {
+	Queryable
 	Close() error
 	Begin() (*pg.Tx, error)
 	Model(model ...interface{}) *orm.Query
@@ -39,9 +43,7 @@ type DB interface {
 
 // Tx represents the contract for a Postgres Tx
 type Tx interface {
-	Exec(interface{}, ...interface{}) (orm.Result, error)
-	ExecOne(interface{}, ...interface{}) (orm.Result, error)
-	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
+	Queryable
 	Rollback() error
 	Commit() error
 }
