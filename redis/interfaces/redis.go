@@ -58,6 +58,9 @@ type RedisClient interface {
 	WithContext(context.Context) *redis.Client
 	ZCard(key string) *redis.IntCmd
 	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
+	ZRevRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
+	ZRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd
+	ZRevRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd
 	ZRangeWithScores(key string, start, stop int64) *redis.ZSliceCmd
 	ZRank(key, member string) *redis.IntCmd
 	ZRem(key string, members ...interface{}) *redis.IntCmd
