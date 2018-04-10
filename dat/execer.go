@@ -24,7 +24,6 @@ package dat
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	jaeger "github.com/topfreegames/extensions/jaeger/dat"
