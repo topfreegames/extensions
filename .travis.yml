@@ -2,6 +2,7 @@ language: go
 go:
 - 1.8
 - 1.9
+- "1.10"
 sudo: false
 addons:
   postgresql: '9.5'
@@ -11,7 +12,6 @@ services:
 env:
   matrix:
   - LIBRDKAFKA_VERSION=v0.11.4
-  - LIBRDKAFKA_VERSION=master
 cache:
   directories:
   - "$HOME/.cache/librdkafka"
