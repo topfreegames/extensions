@@ -34,7 +34,7 @@ New Extensions:
 
 New Extension:
 
-* Redis 
+* Redis
 
 #### v1.2.1
 
