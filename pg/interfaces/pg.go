@@ -27,6 +27,8 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
+// Queryable is a contract implemented by types that query
+// pg and expect go-pg results
 type Queryable interface {
 	Exec(interface{}, ...interface{}) (orm.Result, error)
 	ExecOne(interface{}, ...interface{}) (orm.Result, error)
