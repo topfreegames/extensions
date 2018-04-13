@@ -33,6 +33,7 @@ type Queryable interface {
 	Exec(interface{}, ...interface{}) (orm.Result, error)
 	ExecOne(interface{}, ...interface{}) (orm.Result, error)
 	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
+	Model(model ...interface{}) *orm.Query
 }
 
 // DB represents the contract for a Postgres DB
@@ -40,7 +41,6 @@ type DB interface {
 	Queryable
 	Close() error
 	Begin() (*pg.Tx, error)
-	Model(model ...interface{}) *orm.Query
 }
 
 // Tx represents the contract for a Postgres Tx
