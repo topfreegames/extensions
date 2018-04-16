@@ -103,7 +103,11 @@ func (a *Authenticator) Authenticate(token *Token) (string, error) {
 		Expiry:       token.Expiry,
 	}).Token()
 	if err != nil || !t.Valid() {
-		return "", errors.New("Authorization token is invalid")
+		str := "Authorization token is invalid"
+		if err != nil {
+			str = fmt.Sprintf("%s: %s", str, err.Error())
+		}
+		return "", errors.New(str)
 	}
 	if t.AccessToken != token.AccessToken {
 		token.AccessToken = t.AccessToken
