@@ -35,7 +35,7 @@ import (
 	"github.com/topfreegames/extensions/util"
 )
 
-var _ = FDescribe("SyncProducer Extension", func() {
+var _ = XDescribe("SyncProducer Extension", func() {
 	var config *viper.Viper
 	var mockProducer *mocks.MockSyncProducer
 	var mockCtrl *gomock.Controller
@@ -92,7 +92,7 @@ var _ = FDescribe("SyncProducer Extension", func() {
 		})
 	})
 
-	Describe("[Integration]", func() {
+	XDescribe("[Integration]", func() {
 		Describe("Create a new producer", func() {
 			It("should return a connected client", func() {
 				c := sarama.NewConfig()

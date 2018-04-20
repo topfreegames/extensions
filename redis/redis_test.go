@@ -147,7 +147,7 @@ var _ = Describe("Redis Extension", func() {
 
 	})
 
-	Describe("[Integration]", func() {
+	XDescribe("[Integration]", func() {
 		Describe("Creating new client", func() {
 			It("should return connected client", func() {
 				client, err := NewClient("extensions.redis", config)

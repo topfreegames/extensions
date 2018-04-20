@@ -23,9 +23,9 @@
 package statsd
 
 import (
-	"github.com/sirupsen/logrus/hooks/test"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/statsd/mocks"
 	"github.com/topfreegames/extensions/util"
@@ -82,7 +82,7 @@ var _ = Describe("StatsD Extension", func() {
 		})
 	})
 
-	Describe("[Integration]", func() {
+	XDescribe("[Integration]", func() {
 		Describe("Creating new client", func() {
 			It("should return connected client", func() {
 				statsd, err := NewStatsD(config, logger)

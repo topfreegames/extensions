@@ -38,22 +38,36 @@ type Client struct {
 	Session interfaces.Session
 }
 
+type ClusterConfig struct {
+	Prefix        string
+	QueryObserver gocql.QueryObserver
+	BatchObserver gocql.BatchObserver
+}
+
+// ClientParams is a wrapper for all creation parameters for a new client
+type ClientParams struct {
+	ClusterConfig
+	Config    *viper.Viper
+	CqlOrNil  interfaces.DB
+	SessOrNil interfaces.Session
+}
+
 // NewClient returns a new Cassandra client
-func NewClient(prefix string, config *viper.Viper, cqlOrNil interfaces.DB, sessOrNil interfaces.Session) (*Client, error) {
+func NewClient(params *ClientParams) (*Client, error) {
 	client := &Client{
-		Config: config,
+		Config: params.Config,
 	}
 
 	var db interfaces.DB
-	if cqlOrNil != nil {
-		db = cqlOrNil
+	if params.CqlOrNil != nil {
+		db = params.CqlOrNil
 	}
-	err := client.Connect(prefix, db)
+	err := client.SetClusterConfig(db, params.ClusterConfig)
 	if err != nil {
 		return nil, err
 	}
-	if sessOrNil != nil {
-		client.Session = sessOrNil
+	if params.SessOrNil != nil {
+		client.Session = params.SessOrNil
 	} else {
 		session, err := client.DB.CreateSession()
 		if err != nil {
@@ -64,16 +78,17 @@ func NewClient(prefix string, config *viper.Viper, cqlOrNil interfaces.DB, sessO
 	return client, nil
 }
 
-// Connect connects to Cassandra cluster
-func (c *Client) Connect(prefix string, db interfaces.DB) error {
+func (c *Client) SetClusterConfig(db interfaces.DB, clusterConfig ClusterConfig) error {
 	if db != nil {
 		c.DB = db
 		return nil
 	}
-	hosts := strings.Split(c.Config.GetString(fmt.Sprintf("%s.hosts", prefix)), ",")
+	hosts := strings.Split(c.Config.GetString(fmt.Sprintf("%s.hosts", clusterConfig.Prefix)), ",")
 	cluster := gocql.NewCluster(hosts...)
-	cluster.Keyspace = c.Config.GetString(fmt.Sprintf("%s.keyspace", prefix))
-	cluster.Consistency = gocql.Quorum
+	cluster.Keyspace = c.Config.GetString(fmt.Sprintf("%s.keyspace", clusterConfig.Prefix))
+	cluster.QueryObserver = clusterConfig.QueryObserver
+	cluster.BatchObserver = clusterConfig.BatchObserver
+	cluster.Consistency = gocql.Quorum // TODO maybe pass as parameter ?
 	c.DB = cluster
 
 	return nil

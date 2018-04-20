@@ -78,7 +78,7 @@ var _ = Describe("Producer Extension", func() {
 		})
 	})
 
-	Describe("[Integration]", func() {
+	XDescribe("[Integration]", func() {
 		Describe("Creating new producer", func() {
 			It("should return connected client", func() {
 				kafkaProducer, err := NewProducer(config, logger)

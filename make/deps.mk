@@ -28,6 +28,8 @@ start-deps:
 	@echo "Starting dependencies using HOST IP of ${MY_IP}..."
 	@env MY_IP=${MY_IP} docker-compose --project-name extensions up -d
 	@while [ "`echo "health" | nc 127.0.0.1 40002`" != "health: up" ]; do echo "Waiting for StatsD to come up..." && sleep 1; done
+	@sleep 20
+	@bash -c "source cassandra/assets/cassandra.sh; create_cassandra_schema"
 	@echo "Dependencies started successfully."
 
 stop-deps:

@@ -26,11 +26,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sirupsen/logrus"
-	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/kafka/mocks"
 	. "github.com/topfreegames/extensions/testing"
@@ -286,7 +286,7 @@ var _ = Describe("Kafka Extension", func() {
 		})
 	})
 
-	Describe("[Integration]", func() {
+	XDescribe("[Integration]", func() {
 		var config *viper.Viper
 		var err error
 
