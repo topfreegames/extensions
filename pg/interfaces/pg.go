@@ -23,6 +23,8 @@
 package interfaces
 
 import (
+	"context"
+
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
 )
@@ -41,6 +43,7 @@ type DB interface {
 	Queryable
 	Close() error
 	Begin() (*pg.Tx, error)
+	WithContext(ctx context.Context) *pg.DB
 }
 
 // Tx represents the contract for a Postgres Tx

@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	context "context"
 	pg "github.com/go-pg/pg"
 	orm "github.com/go-pg/pg/orm"
 	gomock "github.com/golang/mock/gomock"
@@ -221,6 +222,18 @@ func (m *MockDB) Begin() (*pg.Tx, error) {
 // Begin indicates an expected call of Begin
 func (mr *MockDBMockRecorder) Begin() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Begin", reflect.TypeOf((*MockDB)(nil).Begin))
+}
+
+// WithContext mocks base method
+func (m *MockDB) WithContext(ctx context.Context) *pg.DB {
+	ret := m.ctrl.Call(m, "WithContext", ctx)
+	ret0, _ := ret[0].(*pg.DB)
+	return ret0
+}
+
+// WithContext indicates an expected call of WithContext
+func (mr *MockDBMockRecorder) WithContext(ctx interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockDB)(nil).WithContext), ctx)
 }
 
 // MockTx is a mock of Tx interface
