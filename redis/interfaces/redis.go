@@ -38,6 +38,7 @@ type RedisClient interface {
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
 	EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd
 	Exists(keys ...string) *redis.IntCmd
+	HSet(key, field string, value interface{}) *redis.BoolCmd
 	Get(key string) *redis.StringCmd
 	HGet(key, field string) *redis.StringCmd
 	HGetAll(string) *redis.StringStringMapCmd
