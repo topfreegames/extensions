@@ -156,6 +156,23 @@ func (c *Collection) UpsertId(id interface{}, update interface{}) (*mgo.ChangeIn
 	return result, err
 }
 
+//Upsert calls mongo collection Upsert
+func (c *Collection) Upsert(selector interface{}, update interface{}) (*mgo.ChangeInfo, error) {
+	var result *mgo.ChangeInfo
+	var err error
+
+	database := c.collection.Database.Name
+	collection := c.collection.FullName
+	args := formatArgs(selector, update)
+
+	jaeger.Trace(c.ctx, database, collection, "updateOne", args, func() error {
+		result, err = c.collection.Upsert(selector, update)
+		return err
+	})
+
+	return result, err
+}
+
 //RemoveId calls mongo collection RemoveId
 func (c *Collection) RemoveId(id interface{}) error {
 	var err error
