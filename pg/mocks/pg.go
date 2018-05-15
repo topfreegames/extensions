@@ -225,9 +225,9 @@ func (mr *MockDBMockRecorder) Begin() *gomock.Call {
 }
 
 // WithContext mocks base method
-func (m *MockDB) WithContext(ctx context.Context) interfaces.DB {
+func (m *MockDB) WithContext(ctx context.Context) *pg.DB {
 	ret := m.ctrl.Call(m, "WithContext", ctx)
-	ret0, _ := ret[0].(interfaces.DB)
+	ret0, _ := ret[0].(*pg.DB)
 	return ret0
 }
 
