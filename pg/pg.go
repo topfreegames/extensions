@@ -41,6 +41,7 @@ type Client struct {
 	DB        interfaces.DB
 	Options   *pg.Options
 	TxWrapper interfaces.TxWrapper
+	context   context.Context
 }
 
 // TxWrapper is the struct for the TxWrapper
@@ -153,6 +154,20 @@ func (c *Client) WaitForConnection(timeout int) error {
 func (c *Client) Cleanup() error {
 	err := c.Close()
 	return err
+}
+
+func (c *Client) WithContext(ctx context.Context) *Client {
+	return &Client{
+		Config:    c.Config,
+		DB:        c.DB,
+		Options:   c.Options,
+		TxWrapper: c.TxWrapper,
+		context:   ctx,
+	}
+}
+
+func (c *Client) Context() context.Context {
+	return c.context
 }
 
 // TODO camila probably move this to another file
