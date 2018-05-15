@@ -157,6 +157,19 @@ func (mr *MockCollectionMockRecorder) UpsertId(id, update interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertId", reflect.TypeOf((*MockCollection)(nil).UpsertId), id, update)
 }
 
+// Upsert mocks base method
+func (m *MockCollection) Upsert(selector, update interface{}) (*mgo_v2.ChangeInfo, error) {
+	ret := m.ctrl.Call(m, "Upsert", selector, update)
+	ret0, _ := ret[0].(*mgo_v2.ChangeInfo)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Upsert indicates an expected call of Upsert
+func (mr *MockCollectionMockRecorder) Upsert(selector, update interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upsert", reflect.TypeOf((*MockCollection)(nil).Upsert), selector, update)
+}
+
 // RemoveId mocks base method
 func (m *MockCollection) RemoveId(id interface{}) error {
 	ret := m.ctrl.Call(m, "RemoveId", id)
