@@ -42,6 +42,7 @@ type Collection interface {
 	FindId(id interface{}) Query
 	Insert(docs ...interface{}) error
 	UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error)
+	Upsert(selector interface{}, update interface{}) (*mgo.ChangeInfo, error)
 	RemoveId(id interface{}) error
 }
 
