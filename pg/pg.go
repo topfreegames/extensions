@@ -27,8 +27,10 @@ import (
 	"time"
 
 	pg "github.com/go-pg/pg"
+	"github.com/go-pg/pg/orm"
 
 	"github.com/spf13/viper"
+	jaeger "github.com/topfreegames/extensions/jaeger/pg"
 	"github.com/topfreegames/extensions/pg/interfaces"
 )
 
@@ -150,4 +152,56 @@ func (c *Client) WaitForConnection(timeout int) error {
 func (c *Client) Cleanup() error {
 	err := c.Close()
 	return err
+}
+
+// TODO camila probably move this to another file
+// DB implements the DB interface
+type DB struct {
+	inner *pg.DB // not sure about this
+}
+
+func (db *DB) Exec(query interface{}, params ...interface{}) (orm.Result, error) {
+	var q string
+	if val, ok := query.(string); ok {
+		q = val
+	}
+	var res orm.Result
+	var err error
+	jaeger.Trace(db.inner.Context(), q, func() error {
+		res, err = db.inner.Exec(query, params...)
+		return err
+	})
+	return res, err
+}
+
+func (db *DB) ExecOne(query interface{}, params ...interface{}) (orm.Result, error) {
+	var q string
+	if val, ok := query.(string); ok {
+		q = val
+	}
+	var res orm.Result
+	var err error
+	jaeger.Trace(db.inner.Context(), q, func() error {
+		res, err = db.inner.ExecOne(query, params...)
+		return err
+	})
+	return res, err
+}
+
+func (db *DB) Query(model, query interface{}, params ...interface{}) (orm.Result, error) {
+	var q string
+	if val, ok := query.(string); ok {
+		q = val
+	}
+	var res orm.Result
+	var err error
+	jaeger.Trace(db.inner.Context(), q, func() error {
+		res, err = db.inner.Query(model, query, params...)
+		return err
+	})
+	return res, err
+}
+
+func (db *DB) Model(model ...interface{}) *orm.Query {
+	return db.inner.Model(model...)
 }

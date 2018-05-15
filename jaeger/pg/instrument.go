@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2018 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,41 +20,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package interfaces
+package pg
 
 import (
 	"context"
+	"strings"
 
-	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	"github.com/opentracing/opentracing-go"
+	"github.com/topfreegames/extensions/jaeger"
 )
 
-// Queryable is a contract implemented by types that query
-// pg and expect go-pg results
-type Queryable interface {
-	Exec(interface{}, ...interface{}) (orm.Result, error)
-	ExecOne(interface{}, ...interface{}) (orm.Result, error)
-	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
-	Model(model ...interface{}) *orm.Query // mesma coisa aqui, temos que ter uma iface de query e não retornar o do pg
-}
+// Trace wraps a go-pg query and reports it to Jaeger
+func Trace(ctx context.Context, statement string, next func() error) {
+	var parent opentracing.SpanContext
 
-// DB represents the contract for a Postgres DB
-type DB interface {
-	Queryable
-	Close() error
-	Begin() (*pg.Tx, error)
-	WithContext(ctx context.Context) DB // probably should return a DB (interface) as well, not pg.DB
-	Context() context.Context
-}
+	if ctx == nil {
+		ctx = context.Background()
+	}
 
-// Tx represents the contract for a Postgres Tx
-type Tx interface {
-	Queryable
-	Rollback() error
-	Commit() error
-}
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		parent = span.Context()
+	}
 
-// TxWrapper is the interface for mocking pg transactions
-type TxWrapper interface {
-	DbBegin(db DB) (Tx, error)
+	operation := strings.Fields(statement)[0]
+	operationName := "SQL " + operation
+	reference := opentracing.ChildOf(parent)
+	tags := opentracing.Tags{
+		"db.operation": operation,
+		"db.type":      "postgres",
+		"db.statement": statement,
+
+		"span.kind": "client",
+	}
+
+	span := opentracing.StartSpan(operationName, reference, tags)
+	defer span.Finish()
+	defer jaeger.LogPanic(span)
+
+	err := next()
+	if err != nil {
+		message := err.Error()
+		jaeger.LogError(span, message)
+	}
 }
