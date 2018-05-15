@@ -238,9 +238,8 @@ func (db *DB) Context() context.Context {
 	return db.inner.Context()
 }
 
-func WithContext(ctx context.Context, db *DB) interfaces.DB {
-	newDB := db.inner.WithContext(ctx)
+func WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
 	return &DB{
-		inner: newDB,
+		inner: db.WithContext(ctx),
 	}
 }
