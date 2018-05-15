@@ -23,6 +23,7 @@
 package pg
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -38,6 +39,7 @@ type Client struct {
 	DB        interfaces.DB
 	Options   *pg.Options
 	TxWrapper interfaces.TxWrapper
+	context   context.Context
 }
 
 // TxWrapper is the struct for the TxWrapper
@@ -100,9 +102,9 @@ func (c *Client) Connect(prefix string, db interfaces.DB) error {
 	}
 
 	if db == nil {
-		c.DB = pg.Connect(c.Options)
+		c.DB = &DB{inner: pg.Connect(c.Options)}
 	} else {
-		c.DB = db
+		c.DB = &DB{inner: db}
 	}
 
 	return nil

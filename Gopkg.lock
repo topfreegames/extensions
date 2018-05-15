@@ -178,8 +178,8 @@
     "orm",
     "types"
   ]
-  revision = "0cd2ff625d4d38126c5b6afb9399a3a436883bd1"
-  version = "v6.6.0"
+  revision = "2cb96043eb15699002a72c64f2b38d62cf6e4bc0"
+  version = "v6.12.0"
 
 [[projects]]
   name = "github.com/go-redis/redis"
@@ -663,6 +663,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "24c8323f25805ce5e716c265be491f3526b85f931e15347c105cb07dbf3c120e"
+  inputs-digest = "8451cc0bc758693930ea64b425e5dcbbac5531bfe6b080dc4dc978767da922c2"
   solver-name = "gps-cdcl"
   solver-version = 1
