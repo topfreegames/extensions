@@ -189,6 +189,22 @@ func (c *Collection) RemoveId(id interface{}) error {
 	return err
 }
 
+//Remove calls mongo collection Remove
+func (c *Collection) Remove(selector interface{}) error {
+	var err error
+
+	database := c.collection.Database.Name
+	collection := c.collection.FullName
+	args := formatArgs(selector)
+
+	jaeger.Trace(c.ctx, database, collection, "remove", args, func() error {
+		err = c.collection.Remove(selector)
+		return err
+	})
+
+	return err
+}
+
 //Query holds a mongo query and implements Query interface
 type Query struct {
 	ctx   context.Context

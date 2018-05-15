@@ -182,6 +182,18 @@ func (mr *MockCollectionMockRecorder) RemoveId(id interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveId", reflect.TypeOf((*MockCollection)(nil).RemoveId), id)
 }
 
+// Remove mocks base method
+func (m *MockCollection) Remove(selector interface{}) error {
+	ret := m.ctrl.Call(m, "Remove", selector)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Remove indicates an expected call of Remove
+func (mr *MockCollectionMockRecorder) Remove(selector interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockCollection)(nil).Remove), selector)
+}
+
 // MockSession is a mock of Session interface
 type MockSession struct {
 	ctrl     *gomock.Controller
