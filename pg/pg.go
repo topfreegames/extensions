@@ -104,9 +104,9 @@ func (c *Client) Connect(prefix string, db interfaces.DB) error {
 	}
 
 	if db == nil {
-		c.DB = &DB{inner: pg.Connect(c.Options)}
+		c.DB = pg.Connect(c.Options)
 	} else {
-		c.DB = &DB{inner: db}
+		c.DB = db
 	}
 
 	return nil
@@ -156,84 +156,68 @@ func (c *Client) Cleanup() error {
 	return err
 }
 
+func (c *Client) Exec(query interface{}, params ...interface{}) (orm.Result, error) {
+	var q string
+	if val, ok := query.(string); ok {
+		q = val
+	}
+	var res orm.Result
+	var err error
+	jaeger.Trace(c.context, q, func() error {
+		res, err = c.DB.Exec(query, params...)
+		return err
+	})
+	return res, err
+}
+
+func (c *Client) ExecOne(query interface{}, params ...interface{}) (orm.Result, error) {
+	var q string
+	if val, ok := query.(string); ok {
+		q = val
+	}
+	var res orm.Result
+	var err error
+	jaeger.Trace(c.context, q, func() error {
+		res, err = c.DB.ExecOne(query, params...)
+		return err
+	})
+	return res, err
+}
+
+func (c *Client) Query(model, query interface{}, params ...interface{}) (orm.Result, error) {
+	var q string
+	if val, ok := query.(string); ok {
+		q = val
+	}
+	var res orm.Result
+	var err error
+	jaeger.Trace(c.context, q, func() error {
+		res, err = c.DB.Query(model, query, params...)
+		return err
+	})
+	return res, err
+}
+
+func (c *Client) Model(model ...interface{}) *orm.Query {
+	return c.DB.Model(model...)
+}
+
+func (c *Client) Begin() (*pg.Tx, error) {
+	// TODO instrument
+	return c.DB.Begin()
+}
+
 func (c *Client) WithContext(ctx context.Context) *Client {
 	return &Client{
+		context:   ctx,
 		Config:    c.Config,
 		DB:        c.DB,
 		Options:   c.Options,
 		TxWrapper: c.TxWrapper,
-		context:   ctx,
 	}
+
 }
 
 func (c *Client) Context() context.Context {
 	return c.context
-}
-
-// TODO camila probably move this to another file
-// DB implements the DB interface
-type DB struct {
-	inner interfaces.DB // not sure about this, too many wrapper levels
-}
-
-func (db *DB) Exec(query interface{}, params ...interface{}) (orm.Result, error) {
-	var q string
-	if val, ok := query.(string); ok {
-		q = val
-	}
-	var res orm.Result
-	var err error
-	jaeger.Trace(db.inner.Context(), q, func() error {
-		res, err = db.inner.Exec(query, params...)
-		return err
-	})
-	return res, err
-}
-
-func (db *DB) ExecOne(query interface{}, params ...interface{}) (orm.Result, error) {
-	var q string
-	if val, ok := query.(string); ok {
-		q = val
-	}
-	var res orm.Result
-	var err error
-	jaeger.Trace(db.inner.Context(), q, func() error {
-		res, err = db.inner.ExecOne(query, params...)
-		return err
-	})
-	return res, err
-}
-
-func (db *DB) Query(model, query interface{}, params ...interface{}) (orm.Result, error) {
-	var q string
-	if val, ok := query.(string); ok {
-		q = val
-	}
-	var res orm.Result
-	var err error
-	jaeger.Trace(db.inner.Context(), q, func() error {
-		res, err = db.inner.Query(model, query, params...)
-		return err
-	})
-	return res, err
-}
-
-func (db *DB) Model(model ...interface{}) *orm.Query {
-	return db.inner.Model(model...)
-}
-
-func (db *DB) Close() error {
-	return db.inner.Close()
-}
-func (db *DB) Begin() (*pg.Tx, error) {
-	// TODO instrument
-	return db.inner.Begin()
-}
-
-func (db *DB) WithContext(ctx context.Context) *pg.DB {
-	return db.inner.WithContext(ctx)
-}
-
-func (db *DB) Context() context.Context {
-	return db.inner.Context()
 }
