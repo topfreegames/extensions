@@ -23,6 +23,7 @@
 package pg
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -102,9 +103,9 @@ func (c *Client) Connect(prefix string, db interfaces.DB) error {
 	}
 
 	if db == nil {
-		c.DB = pg.Connect(c.Options)
+		c.DB = &DB{inner: pg.Connect(c.Options)}
 	} else {
-		c.DB = db
+		c.DB = &DB{inner: db}
 	}
 
 	return nil
@@ -157,7 +158,7 @@ func (c *Client) Cleanup() error {
 // TODO camila probably move this to another file
 // DB implements the DB interface
 type DB struct {
-	inner *pg.DB // not sure about this
+	inner interfaces.DB // not sure about this, too many wrapper levels
 }
 
 func (db *DB) Exec(query interface{}, params ...interface{}) (orm.Result, error) {
@@ -204,4 +205,20 @@ func (db *DB) Query(model, query interface{}, params ...interface{}) (orm.Result
 
 func (db *DB) Model(model ...interface{}) *orm.Query {
 	return db.inner.Model(model...)
+}
+
+func (db *DB) Close() error {
+	return db.inner.Close()
+}
+func (db *DB) Begin() (*pg.Tx, error) {
+	// TODO instrument
+	return db.inner.Begin()
+}
+
+func (db *DB) WithContext(ctx context.Context) *pg.DB {
+	return db.inner.WithContext(ctx)
+}
+
+func (db *DB) Context() context.Context {
+	return db.inner.Context()
 }
