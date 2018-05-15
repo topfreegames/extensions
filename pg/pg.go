@@ -237,3 +237,7 @@ func (db *DB) WithContext(ctx context.Context) *pg.DB {
 func (db *DB) Context() context.Context {
 	return db.inner.Context()
 }
+
+func WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
+	return db.WithContext(ctx)
+}
