@@ -44,6 +44,7 @@ type Collection interface {
 	UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error)
 	Upsert(selector interface{}, update interface{}) (*mgo.ChangeInfo, error)
 	RemoveId(id interface{}) error
+	Remove(selector interface{}) error
 }
 
 //Session is the mongoDB session
