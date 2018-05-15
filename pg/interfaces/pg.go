@@ -43,7 +43,7 @@ type DB interface {
 	Queryable
 	Close() error
 	Begin() (*pg.Tx, error)
-	WithContext(ctx context.Context) DB // probably should return a DB (interface) as well, not pg.DB
+	WithContext(ctx context.Context) *pg.DB // probably should return a DB (interface) as well, not pg.DB
 	Context() context.Context
 }
 
