@@ -108,14 +108,17 @@ func Metrics(mr MetricsReporter) func(http.Handler) http.Handler {
 			start := time.Now()
 
 			defer func() {
+				statusCode := GetStatusCode(w)
+				errored := statusCode > 299
 				elapsed := time.Since(start)
 				route, _ := mux.CurrentRoute(r).GetPathTemplate()
 				tags := []string{
-					fmt.Sprintf("route:%s", route),
-					fmt.Sprintf("method:%s", r.Method),
-					fmt.Sprintf("status:%d", GetStatusCode(w)),
+					fmt.Sprintf("status:%d", statusCode),
+					fmt.Sprintf("route:%s %s", r.Method, route),
+					fmt.Sprintf("type:http"),
+					fmt.Sprintf("error:%t", errored),
 				}
-				mr.Timing(MetricTypes.APIRequestPath, elapsed, tags...)
+				mr.Timing(MetricTypes.ResponseTimeMs, elapsed, tags...)
 			}()
 
 			next.ServeHTTP(w, r.WithContext(ctx))

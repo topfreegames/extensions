@@ -11,9 +11,9 @@ import (
 
 // MetricTypes constants
 var MetricTypes = struct {
-	APIRequestPath string
+	ResponseTimeMs string
 }{
-	APIRequestPath: "api_request_path",
+	ResponseTimeMs: "response_time_ms",
 }
 
 // MetricsReporter interface
@@ -38,7 +38,7 @@ type DogStatsD struct {
 func loadDefaultConfigsDogStatsD(config *viper.Viper) {
 	config.SetDefault("extensions.dogstatsd.host", "localhost:8125")
 	config.SetDefault("extensions.dogstatsd.prefix", "middleware_dev.")
-	config.SetDefault("extensions.dogstatsd.tags_prefix", "middleware_.")
+	config.SetDefault("extensions.dogstatsd.tags_prefix", "")
 	config.SetDefault("extensions.dogstatsd.rate", "1")
 }
 
@@ -64,8 +64,10 @@ func NewDogStatsD(config *viper.Viper) (*DogStatsD, error) {
 }
 
 func prefixTags(prefix string, tags ...string) {
-	for i, t := range tags {
-		tags[i] = fmt.Sprintf("%s%s", prefix, t)
+	if len(prefix) > 0 {
+		for i, t := range tags {
+			tags[i] = fmt.Sprintf("%s%s", prefix, t)
+		}
 	}
 }
 
