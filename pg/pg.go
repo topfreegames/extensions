@@ -24,6 +24,7 @@ package pg
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"time"
@@ -174,7 +175,8 @@ func (c *Client) Context() context.Context {
 // TODO camila probably move this to another file
 // DB implements the orm.DB interface
 type DB struct {
-	inner interfaces.DB // not sure about this, too many wrapper levels
+	inner interfaces.DB
+	tx    interfaces.Tx
 }
 
 func (db *DB) Select(model interface{}) error {
@@ -209,7 +211,11 @@ func (db *DB) Exec(query interface{}, params ...interface{}) (orm.Result, error)
 	var res orm.Result
 	var err error
 	jaeger.Trace(db.inner.Context(), query, func() error {
-		res, err = db.inner.Exec(query, params...)
+		if db.tx != nil {
+			res, err = db.tx.Exec(query, params...)
+		} else {
+			res, err = db.inner.Exec(query, params...)
+		}
 		return err
 	})
 	return res, err
@@ -219,7 +225,11 @@ func (db *DB) ExecOne(query interface{}, params ...interface{}) (orm.Result, err
 	var res orm.Result
 	var err error
 	jaeger.Trace(db.inner.Context(), query, func() error {
-		res, err = db.inner.ExecOne(query, params...)
+		if db.tx != nil {
+			res, err = db.tx.ExecOne(query, params...)
+		} else {
+			res, err = db.inner.ExecOne(query, params...)
+		}
 		return err
 	})
 	return res, err
@@ -229,7 +239,11 @@ func (db *DB) Query(model, query interface{}, params ...interface{}) (orm.Result
 	var res orm.Result
 	var err error
 	jaeger.Trace(db.inner.Context(), query, func() error {
-		res, err = db.inner.Query(model, query, params...)
+		if db.tx != nil {
+			res, err = db.tx.Query(model, query, params...)
+		} else {
+			res, err = db.inner.Query(model, query, params...)
+		}
 		return err
 	})
 	return res, err
@@ -239,7 +253,11 @@ func (db *DB) QueryOne(model, query interface{}, params ...interface{}) (orm.Res
 	var res orm.Result
 	var err error
 	jaeger.Trace(db.inner.Context(), query, func() error {
-		res, err = db.inner.QueryOne(model, query, params...)
+		if db.tx != nil {
+			res, err = db.tx.QueryOne(model, query, params...)
+		} else {
+			res, err = db.inner.QueryOne(model, query, params...)
+		}
 		return err
 	})
 	return res, err
@@ -252,6 +270,7 @@ func (db *DB) Model(model ...interface{}) *orm.Query {
 func (db *DB) Close() error {
 	return db.inner.Close()
 }
+
 func (db *DB) Begin() (*pg.Tx, error) {
 	var tx *pg.Tx
 	var err error
@@ -270,8 +289,56 @@ func (db *DB) Context() context.Context {
 	return db.inner.Context()
 }
 
+func (db *DB) Rollback() error {
+	var err error
+	jaeger.Trace(db.inner.Context(), "ROLLBACK", func() error {
+		if db.tx != nil {
+			err = db.tx.Rollback()
+		} else {
+			err = errors.New("cannot rollback if no transaction")
+		}
+		return err
+	})
+	return err
+}
+
+func (db *DB) Commit() error {
+	var err error
+	jaeger.Trace(db.inner.Context(), "COMMIT", func() error {
+		if db.tx != nil {
+			err = db.tx.Commit()
+		} else {
+			err = errors.New("cannot commit if no transaction")
+		}
+		return err
+	})
+	return err
+}
+
 func WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
 	return &DB{
 		inner: db.WithContext(ctx),
 	}
+}
+
+func Begin(db interfaces.DB) (interfaces.DB, error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	return &DB{tx: tx, inner: db}, nil
+}
+
+func Rollback(db interfaces.DB) error {
+	if v, ok := db.(interface{ Rollback() error }); ok {
+		return v.Rollback()
+	}
+	return errors.New("db does not implement rollback")
+}
+
+func Commit(db interfaces.DB) error {
+	if v, ok := db.(interface{ Commit() error }); ok {
+		return v.Commit()
+	}
+	return errors.New("db does not implement commit")
 }
