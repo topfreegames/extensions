@@ -65,6 +65,7 @@ var _ = Describe("PG Extension", func() {
 
 		Describe("IsConnected", func() {
 			It("should verify that db is connected", func() {
+				mockDb.EXPECT().Context()
 				mockDb.EXPECT().Exec("select 1").Return(NewTestResult(nil, 1), nil)
 				client, err := NewClient("extensions.pg", config, mockDb, mockTxWrapper)
 				Expect(err).NotTo(HaveOccurred())
@@ -74,6 +75,7 @@ var _ = Describe("PG Extension", func() {
 			It("should not be connected if error", func() {
 				client, err := NewClient("extensions.pg", config, mockDb, mockTxWrapper)
 				Expect(err).NotTo(HaveOccurred())
+				mockDb.EXPECT().Context()
 				mockDb.EXPECT().Exec("select 1").Return(NewTestResult(nil, 1), errors.New("could not connect"))
 				Expect(client.IsConnected()).To(BeFalse())
 			})
@@ -81,6 +83,7 @@ var _ = Describe("PG Extension", func() {
 			It("should not be connected if zero rows returned", func() {
 				client, err := NewClient("extensions.pg", config, mockDb, mockTxWrapper)
 				Expect(err).NotTo(HaveOccurred())
+				mockDb.EXPECT().Context()
 				mockDb.EXPECT().Exec("select 1").Return(NewTestResult(nil, 0), nil)
 				Expect(client.IsConnected()).To(BeFalse())
 			})
@@ -108,6 +111,7 @@ var _ = Describe("PG Extension", func() {
 
 		Describe("WaitForConnection", func() {
 			It("should wait for connection", func() {
+				mockDb.EXPECT().Context()
 				mockDb.EXPECT().Exec("select 1").Return(NewTestResult(nil, 1), nil)
 				client, err := NewClient("extensions.pg", config, mockDb, mockTxWrapper)
 				Expect(err).NotTo(HaveOccurred())
@@ -120,6 +124,7 @@ var _ = Describe("PG Extension", func() {
 				client, err := NewClient("extensions.pg", config, mockDb, mockTxWrapper)
 				Expect(err).NotTo(HaveOccurred())
 
+				mockDb.EXPECT().Context().AnyTimes()
 				mockDb.EXPECT().Exec("select 1").Return(NewTestResult(nil, 0), nil).AnyTimes()
 				err = client.WaitForConnection(3)
 				Expect(err).To(HaveOccurred())
