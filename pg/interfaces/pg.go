@@ -24,6 +24,7 @@ package interfaces
 
 import (
 	"context"
+	"io"
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
@@ -35,11 +36,24 @@ type Queryable interface {
 	Exec(interface{}, ...interface{}) (orm.Result, error)
 	ExecOne(interface{}, ...interface{}) (orm.Result, error)
 	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
+	QueryOne(interface{}, interface{}, ...interface{}) (orm.Result, error)
 	Model(model ...interface{}) *orm.Query // mesma coisa aqui, temos que ter uma iface de query e não retornar o do pg
+}
+
+type ORM interface {
+	Select(model interface{}) error
+	Insert(model ...interface{}) error
+	Update(model ...interface{}) error
+	Delete(model interface{}) error
+
+	CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error)
+	CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error)
+	FormatQuery(b []byte, query string, params ...interface{}) []byte
 }
 
 // DB represents the contract for a Postgres DB
 type DB interface {
+	ORM
 	Queryable
 	Close() error
 	Begin() (*pg.Tx, error)

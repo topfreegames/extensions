@@ -25,6 +25,7 @@ package pg
 import (
 	"context"
 	"fmt"
+	"io"
 	"time"
 
 	pg "github.com/go-pg/pg"
@@ -171,19 +172,43 @@ func (c *Client) Context() context.Context {
 }
 
 // TODO camila probably move this to another file
-// DB implements the DB interface
+// DB implements the orm.DB interface
 type DB struct {
 	inner interfaces.DB // not sure about this, too many wrapper levels
 }
 
+func (db *DB) Select(model interface{}) error {
+	return db.inner.Select(model)
+}
+
+func (db *DB) Insert(model ...interface{}) error {
+	return db.inner.Insert(model...)
+}
+
+func (db *DB) Update(model ...interface{}) error {
+	return db.inner.Update(model...)
+}
+
+func (db *DB) Delete(model interface{}) error {
+	return db.inner.Delete(model)
+}
+
+func (db *DB) CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error) {
+	return db.inner.CopyFrom(r, query, params...)
+}
+
+func (db *DB) CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error) {
+	return db.inner.CopyTo(w, query, params...)
+}
+
+func (db *DB) FormatQuery(b []byte, query string, params ...interface{}) []byte {
+	return db.inner.FormatQuery(b, query, params...)
+}
+
 func (db *DB) Exec(query interface{}, params ...interface{}) (orm.Result, error) {
-	var q string
-	if val, ok := query.(string); ok {
-		q = val
-	}
 	var res orm.Result
 	var err error
-	jaeger.Trace(db.inner.Context(), q, func() error {
+	jaeger.Trace(db.inner.Context(), query, func() error {
 		res, err = db.inner.Exec(query, params...)
 		return err
 	})
@@ -191,13 +216,9 @@ func (db *DB) Exec(query interface{}, params ...interface{}) (orm.Result, error)
 }
 
 func (db *DB) ExecOne(query interface{}, params ...interface{}) (orm.Result, error) {
-	var q string
-	if val, ok := query.(string); ok {
-		q = val
-	}
 	var res orm.Result
 	var err error
-	jaeger.Trace(db.inner.Context(), q, func() error {
+	jaeger.Trace(db.inner.Context(), query, func() error {
 		res, err = db.inner.ExecOne(query, params...)
 		return err
 	})
@@ -205,21 +226,27 @@ func (db *DB) ExecOne(query interface{}, params ...interface{}) (orm.Result, err
 }
 
 func (db *DB) Query(model, query interface{}, params ...interface{}) (orm.Result, error) {
-	var q string
-	if val, ok := query.(string); ok {
-		q = val
-	}
 	var res orm.Result
 	var err error
-	jaeger.Trace(db.inner.Context(), q, func() error {
+	jaeger.Trace(db.inner.Context(), query, func() error {
 		res, err = db.inner.Query(model, query, params...)
 		return err
 	})
 	return res, err
 }
 
+func (db *DB) QueryOne(model, query interface{}, params ...interface{}) (orm.Result, error) {
+	var res orm.Result
+	var err error
+	jaeger.Trace(db.inner.Context(), query, func() error {
+		res, err = db.inner.QueryOne(model, query, params...)
+		return err
+	})
+	return res, err
+}
+
 func (db *DB) Model(model ...interface{}) *orm.Query {
-	return db.inner.Model(model...)
+	return db.inner.Model(model...).DB(db)
 }
 
 func (db *DB) Close() error {
