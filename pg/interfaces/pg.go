@@ -37,7 +37,7 @@ type Queryable interface {
 	ExecOne(interface{}, ...interface{}) (orm.Result, error)
 	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
 	QueryOne(interface{}, interface{}, ...interface{}) (orm.Result, error)
-	Model(model ...interface{}) *orm.Query // mesma coisa aqui, temos que ter uma iface de query e não retornar o do pg
+	Model(model ...interface{}) *orm.Query
 }
 
 type ORM interface {
@@ -57,7 +57,7 @@ type DB interface {
 	Queryable
 	Close() error
 	Begin() (*pg.Tx, error)
-	WithContext(ctx context.Context) *pg.DB // probably should return a DB (interface) as well, not pg.DB
+	WithContext(ctx context.Context) *pg.DB
 	Context() context.Context
 }
 
