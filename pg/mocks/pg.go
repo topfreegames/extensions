@@ -177,19 +177,15 @@ func (mr *MockORMMockRecorder) Insert(model ...interface{}) *gomock.Call {
 }
 
 // Update mocks base method
-func (m *MockORM) Update(model ...interface{}) error {
-	varargs := []interface{}{}
-	for _, a := range model {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Update", varargs...)
+func (m *MockORM) Update(model interface{}) error {
+	ret := m.ctrl.Call(m, "Update", model)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update
-func (mr *MockORMMockRecorder) Update(model ...interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockORM)(nil).Update), model...)
+func (mr *MockORMMockRecorder) Update(model interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockORM)(nil).Update), model)
 }
 
 // Delete mocks base method
@@ -309,19 +305,15 @@ func (mr *MockDBMockRecorder) Insert(model ...interface{}) *gomock.Call {
 }
 
 // Update mocks base method
-func (m *MockDB) Update(model ...interface{}) error {
-	varargs := []interface{}{}
-	for _, a := range model {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Update", varargs...)
+func (m *MockDB) Update(model interface{}) error {
+	ret := m.ctrl.Call(m, "Update", model)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update
-func (mr *MockDBMockRecorder) Update(model ...interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDB)(nil).Update), model...)
+func (mr *MockDBMockRecorder) Update(model interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDB)(nil).Update), model)
 }
 
 // Delete mocks base method

@@ -43,7 +43,7 @@ type Queryable interface {
 type ORM interface {
 	Select(model interface{}) error
 	Insert(model ...interface{}) error
-	Update(model ...interface{}) error
+	Update(model interface{}) error
 	Delete(model interface{}) error
 
 	CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error)

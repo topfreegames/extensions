@@ -185,8 +185,8 @@ func (db *DB) Insert(model ...interface{}) error {
 	return db.inner.Insert(model...)
 }
 
-func (db *DB) Update(model ...interface{}) error {
-	return db.inner.Update(model...)
+func (db *DB) Update(model interface{}) error {
+	return db.inner.Update(model)
 }
 
 func (db *DB) Delete(model interface{}) error {
@@ -253,8 +253,13 @@ func (db *DB) Close() error {
 	return db.inner.Close()
 }
 func (db *DB) Begin() (*pg.Tx, error) {
-	// TODO instrument
-	return db.inner.Begin()
+	var tx *pg.Tx
+	var err error
+	jaeger.Trace(db.inner.Context(), "BEGIN", func() error {
+		tx, err = db.inner.Begin()
+		return err
+	})
+	return tx, err
 }
 
 func (db *DB) WithContext(ctx context.Context) *pg.DB {
