@@ -67,6 +67,22 @@ func (db *DB) FormatQuery(b []byte, query string, params ...interface{}) []byte 
 	return db.inner.FormatQuery(b, query, params...)
 }
 
+func (db *DB) Close() error {
+	return db.inner.Close()
+}
+
+func (db *DB) WithContext(ctx context.Context) *pg.DB {
+	return db.inner.WithContext(ctx)
+}
+
+func (db *DB) Context() context.Context {
+	return db.inner.Context()
+}
+
+func (db *DB) Model(model ...interface{}) *orm.Query {
+	return db.inner.Model(model...).DB(db)
+}
+
 func (db *DB) Exec(query interface{}, params ...interface{}) (orm.Result, error) {
 	var res orm.Result
 	var err error
@@ -123,14 +139,6 @@ func (db *DB) QueryOne(model, query interface{}, params ...interface{}) (orm.Res
 	return res, err
 }
 
-func (db *DB) Model(model ...interface{}) *orm.Query {
-	return db.inner.Model(model...).DB(db)
-}
-
-func (db *DB) Close() error {
-	return db.inner.Close()
-}
-
 func (db *DB) Begin() (*pg.Tx, error) {
 	var tx *pg.Tx
 	var err error
@@ -139,14 +147,6 @@ func (db *DB) Begin() (*pg.Tx, error) {
 		return err
 	})
 	return tx, err
-}
-
-func (db *DB) WithContext(ctx context.Context) *pg.DB {
-	return db.inner.WithContext(ctx)
-}
-
-func (db *DB) Context() context.Context {
-	return db.inner.Context()
 }
 
 func (db *DB) Rollback() error {
