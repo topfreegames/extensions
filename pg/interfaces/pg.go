@@ -72,3 +72,8 @@ type Tx interface {
 type TxWrapper interface {
 	DbBegin(db DB) (Tx, error)
 }
+
+// CtxWrapper is the interface for mocking pg with context
+type CtxWrapper interface {
+	WithContext(ctx context.Context, db DB) DB
+}

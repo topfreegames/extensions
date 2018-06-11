@@ -35,11 +35,12 @@ import (
 
 // Client is the struct that connects to PostgreSQL
 type Client struct {
-	Config    *viper.Viper
-	DB        interfaces.DB
-	Options   *pg.Options
-	TxWrapper interfaces.TxWrapper
-	context   context.Context
+	Config     *viper.Viper
+	DB         interfaces.DB
+	Options    *pg.Options
+	TxWrapper  interfaces.TxWrapper
+	CtxWrapper interfaces.CtxWrapper
+	context    context.Context
 }
 
 // TxWrapper is the struct for the TxWrapper
@@ -50,29 +51,46 @@ func (t *TxWrapper) DbBegin(db interfaces.DB) (interfaces.Tx, error) {
 	return db.Begin()
 }
 
+// CtxWrapper is the struct for the CTxWrapper
+type CtxWrapper struct{}
+
+// WithContext is a wrapper for returning db with a given context
+func (t *CtxWrapper) WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
+	return WithContext(ctx, db)
+}
+
 // NewClient creates a new client
-func NewClient(prefix string, config *viper.Viper, pgOrNil interfaces.DB, txOrNil interfaces.TxWrapper) (*Client, error) {
+func NewClient(prefix string, config *viper.Viper, dbIfaces ...interface{}) (*Client, error) {
 	client := &Client{
-		Config: config,
+		Config:     config,
+		TxWrapper:  &TxWrapper{},
+		CtxWrapper: &CtxWrapper{},
 	}
 
 	var db interfaces.DB
-	if pgOrNil != nil {
-		db = pgOrNil
+	if len(dbIfaces) > 0 && dbIfaces[0] != nil {
+		if v, ok := dbIfaces[0].(interfaces.DB); ok {
+			db = v
+		}
 	}
-	var tx interfaces.TxWrapper
-	if txOrNil != nil {
-		tx = txOrNil
-		client.TxWrapper = tx
-	} else {
-		client.TxWrapper = &TxWrapper{}
+	if len(dbIfaces) > 1 && dbIfaces[1] != nil {
+		if v, ok := dbIfaces[1].(interfaces.TxWrapper); ok {
+			client.TxWrapper = v
+		}
+
 	}
+	if len(dbIfaces) > 2 && dbIfaces[2] != nil {
+		if v, ok := dbIfaces[2].(interfaces.CtxWrapper); ok {
+			client.CtxWrapper = v
+		}
+	}
+
 	err := client.Connect(prefix, db)
 	if err != nil {
 		return nil, err
 	}
 
-	if pgOrNil == nil {
+	if db == nil {
 		timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
 		err = client.WaitForConnection(timeout)
 		if err != nil {

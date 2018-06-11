@@ -6,12 +6,13 @@ package mocks
 
 import (
 	context "context"
+	io "io"
+	reflect "reflect"
+
 	pg "github.com/go-pg/pg"
 	orm "github.com/go-pg/pg/orm"
 	gomock "github.com/golang/mock/gomock"
 	interfaces "github.com/topfreegames/extensions/pg/interfaces"
-	io "io"
-	reflect "reflect"
 )
 
 // MockQueryable is a mock of Queryable interface
@@ -687,4 +688,39 @@ func (m *MockTxWrapper) DbBegin(db interfaces.DB) (interfaces.Tx, error) {
 // DbBegin indicates an expected call of DbBegin
 func (mr *MockTxWrapperMockRecorder) DbBegin(db interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DbBegin", reflect.TypeOf((*MockTxWrapper)(nil).DbBegin), db)
+}
+
+// MockCtxWrapper is a mock of CtxWrapper interface
+type MockCtxWrapper struct {
+	ctrl     *gomock.Controller
+	recorder *MockCtxWrapperMockRecorder
+}
+
+// MockCtxWrapperMockRecorder is the mock recorder for MockCtxWrapper
+type MockCtxWrapperMockRecorder struct {
+	mock *MockCtxWrapper
+}
+
+// NewMockCtxWrapper creates a new mock instance
+func NewMockCtxWrapper(ctrl *gomock.Controller) *MockCtxWrapper {
+	mock := &MockCtxWrapper{ctrl: ctrl}
+	mock.recorder = &MockCtxWrapperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockCtxWrapper) EXPECT() *MockCtxWrapperMockRecorder {
+	return m.recorder
+}
+
+// WithContext mocks base method
+func (m *MockCtxWrapper) WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
+	ret := m.ctrl.Call(m, "WithContext", ctx, db)
+	ret0, _ := ret[0].(interfaces.DB)
+	return ret0
+}
+
+// WithContext indicates an expected call of WithContext
+func (mr *MockCtxWrapperMockRecorder) WithContext(ctx, db interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockCtxWrapper)(nil).WithContext), ctx, db)
 }
