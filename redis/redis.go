@@ -36,20 +36,36 @@ import (
 
 // Client identifies uniquely one redis client with a pool of connections
 type Client struct {
-	Client  interfaces.RedisClient
-	Config  *viper.Viper
-	Options *redis.Options
+	Client       interfaces.RedisClient
+	TraceWrapper interfaces.TraceWrapper
+	Config       *viper.Viper
+	Options      *redis.Options
+}
+
+// TraceWrapper is the struct for the TraceWrapper
+type TraceWrapper struct{}
+
+// WithContext is a wrapper for returning a client with context
+func (t *TraceWrapper) WithContext(ctx context.Context, c interfaces.RedisClient) interfaces.RedisClient {
+	return c.WithContext(ctx)
 }
 
 // NewClient creates and returns a new redis client based on the given settings
-func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.RedisClient) (*Client, error) {
+func NewClient(prefix string, config *viper.Viper, ifaces ...interface{}) (*Client, error) {
 	client := &Client{
 		Config: config,
 	}
 
 	var cl interfaces.RedisClient
-	if len(clientOrNil) == 1 {
-		cl = clientOrNil[0]
+	if len(ifaces) > 0 && ifaces[0] != nil {
+		if v, ok := ifaces[0].(interfaces.RedisClient); ok {
+			cl = v
+		}
+	}
+	if len(ifaces) > 1 && ifaces[1] != nil {
+		if v, ok := ifaces[1].(interfaces.TraceWrapper); ok {
+			client.TraceWrapper = v
+		}
 	}
 	err := client.Connect(prefix, cl)
 	if err != nil {
@@ -67,6 +83,9 @@ func NewClient(prefix string, config *viper.Viper, clientOrNil ...interfaces.Red
 
 // Trace creates a Redis client that sends traces to Jaeger
 func (c *Client) Trace(ctx context.Context) interfaces.RedisClient {
+	if c.TraceWrapper != nil {
+		return c.TraceWrapper.WithContext(ctx, c.Client)
+	}
 	copy := c.Client.WithContext(ctx)
 	jredis.Instrument(copy)
 	return copy

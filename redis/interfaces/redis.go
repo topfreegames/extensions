@@ -29,6 +29,11 @@ import (
 	"github.com/go-redis/redis"
 )
 
+// TraceWrapper represents the contract for a redis trace wrapper
+type TraceWrapper interface {
+	WithContext(ctx context.Context, c RedisClient) RedisClient
+}
+
 //RedisClient represents the contract for a redis client
 type RedisClient interface {
 	BLPop(timeout time.Duration, keys ...string) *redis.StringSliceCmd
