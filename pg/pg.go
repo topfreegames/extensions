@@ -61,11 +61,7 @@ func (t *CtxWrapper) WithContext(ctx context.Context, db interfaces.DB) interfac
 
 // NewClient creates a new client
 func NewClient(prefix string, config *viper.Viper, dbIfaces ...interface{}) (*Client, error) {
-	client := &Client{
-		Config:     config,
-		TxWrapper:  &TxWrapper{},
-		CtxWrapper: &CtxWrapper{},
-	}
+	client := &Client{Config: config}
 
 	var db interfaces.DB
 	if len(dbIfaces) > 0 && dbIfaces[0] != nil {
@@ -170,4 +166,24 @@ func (c *Client) WaitForConnection(timeout int) error {
 func (c *Client) Cleanup() error {
 	err := c.Close()
 	return err
+}
+
+// WithContext calls CtxWrapper WithContext if available or the DB's WithContext method otherwise
+func (c *Client) WithContext(ctx context.Context) interfaces.DB {
+	if c.CtxWrapper != nil {
+		return c.CtxWrapper.WithContext(ctx, c.DB)
+	}
+	return c.DB.WithContext(ctx)
+}
+
+// Begin calls TxWrapper DbBegin if available or the DB's Begin method otherwise
+func (c *Client) Begin(dbOrNil ...interfaces.DB) (interfaces.Tx, error) {
+	db := c.DB
+	if len(dbOrNil) == 1 && dbOrNil[0] != nil {
+		db = dbOrNil[0]
+	}
+	if c.TxWrapper != nil {
+		return c.TxWrapper.DbBegin(db)
+	}
+	return db.Begin()
 }
