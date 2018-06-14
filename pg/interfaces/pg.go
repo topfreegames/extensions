@@ -77,3 +77,16 @@ type TxWrapper interface {
 type CtxWrapper interface {
 	WithContext(ctx context.Context, db DB) DB
 }
+
+// DBTx represents the contract for a Postgres DB and Tx
+// this should be used for tests only
+type DBTx interface {
+	ORM
+	Queryable
+	Close() error
+	Begin() (*pg.Tx, error)
+	WithContext(ctx context.Context) *pg.DB
+	Context() context.Context
+	Rollback() error
+	Commit() error
+}

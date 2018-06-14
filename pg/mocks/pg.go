@@ -6,12 +6,13 @@ package mocks
 
 import (
 	context "context"
+	io "io"
+	reflect "reflect"
+
 	pg "github.com/go-pg/pg"
 	orm "github.com/go-pg/pg/orm"
 	gomock "github.com/golang/mock/gomock"
 	interfaces "github.com/topfreegames/extensions/pg/interfaces"
-	io "io"
-	reflect "reflect"
 )
 
 // MockQueryable is a mock of Queryable interface
@@ -722,4 +723,293 @@ func (m *MockCtxWrapper) WithContext(ctx context.Context, db interfaces.DB) inte
 // WithContext indicates an expected call of WithContext
 func (mr *MockCtxWrapperMockRecorder) WithContext(ctx, db interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockCtxWrapper)(nil).WithContext), ctx, db)
+}
+
+// MockDBTx is a mock of DBTx interface
+type MockDBTx struct {
+	ctrl     *gomock.Controller
+	recorder *MockDBTxMockRecorder
+}
+
+// MockDBTxMockRecorder is the mock recorder for MockDBTx
+type MockDBTxMockRecorder struct {
+	mock *MockDBTx
+}
+
+// NewMockDBTx creates a new mock instance
+func NewMockDBTx(ctrl *gomock.Controller) *MockDBTx {
+	mock := &MockDBTx{ctrl: ctrl}
+	mock.recorder = &MockDBTxMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockDBTx) EXPECT() *MockDBTxMockRecorder {
+	return m.recorder
+}
+
+// Select mocks base method
+func (m *MockDBTx) Select(model interface{}) error {
+	ret := m.ctrl.Call(m, "Select", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Select indicates an expected call of Select
+func (mr *MockDBTxMockRecorder) Select(model interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Select", reflect.TypeOf((*MockDBTx)(nil).Select), model)
+}
+
+// Insert mocks base method
+func (m *MockDBTx) Insert(model ...interface{}) error {
+	varargs := []interface{}{}
+	for _, a := range model {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Insert", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Insert indicates an expected call of Insert
+func (mr *MockDBTxMockRecorder) Insert(model ...interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockDBTx)(nil).Insert), model...)
+}
+
+// Update mocks base method
+func (m *MockDBTx) Update(model interface{}) error {
+	ret := m.ctrl.Call(m, "Update", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update
+func (mr *MockDBTxMockRecorder) Update(model interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDBTx)(nil).Update), model)
+}
+
+// Delete mocks base method
+func (m *MockDBTx) Delete(model interface{}) error {
+	ret := m.ctrl.Call(m, "Delete", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete
+func (mr *MockDBTxMockRecorder) Delete(model interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDBTx)(nil).Delete), model)
+}
+
+// CopyFrom mocks base method
+func (m *MockDBTx) CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error) {
+	varargs := []interface{}{r, query}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CopyFrom", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CopyFrom indicates an expected call of CopyFrom
+func (mr *MockDBTxMockRecorder) CopyFrom(r, query interface{}, params ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{r, query}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyFrom", reflect.TypeOf((*MockDBTx)(nil).CopyFrom), varargs...)
+}
+
+// CopyTo mocks base method
+func (m *MockDBTx) CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error) {
+	varargs := []interface{}{w, query}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CopyTo", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CopyTo indicates an expected call of CopyTo
+func (mr *MockDBTxMockRecorder) CopyTo(w, query interface{}, params ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{w, query}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyTo", reflect.TypeOf((*MockDBTx)(nil).CopyTo), varargs...)
+}
+
+// FormatQuery mocks base method
+func (m *MockDBTx) FormatQuery(b []byte, query string, params ...interface{}) []byte {
+	varargs := []interface{}{b, query}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FormatQuery", varargs...)
+	ret0, _ := ret[0].([]byte)
+	return ret0
+}
+
+// FormatQuery indicates an expected call of FormatQuery
+func (mr *MockDBTxMockRecorder) FormatQuery(b, query interface{}, params ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{b, query}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FormatQuery", reflect.TypeOf((*MockDBTx)(nil).FormatQuery), varargs...)
+}
+
+// Exec mocks base method
+func (m *MockDBTx) Exec(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Exec", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Exec indicates an expected call of Exec
+func (mr *MockDBTxMockRecorder) Exec(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockDBTx)(nil).Exec), varargs...)
+}
+
+// ExecOne mocks base method
+func (m *MockDBTx) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExecOne", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExecOne indicates an expected call of ExecOne
+func (mr *MockDBTxMockRecorder) ExecOne(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOne", reflect.TypeOf((*MockDBTx)(nil).ExecOne), varargs...)
+}
+
+// Query mocks base method
+func (m *MockDBTx) Query(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Query", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Query indicates an expected call of Query
+func (mr *MockDBTxMockRecorder) Query(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockDBTx)(nil).Query), varargs...)
+}
+
+// QueryOne mocks base method
+func (m *MockDBTx) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryOne", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryOne indicates an expected call of QueryOne
+func (mr *MockDBTxMockRecorder) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOne", reflect.TypeOf((*MockDBTx)(nil).QueryOne), varargs...)
+}
+
+// Model mocks base method
+func (m *MockDBTx) Model(model ...interface{}) *orm.Query {
+	varargs := []interface{}{}
+	for _, a := range model {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Model", varargs...)
+	ret0, _ := ret[0].(*orm.Query)
+	return ret0
+}
+
+// Model indicates an expected call of Model
+func (mr *MockDBTxMockRecorder) Model(model ...interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Model", reflect.TypeOf((*MockDBTx)(nil).Model), model...)
+}
+
+// Close mocks base method
+func (m *MockDBTx) Close() error {
+	ret := m.ctrl.Call(m, "Close")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Close indicates an expected call of Close
+func (mr *MockDBTxMockRecorder) Close() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockDBTx)(nil).Close))
+}
+
+// Begin mocks base method
+func (m *MockDBTx) Begin() (*pg.Tx, error) {
+	ret := m.ctrl.Call(m, "Begin")
+	ret0, _ := ret[0].(*pg.Tx)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Begin indicates an expected call of Begin
+func (mr *MockDBTxMockRecorder) Begin() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Begin", reflect.TypeOf((*MockDBTx)(nil).Begin))
+}
+
+// WithContext mocks base method
+func (m *MockDBTx) WithContext(ctx context.Context) *pg.DB {
+	ret := m.ctrl.Call(m, "WithContext", ctx)
+	ret0, _ := ret[0].(*pg.DB)
+	return ret0
+}
+
+// WithContext indicates an expected call of WithContext
+func (mr *MockDBTxMockRecorder) WithContext(ctx interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockDBTx)(nil).WithContext), ctx)
+}
+
+// Context mocks base method
+func (m *MockDBTx) Context() context.Context {
+	ret := m.ctrl.Call(m, "Context")
+	ret0, _ := ret[0].(context.Context)
+	return ret0
+}
+
+// Context indicates an expected call of Context
+func (mr *MockDBTxMockRecorder) Context() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockDBTx)(nil).Context))
+}
+
+// Rollback mocks base method
+func (m *MockDBTx) Rollback() error {
+	ret := m.ctrl.Call(m, "Rollback")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Rollback indicates an expected call of Rollback
+func (mr *MockDBTxMockRecorder) Rollback() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rollback", reflect.TypeOf((*MockDBTx)(nil).Rollback))
+}
+
+// Commit mocks base method
+func (m *MockDBTx) Commit() error {
+	ret := m.ctrl.Call(m, "Commit")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Commit indicates an expected call of Commit
+func (mr *MockDBTxMockRecorder) Commit() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Commit", reflect.TypeOf((*MockDBTx)(nil).Commit))
 }
