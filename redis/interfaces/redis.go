@@ -43,33 +43,34 @@ type RedisClient interface {
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
 	EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd
 	Exists(keys ...string) *redis.IntCmd
-	HSet(key, field string, value interface{}) *redis.BoolCmd
 	Get(key string) *redis.StringCmd
 	HGet(key, field string) *redis.StringCmd
 	HGetAll(string) *redis.StringStringMapCmd
 	HMSet(string, map[string]interface{}) *redis.StatusCmd
+	HSet(key, field string, value interface{}) *redis.BoolCmd
+	MGet(keys ...string) *redis.SliceCmd
 	Ping() *redis.StatusCmd
 	RPopLPush(source string, destination string) *redis.StringCmd
 	RPush(key string, values ...interface{}) *redis.IntCmd
 	SAdd(key string, members ...interface{}) *redis.IntCmd
+	SIsMember(key string, member interface{}) *redis.BoolCmd
+	SMembers(key string) *redis.StringSliceCmd
+	SPopN(key string, count int64) *redis.StringSliceCmd
 	ScriptExists(scripts ...string) *redis.BoolSliceCmd
 	ScriptLoad(script string) *redis.StringCmd
 	Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd
 	SetNX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd
-	SIsMember(key string, member interface{}) *redis.BoolCmd
-	SMembers(key string) *redis.StringSliceCmd
-	SPopN(key string, count int64) *redis.StringSliceCmd
 	TTL(key string) *redis.DurationCmd
 	TxPipeline() redis.Pipeliner
 	WithContext(context.Context) *redis.Client
 	ZCard(key string) *redis.IntCmd
 	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
-	ZRevRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
 	ZRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd
-	ZRevRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd
 	ZRangeWithScores(key string, start, stop int64) *redis.ZSliceCmd
 	ZRank(key, member string) *redis.IntCmd
 	ZRem(key string, members ...interface{}) *redis.IntCmd
+	ZRevRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
+	ZRevRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd
 	ZRevRangeWithScores(key string, start, stop int64) *redis.ZSliceCmd
 	ZRevRank(key, member string) *redis.IntCmd
 	ZScore(key, member string) *redis.FloatCmd

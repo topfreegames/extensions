@@ -52,7 +52,6 @@ var _ = Describe("Redis Extension", func() {
 	})
 
 	Describe("[Unit]", func() {
-
 		Describe("Connect", func() {
 			It("Should use config to load connection details", func() {
 				mockClient.EXPECT().Ping()
@@ -144,7 +143,6 @@ var _ = Describe("Redis Extension", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
 		})
-
 	})
 
 	XDescribe("[Integration]", func() {
@@ -195,7 +193,6 @@ var _ = Describe("Redis Extension", func() {
 				Expect(lock2).NotTo(BeNil())
 				Expect(lock2.IsLocked()).To(Equal(true))
 			})
-
 		})
 	})
 })

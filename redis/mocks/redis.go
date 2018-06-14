@@ -6,12 +6,11 @@ package mocks
 
 import (
 	context "context"
-	reflect "reflect"
-	time "time"
-
 	redis "github.com/go-redis/redis"
 	gomock "github.com/golang/mock/gomock"
 	interfaces "github.com/topfreegames/extensions/redis/interfaces"
+	reflect "reflect"
+	time "time"
 )
 
 // MockTraceWrapper is a mock of TraceWrapper interface
@@ -179,18 +178,6 @@ func (mr *MockRedisClientMockRecorder) Exists(keys ...interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exists", reflect.TypeOf((*MockRedisClient)(nil).Exists), keys...)
 }
 
-// HSet mocks base method
-func (m *MockRedisClient) HSet(key, field string, value interface{}) *redis.BoolCmd {
-	ret := m.ctrl.Call(m, "HSet", key, field, value)
-	ret0, _ := ret[0].(*redis.BoolCmd)
-	return ret0
-}
-
-// HSet indicates an expected call of HSet
-func (mr *MockRedisClientMockRecorder) HSet(key, field, value interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSet", reflect.TypeOf((*MockRedisClient)(nil).HSet), key, field, value)
-}
-
 // Get mocks base method
 func (m *MockRedisClient) Get(key string) *redis.StringCmd {
 	ret := m.ctrl.Call(m, "Get", key)
@@ -237,6 +224,34 @@ func (m *MockRedisClient) HMSet(arg0 string, arg1 map[string]interface{}) *redis
 // HMSet indicates an expected call of HMSet
 func (mr *MockRedisClientMockRecorder) HMSet(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HMSet", reflect.TypeOf((*MockRedisClient)(nil).HMSet), arg0, arg1)
+}
+
+// HSet mocks base method
+func (m *MockRedisClient) HSet(key, field string, value interface{}) *redis.BoolCmd {
+	ret := m.ctrl.Call(m, "HSet", key, field, value)
+	ret0, _ := ret[0].(*redis.BoolCmd)
+	return ret0
+}
+
+// HSet indicates an expected call of HSet
+func (mr *MockRedisClientMockRecorder) HSet(key, field, value interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSet", reflect.TypeOf((*MockRedisClient)(nil).HSet), key, field, value)
+}
+
+// MGet mocks base method
+func (m *MockRedisClient) MGet(keys ...string) *redis.SliceCmd {
+	varargs := []interface{}{}
+	for _, a := range keys {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MGet", varargs...)
+	ret0, _ := ret[0].(*redis.SliceCmd)
+	return ret0
+}
+
+// MGet indicates an expected call of MGet
+func (mr *MockRedisClientMockRecorder) MGet(keys ...interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MGet", reflect.TypeOf((*MockRedisClient)(nil).MGet), keys...)
 }
 
 // Ping mocks base method
@@ -297,6 +312,42 @@ func (mr *MockRedisClientMockRecorder) SAdd(key interface{}, members ...interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SAdd", reflect.TypeOf((*MockRedisClient)(nil).SAdd), varargs...)
 }
 
+// SIsMember mocks base method
+func (m *MockRedisClient) SIsMember(key string, member interface{}) *redis.BoolCmd {
+	ret := m.ctrl.Call(m, "SIsMember", key, member)
+	ret0, _ := ret[0].(*redis.BoolCmd)
+	return ret0
+}
+
+// SIsMember indicates an expected call of SIsMember
+func (mr *MockRedisClientMockRecorder) SIsMember(key, member interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SIsMember", reflect.TypeOf((*MockRedisClient)(nil).SIsMember), key, member)
+}
+
+// SMembers mocks base method
+func (m *MockRedisClient) SMembers(key string) *redis.StringSliceCmd {
+	ret := m.ctrl.Call(m, "SMembers", key)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// SMembers indicates an expected call of SMembers
+func (mr *MockRedisClientMockRecorder) SMembers(key interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SMembers", reflect.TypeOf((*MockRedisClient)(nil).SMembers), key)
+}
+
+// SPopN mocks base method
+func (m *MockRedisClient) SPopN(key string, count int64) *redis.StringSliceCmd {
+	ret := m.ctrl.Call(m, "SPopN", key, count)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// SPopN indicates an expected call of SPopN
+func (mr *MockRedisClientMockRecorder) SPopN(key, count interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SPopN", reflect.TypeOf((*MockRedisClient)(nil).SPopN), key, count)
+}
+
 // ScriptExists mocks base method
 func (m *MockRedisClient) ScriptExists(scripts ...string) *redis.BoolSliceCmd {
 	varargs := []interface{}{}
@@ -347,42 +398,6 @@ func (m *MockRedisClient) SetNX(key string, value interface{}, expiration time.D
 // SetNX indicates an expected call of SetNX
 func (mr *MockRedisClientMockRecorder) SetNX(key, value, expiration interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetNX", reflect.TypeOf((*MockRedisClient)(nil).SetNX), key, value, expiration)
-}
-
-// SIsMember mocks base method
-func (m *MockRedisClient) SIsMember(key string, member interface{}) *redis.BoolCmd {
-	ret := m.ctrl.Call(m, "SIsMember", key, member)
-	ret0, _ := ret[0].(*redis.BoolCmd)
-	return ret0
-}
-
-// SIsMember indicates an expected call of SIsMember
-func (mr *MockRedisClientMockRecorder) SIsMember(key, member interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SIsMember", reflect.TypeOf((*MockRedisClient)(nil).SIsMember), key, member)
-}
-
-// SMembers mocks base method
-func (m *MockRedisClient) SMembers(key string) *redis.StringSliceCmd {
-	ret := m.ctrl.Call(m, "SMembers", key)
-	ret0, _ := ret[0].(*redis.StringSliceCmd)
-	return ret0
-}
-
-// SMembers indicates an expected call of SMembers
-func (mr *MockRedisClientMockRecorder) SMembers(key interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SMembers", reflect.TypeOf((*MockRedisClient)(nil).SMembers), key)
-}
-
-// SPopN mocks base method
-func (m *MockRedisClient) SPopN(key string, count int64) *redis.StringSliceCmd {
-	ret := m.ctrl.Call(m, "SPopN", key, count)
-	ret0, _ := ret[0].(*redis.StringSliceCmd)
-	return ret0
-}
-
-// SPopN indicates an expected call of SPopN
-func (mr *MockRedisClientMockRecorder) SPopN(key, count interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SPopN", reflect.TypeOf((*MockRedisClient)(nil).SPopN), key, count)
 }
 
 // TTL mocks base method
@@ -445,18 +460,6 @@ func (mr *MockRedisClientMockRecorder) ZRangeByScore(key, opt interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRangeByScore", reflect.TypeOf((*MockRedisClient)(nil).ZRangeByScore), key, opt)
 }
 
-// ZRevRangeByScore mocks base method
-func (m *MockRedisClient) ZRevRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd {
-	ret := m.ctrl.Call(m, "ZRevRangeByScore", key, opt)
-	ret0, _ := ret[0].(*redis.StringSliceCmd)
-	return ret0
-}
-
-// ZRevRangeByScore indicates an expected call of ZRevRangeByScore
-func (mr *MockRedisClientMockRecorder) ZRevRangeByScore(key, opt interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRevRangeByScore", reflect.TypeOf((*MockRedisClient)(nil).ZRevRangeByScore), key, opt)
-}
-
 // ZRangeByScoreWithScores mocks base method
 func (m *MockRedisClient) ZRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd {
 	ret := m.ctrl.Call(m, "ZRangeByScoreWithScores", key, opt)
@@ -467,18 +470,6 @@ func (m *MockRedisClient) ZRangeByScoreWithScores(key string, opt redis.ZRangeBy
 // ZRangeByScoreWithScores indicates an expected call of ZRangeByScoreWithScores
 func (mr *MockRedisClientMockRecorder) ZRangeByScoreWithScores(key, opt interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRangeByScoreWithScores", reflect.TypeOf((*MockRedisClient)(nil).ZRangeByScoreWithScores), key, opt)
-}
-
-// ZRevRangeByScoreWithScores mocks base method
-func (m *MockRedisClient) ZRevRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd {
-	ret := m.ctrl.Call(m, "ZRevRangeByScoreWithScores", key, opt)
-	ret0, _ := ret[0].(*redis.ZSliceCmd)
-	return ret0
-}
-
-// ZRevRangeByScoreWithScores indicates an expected call of ZRevRangeByScoreWithScores
-func (mr *MockRedisClientMockRecorder) ZRevRangeByScoreWithScores(key, opt interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRevRangeByScoreWithScores", reflect.TypeOf((*MockRedisClient)(nil).ZRevRangeByScoreWithScores), key, opt)
 }
 
 // ZRangeWithScores mocks base method
@@ -520,6 +511,30 @@ func (m *MockRedisClient) ZRem(key string, members ...interface{}) *redis.IntCmd
 func (mr *MockRedisClientMockRecorder) ZRem(key interface{}, members ...interface{}) *gomock.Call {
 	varargs := append([]interface{}{key}, members...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRem", reflect.TypeOf((*MockRedisClient)(nil).ZRem), varargs...)
+}
+
+// ZRevRangeByScore mocks base method
+func (m *MockRedisClient) ZRevRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd {
+	ret := m.ctrl.Call(m, "ZRevRangeByScore", key, opt)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// ZRevRangeByScore indicates an expected call of ZRevRangeByScore
+func (mr *MockRedisClientMockRecorder) ZRevRangeByScore(key, opt interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRevRangeByScore", reflect.TypeOf((*MockRedisClient)(nil).ZRevRangeByScore), key, opt)
+}
+
+// ZRevRangeByScoreWithScores mocks base method
+func (m *MockRedisClient) ZRevRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd {
+	ret := m.ctrl.Call(m, "ZRevRangeByScoreWithScores", key, opt)
+	ret0, _ := ret[0].(*redis.ZSliceCmd)
+	return ret0
+}
+
+// ZRevRangeByScoreWithScores indicates an expected call of ZRevRangeByScoreWithScores
+func (mr *MockRedisClientMockRecorder) ZRevRangeByScoreWithScores(key, opt interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ZRevRangeByScoreWithScores", reflect.TypeOf((*MockRedisClient)(nil).ZRevRangeByScoreWithScores), key, opt)
 }
 
 // ZRevRangeWithScores mocks base method
