@@ -70,7 +70,7 @@ type Tx interface {
 
 // TxWrapper is the interface for mocking pg transactions
 type TxWrapper interface {
-	DbBegin(db DB) (Tx, error)
+	DbBegin(db DB) (DB, error)
 }
 
 // CtxWrapper is the interface for mocking pg with context

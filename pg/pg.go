@@ -47,8 +47,8 @@ type Client struct {
 type TxWrapper struct{}
 
 // DbBegin is a wrapper for returning db transactions
-func (t *TxWrapper) DbBegin(db interfaces.DB) (interfaces.Tx, error) {
-	return db.Begin()
+func (t *TxWrapper) DbBegin(db interfaces.DB) (interfaces.DB, error) {
+	return Begin(db)
 }
 
 // CtxWrapper is the struct for the CTxWrapper
@@ -173,11 +173,11 @@ func (c *Client) WithContext(ctx context.Context) interfaces.DB {
 	if c.CtxWrapper != nil {
 		return c.CtxWrapper.WithContext(ctx, c.DB)
 	}
-	return c.DB.WithContext(ctx)
+	return WithContext(ctx, c.DB)
 }
 
 // Begin calls TxWrapper DbBegin if available or the DB's Begin method otherwise
-func (c *Client) Begin(dbOrNil ...interfaces.DB) (interfaces.Tx, error) {
+func (c *Client) Begin(dbOrNil ...interfaces.DB) (interfaces.DB, error) {
 	db := c.DB
 	if len(dbOrNil) == 1 && dbOrNil[0] != nil {
 		db = dbOrNil[0]
@@ -185,5 +185,5 @@ func (c *Client) Begin(dbOrNil ...interfaces.DB) (interfaces.Tx, error) {
 	if c.TxWrapper != nil {
 		return c.TxWrapper.DbBegin(db)
 	}
-	return db.Begin()
+	return Begin(db)
 }

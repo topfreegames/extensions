@@ -6,13 +6,12 @@ package mocks
 
 import (
 	context "context"
-	io "io"
-	reflect "reflect"
-
 	pg "github.com/go-pg/pg"
 	orm "github.com/go-pg/pg/orm"
 	gomock "github.com/golang/mock/gomock"
 	interfaces "github.com/topfreegames/extensions/pg/interfaces"
+	io "io"
+	reflect "reflect"
 )
 
 // MockQueryable is a mock of Queryable interface
@@ -678,9 +677,9 @@ func (m *MockTxWrapper) EXPECT() *MockTxWrapperMockRecorder {
 }
 
 // DbBegin mocks base method
-func (m *MockTxWrapper) DbBegin(db interfaces.DB) (interfaces.Tx, error) {
+func (m *MockTxWrapper) DbBegin(db interfaces.DB) (interfaces.DB, error) {
 	ret := m.ctrl.Call(m, "DbBegin", db)
-	ret0, _ := ret[0].(interfaces.Tx)
+	ret0, _ := ret[0].(interfaces.DB)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
