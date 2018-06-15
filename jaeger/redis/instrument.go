@@ -39,8 +39,12 @@ func Instrument(client *redis.Client) {
 func makeMiddleware(client *redis.Client) func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 	return func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 		return func(cmd redis.Cmder) error {
+			var parent opentracing.SpanContext
+
 			ctx := client.Context()
-			parent := opentracing.SpanFromContext(ctx).Context()
+			if span := opentracing.SpanFromContext(ctx); span != nil {
+				parent = span.Context()
+			}
 
 			operationName := "redis " + parseShort(cmd)
 			reference := opentracing.ChildOf(parent)
