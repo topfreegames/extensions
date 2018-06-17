@@ -85,8 +85,12 @@ func makeMiddlewarePipe(client *redis.Client) func(old func(cmds []redis.Cmder) 
 
 			operationName := "redis pipe"
 			statement := ""
-			for _, cmd := range cmds {
-				statement = statement + " " + parseLong(cmd)
+			for idx, cmd := range cmds {
+				if idx > 0 {
+					statement = statement + " " + parseLong(cmd)
+				} else {
+					statement = statement + parseLong(cmd)
+				}
 			}
 			reference := opentracing.ChildOf(parent)
 			tags := opentracing.Tags{
