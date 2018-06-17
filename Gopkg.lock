@@ -189,10 +189,12 @@
     "internal/consistenthash",
     "internal/hashtag",
     "internal/pool",
-    "internal/proto"
+    "internal/proto",
+    "internal/singleflight",
+    "internal/util"
   ]
-  revision = "975882d73d21759d45a4eb49652064083bc23e61"
-  version = "v6.7.0"
+  revision = "83fb42932f6145ce52df09860384a4653d2d332a"
+  version = "v6.12.0"
 
 [[projects]]
   branch = "master"
@@ -663,6 +665,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8451cc0bc758693930ea64b425e5dcbbac5531bfe6b080dc4dc978767da922c2"
+  inputs-digest = "6a72d0fb689229f8c5e9cec098107722238405cafc15feae08960ca57c239b97"
   solver-name = "gps-cdcl"
   solver-version = 1

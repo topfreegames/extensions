@@ -4,9 +4,10 @@
 package mocks
 
 import (
+	time "time"
+
 	redis "github.com/go-redis/redis"
 	gomock "github.com/golang/mock/gomock"
-	time "time"
 )
 
 // Mock of Pipeliner interface
@@ -1859,7 +1860,7 @@ func (_mr *_MockPipelinerRecorder) SlaveOf(arg0, arg1 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SlaveOf", arg0, arg1)
 }
 
-func (_m *MockPipeliner) Sort(_param0 string, _param1 redis.Sort) *redis.StringSliceCmd {
+func (_m *MockPipeliner) Sort(_param0 string, _param1 *redis.Sort) *redis.StringSliceCmd {
 	ret := _m.ctrl.Call(_m, "Sort", _param0, _param1)
 	ret0, _ := ret[0].(*redis.StringSliceCmd)
 	return ret0
@@ -1869,7 +1870,7 @@ func (_mr *_MockPipelinerRecorder) Sort(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Sort", arg0, arg1)
 }
 
-func (_m *MockPipeliner) SortInterfaces(_param0 string, _param1 redis.Sort) *redis.SliceCmd {
+func (_m *MockPipeliner) SortInterfaces(_param0 string, _param1 *redis.Sort) *redis.SliceCmd {
 	ret := _m.ctrl.Call(_m, "SortInterfaces", _param0, _param1)
 	ret0, _ := ret[0].(*redis.SliceCmd)
 	return ret0

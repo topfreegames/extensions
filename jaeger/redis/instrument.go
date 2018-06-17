@@ -34,6 +34,8 @@ import (
 func Instrument(client *redis.Client) {
 	middleware := makeMiddleware(client)
 	client.WrapProcess(middleware)
+	middlewarePipe := makeMiddlewarePipe(client)
+	client.WrapProcessPipeline(middlewarePipe)
 }
 
 func makeMiddleware(client *redis.Client) func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
@@ -61,6 +63,44 @@ func makeMiddleware(client *redis.Client) func(old func(cmd redis.Cmder) error) 
 			defer jaeger.LogPanic(span)
 
 			err := old(cmd)
+			if err != nil {
+				message := err.Error()
+				jaeger.LogError(span, message)
+			}
+
+			return err
+		}
+	}
+}
+
+func makeMiddlewarePipe(client *redis.Client) func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error {
+	return func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error {
+		return func(cmds []redis.Cmder) error {
+			var parent opentracing.SpanContext
+
+			ctx := client.Context()
+			if span := opentracing.SpanFromContext(ctx); span != nil {
+				parent = span.Context()
+			}
+
+			operationName := "redis pipe"
+			statement := ""
+			for _, cmd := range cmds {
+				operationName = operationName + parseLong(cmd)
+			}
+			reference := opentracing.ChildOf(parent)
+			tags := opentracing.Tags{
+				"db.instance":  client.Options().DB,
+				"db.statement": statement,
+				"db.type":      "redis",
+				"span.kind":    "client",
+			}
+
+			span := opentracing.StartSpan(operationName, reference, tags)
+			defer span.Finish()
+			defer jaeger.LogPanic(span)
+
+			err := old(cmds)
 			if err != nil {
 				message := err.Error()
 				jaeger.LogError(span, message)
