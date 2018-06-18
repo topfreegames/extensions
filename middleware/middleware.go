@@ -35,6 +35,11 @@ var ctxKeys = struct {
 	oauth2:          "oauth2",
 }
 
+// SetLogger returns a context with a logrus.FieldLogger set
+func SetLogger(ctx context.Context, l logrus.FieldLogger) context.Context {
+	return context.WithValue(ctx, ctxKeys.logger, l)
+}
+
 // GetLogger returns a logrus.FieldLogger from context
 func GetLogger(ctx context.Context) logrus.FieldLogger {
 	return ctx.Value(ctxKeys.logger).(logrus.FieldLogger)
@@ -71,7 +76,7 @@ func Logging(logger logrus.FieldLogger) func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			reqID := uuid.NewV4().String()
 			l := logger.WithField("requestID", reqID)
-			ctx := context.WithValue(r.Context(), ctxKeys.logger, l)
+			ctx := SetLogger(r.Context(), l)
 			start := time.Now()
 
 			defer func() {
