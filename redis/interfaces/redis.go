@@ -46,6 +46,7 @@ type RedisClient interface {
 	Get(key string) *redis.StringCmd
 	HGet(key, field string) *redis.StringCmd
 	HGetAll(string) *redis.StringStringMapCmd
+	HMGet(string, ...string) *redis.SliceCmd
 	HMSet(string, map[string]interface{}) *redis.StatusCmd
 	HSet(key, field string, value interface{}) *redis.BoolCmd
 	MGet(keys ...string) *redis.SliceCmd
