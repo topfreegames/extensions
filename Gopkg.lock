@@ -250,6 +250,7 @@
     ".",
     "hcl/ast",
     "hcl/parser",
+    "hcl/printer",
     "hcl/scanner",
     "hcl/strconv",
     "hcl/token",
@@ -492,8 +493,8 @@
 [[projects]]
   name = "github.com/spf13/viper"
   packages = ["."]
-  revision = "25b30aa063fc18e48662b86996252eabdcf2f0c7"
-  version = "v1.0.0"
+  revision = "b5e8006cbee93ec955a89ab31e0e3ce3204f3736"
+  version = "v1.0.2"
 
 [[projects]]
   name = "github.com/uber/jaeger-client-go"
@@ -665,6 +666,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6a72d0fb689229f8c5e9cec098107722238405cafc15feae08960ca57c239b97"
+  inputs-digest = "583281ab7aeddfd0d6bdf3effee5af2269b192de29f32a0ce787fcd4bbbbeb90"
   solver-name = "gps-cdcl"
   solver-version = 1
