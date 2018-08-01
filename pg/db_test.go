@@ -324,6 +324,7 @@ var _ = FDescribe("PG Extension - DB", func() {
 			It("Should call inner db withcontext and return DB", func() {
 				expected := &pg.DB{}
 				ctx := context.Background()
+				mockDb.EXPECT().Context().Return(context.Background())
 				mockDb.EXPECT().WithContext(ctx).Return(expected)
 				res := WithContext(ctx, mockDb)
 				Expect(res).To(Equal(&DB{inner: expected}))
