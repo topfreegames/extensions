@@ -56,7 +56,13 @@ type CtxWrapper struct{}
 
 // WithContext is a wrapper for returning db with a given context
 func (t *CtxWrapper) WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
-	return WithContext(ctx, db)
+	if db.Context() == context.Background() {
+		return &DB{
+			inner: db.WithContext(ctx),
+		}
+	}
+
+	return db
 }
 
 // NewClient creates a new client

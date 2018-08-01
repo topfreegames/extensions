@@ -201,10 +201,15 @@ func (db *DB) Commit() error {
 }
 
 // WithContext calls the given db WithContext method and returns a DB with the new pg.DB
+// It only sets the context if the current db context is equal to Background()
 func WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
-	return &DB{
-		inner: db.WithContext(ctx),
+	if db.Context() == context.Background() {
+		return &DB{
+			inner: db.WithContext(ctx),
+		}
 	}
+
+	return db
 }
 
 // Begin calls the given db Begin method and returns a DB with the new pg.Tx
