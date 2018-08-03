@@ -23,4 +23,4 @@
 package util
 
 //Version identifies extensions package version
-const Version = "6.4.2"
+const Version = "6.4.4"
