@@ -44,6 +44,7 @@ type RedisClient interface {
 	EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd
 	Exists(keys ...string) *redis.IntCmd
 	Get(key string) *redis.StringCmd
+	HDel(key string, fields ...string) *redis.IntCmd
 	HGet(key, field string) *redis.StringCmd
 	HGetAll(string) *redis.StringStringMapCmd
 	HMGet(string, ...string) *redis.SliceCmd
@@ -57,6 +58,7 @@ type RedisClient interface {
 	SIsMember(key string, member interface{}) *redis.BoolCmd
 	SMembers(key string) *redis.StringSliceCmd
 	SPopN(key string, count int64) *redis.StringSliceCmd
+	SRem(key string, members ...interface{}) *redis.IntCmd
 	ScriptExists(scripts ...string) *redis.BoolSliceCmd
 	ScriptLoad(script string) *redis.StringCmd
 	Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd
@@ -64,6 +66,7 @@ type RedisClient interface {
 	TTL(key string) *redis.DurationCmd
 	TxPipeline() redis.Pipeliner
 	WithContext(context.Context) *redis.Client
+	ZAdd(key string, members ...redis.Z) *redis.IntCmd
 	ZCard(key string) *redis.IntCmd
 	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
 	ZRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd
