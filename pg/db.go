@@ -209,10 +209,15 @@ func (db *DB) Commit() error {
 // WithContext calls the given db WithContext method and returns a DB with the new pg.DB
 // If a transaction is passed as argument it is just returned without setting a new ctx
 func WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
-	if _, ok := db.(interface{ Rollback() error }); ok {
-		// is actually a transaction: noop
+	// the cases on if/else are actually transactions: noop
+	if sdb, ok := db.(*DB); ok {
+		if sdb.tx != nil {
+			return db
+		}
+	} else if _, ok := db.(interface{ Rollback() error }); ok {
 		return db
 	}
+
 	return &DB{
 		inner: db.WithContext(ctx),
 	}
