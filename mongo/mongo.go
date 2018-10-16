@@ -240,7 +240,7 @@ type Bulk struct {
 
 // Upsert calls bulk upsert
 func (b *Bulk) Upsert(pairs ...interface{}) {
-	b.bulk.Upsert(pairs)
+	b.bulk.Upsert(pairs...)
 }
 
 // Run executes a bulk run
