@@ -25,7 +25,7 @@ package interfaces
 import (
 	"context"
 
-	mgo "gopkg.in/mgo.v2"
+	"github.com/globalsign/mgo"
 )
 
 //MongoDB represents the contract for a Mongo DB
@@ -45,6 +45,7 @@ type Collection interface {
 	Upsert(selector interface{}, update interface{}) (*mgo.ChangeInfo, error)
 	RemoveId(id interface{}) error
 	Remove(selector interface{}) error
+	Bulk() Bulk
 }
 
 //Session is the mongoDB session
@@ -64,4 +65,10 @@ type Query interface {
 type Iter interface {
 	Next(result interface{}) bool
 	Close() error
+}
+
+// Bulk contains methods to be executed at one at server
+type Bulk interface {
+	Upsert(pairs ...interface{})
+	Run() (*mgo.BulkResult, error)
 }

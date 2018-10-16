@@ -27,10 +27,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 	jaeger "github.com/topfreegames/extensions/jaeger/mongo"
 	"github.com/topfreegames/extensions/mongo/interfaces"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 //Mongo holds the mongo database and connection
@@ -203,6 +203,11 @@ func (c *Collection) Remove(selector interface{}) error {
 	})
 
 	return err
+}
+
+// Bulk returns a mongo bulk
+func (c *Collection) Bulk() interfaces.Bulk {
+	return c.collection.Bulk()
 }
 
 //Query holds a mongo query and implements Query interface

@@ -25,9 +25,9 @@ package mongo
 import (
 	"fmt"
 
+	"github.com/globalsign/mgo"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/mongo/interfaces"
-	mgo "gopkg.in/mgo.v2"
 )
 
 // Client is the struct that connects to PostgreSQL
