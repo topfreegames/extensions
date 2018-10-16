@@ -6,8 +6,8 @@ package interfaces
 
 import (
 	context "context"
+	mgo "github.com/globalsign/mgo"
 	gomock "github.com/golang/mock/gomock"
-	mgo_v2 "gopkg.in/mgo.v2"
 	reflect "reflect"
 )
 
@@ -145,9 +145,9 @@ func (mr *MockCollectionMockRecorder) Insert(docs ...interface{}) *gomock.Call {
 }
 
 // UpsertId mocks base method
-func (m *MockCollection) UpsertId(id, update interface{}) (*mgo_v2.ChangeInfo, error) {
+func (m *MockCollection) UpsertId(id, update interface{}) (*mgo.ChangeInfo, error) {
 	ret := m.ctrl.Call(m, "UpsertId", id, update)
-	ret0, _ := ret[0].(*mgo_v2.ChangeInfo)
+	ret0, _ := ret[0].(*mgo.ChangeInfo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -158,9 +158,9 @@ func (mr *MockCollectionMockRecorder) UpsertId(id, update interface{}) *gomock.C
 }
 
 // Upsert mocks base method
-func (m *MockCollection) Upsert(selector, update interface{}) (*mgo_v2.ChangeInfo, error) {
+func (m *MockCollection) Upsert(selector, update interface{}) (*mgo.ChangeInfo, error) {
 	ret := m.ctrl.Call(m, "Upsert", selector, update)
-	ret0, _ := ret[0].(*mgo_v2.ChangeInfo)
+	ret0, _ := ret[0].(*mgo.ChangeInfo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -194,6 +194,31 @@ func (mr *MockCollectionMockRecorder) Remove(selector interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockCollection)(nil).Remove), selector)
 }
 
+// RemoveAll mocks base method
+func (m *MockCollection) RemoveAll(selector interface{}) (*mgo.ChangeInfo, error) {
+	ret := m.ctrl.Call(m, "RemoveAll", selector)
+	ret0, _ := ret[0].(*mgo.ChangeInfo)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RemoveAll indicates an expected call of RemoveAll
+func (mr *MockCollectionMockRecorder) RemoveAll(selector interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveAll", reflect.TypeOf((*MockCollection)(nil).RemoveAll), selector)
+}
+
+// Bulk mocks base method
+func (m *MockCollection) Bulk() Bulk {
+	ret := m.ctrl.Call(m, "Bulk")
+	ret0, _ := ret[0].(Bulk)
+	return ret0
+}
+
+// Bulk indicates an expected call of Bulk
+func (mr *MockCollectionMockRecorder) Bulk() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Bulk", reflect.TypeOf((*MockCollection)(nil).Bulk))
+}
+
 // MockSession is a mock of Session interface
 type MockSession struct {
 	ctrl     *gomock.Controller
@@ -218,9 +243,9 @@ func (m *MockSession) EXPECT() *MockSessionMockRecorder {
 }
 
 // Copy mocks base method
-func (m *MockSession) Copy() *mgo_v2.Session {
+func (m *MockSession) Copy() *mgo.Session {
 	ret := m.ctrl.Call(m, "Copy")
-	ret0, _ := ret[0].(*mgo_v2.Session)
+	ret0, _ := ret[0].(*mgo.Session)
 	return ret0
 }
 
@@ -343,4 +368,54 @@ func (m *MockIter) Close() error {
 // Close indicates an expected call of Close
 func (mr *MockIterMockRecorder) Close() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockIter)(nil).Close))
+}
+
+// MockBulk is a mock of Bulk interface
+type MockBulk struct {
+	ctrl     *gomock.Controller
+	recorder *MockBulkMockRecorder
+}
+
+// MockBulkMockRecorder is the mock recorder for MockBulk
+type MockBulkMockRecorder struct {
+	mock *MockBulk
+}
+
+// NewMockBulk creates a new mock instance
+func NewMockBulk(ctrl *gomock.Controller) *MockBulk {
+	mock := &MockBulk{ctrl: ctrl}
+	mock.recorder = &MockBulkMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockBulk) EXPECT() *MockBulkMockRecorder {
+	return m.recorder
+}
+
+// Upsert mocks base method
+func (m *MockBulk) Upsert(pairs ...interface{}) {
+	varargs := []interface{}{}
+	for _, a := range pairs {
+		varargs = append(varargs, a)
+	}
+	m.ctrl.Call(m, "Upsert", varargs...)
+}
+
+// Upsert indicates an expected call of Upsert
+func (mr *MockBulkMockRecorder) Upsert(pairs ...interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upsert", reflect.TypeOf((*MockBulk)(nil).Upsert), pairs...)
+}
+
+// Run mocks base method
+func (m *MockBulk) Run() (*mgo.BulkResult, error) {
+	ret := m.ctrl.Call(m, "Run")
+	ret0, _ := ret[0].(*mgo.BulkResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Run indicates an expected call of Run
+func (mr *MockBulkMockRecorder) Run() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Run", reflect.TypeOf((*MockBulk)(nil).Run))
 }
