@@ -45,6 +45,7 @@ type Collection interface {
 	Upsert(selector interface{}, update interface{}) (*mgo.ChangeInfo, error)
 	RemoveId(id interface{}) error
 	Remove(selector interface{}) error
+	RemoveAll(selector interface{}) (*mgo.ChangeInfo, error)
 	Bulk() Bulk
 }
 

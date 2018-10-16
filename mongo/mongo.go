@@ -205,6 +205,23 @@ func (c *Collection) Remove(selector interface{}) error {
 	return err
 }
 
+//RemoveAll calls mongo collection RemoveAll
+func (c *Collection) RemoveAll(selector interface{}) (*mgo.ChangeInfo, error) {
+	var result *mgo.ChangeInfo
+	var err error
+
+	database := c.collection.Database.Name
+	collection := c.collection.FullName
+	args := formatArgs(selector)
+
+	jaeger.Trace(c.ctx, database, collection, "remove", args, func() error {
+		result, err = c.collection.RemoveAll(selector)
+		return err
+	})
+
+	return result, err
+}
+
 // Bulk returns a mongo bulk
 func (c *Collection) Bulk() interfaces.Bulk {
 	return c.collection.Bulk()
