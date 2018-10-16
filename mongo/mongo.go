@@ -224,7 +224,40 @@ func (c *Collection) RemoveAll(selector interface{}) (*mgo.ChangeInfo, error) {
 
 // Bulk returns a mongo bulk
 func (c *Collection) Bulk() interfaces.Bulk {
-	return c.collection.Bulk()
+	return &Bulk{
+		ctx:        c.ctx,
+		bulk:       c.collection.Bulk(),
+		collection: c.collection,
+	}
+}
+
+// Bulk holds a monog bulk and implements Bulk interface
+type Bulk struct {
+	ctx        context.Context
+	bulk       *mgo.Bulk
+	collection *mgo.Collection
+}
+
+// Upsert calls bulk upsert
+func (b *Bulk) Upsert(pairs ...interface{}) {
+	b.bulk.Upsert(pairs)
+}
+
+// Run executes a bulk run
+func (b *Bulk) Run() (*mgo.BulkResult, error) {
+	var result *mgo.BulkResult
+	var err error
+
+	database := b.collection.Database.Name
+	collection := b.collection.FullName
+	args := ""
+
+	jaeger.Trace(b.ctx, database, collection, "bulkRun", args, func() error {
+		result, err = b.bulk.Run()
+		return err
+	})
+
+	return result, err
 }
 
 //Query holds a mongo query and implements Query interface
