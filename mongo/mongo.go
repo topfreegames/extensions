@@ -270,6 +270,17 @@ type Query struct {
 	args     string
 }
 
+// Limit calls query Limit
+func (q *Query) Limit(n int) interfaces.Query {
+	return &Query{
+		ctx:      q.ctx,
+		query:    q.query.Limit(n),
+		database: q.database,
+		prefix:   q.prefix,
+		args:     q.args,
+	}
+}
+
 //Iter calls query Iter
 func (q *Query) Iter() interfaces.Iter {
 	return &Iter{

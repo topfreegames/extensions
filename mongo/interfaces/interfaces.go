@@ -60,6 +60,7 @@ type Query interface {
 	Iter() Iter
 	All(result interface{}) error
 	One(result interface{}) error
+	Limit(n int) Query
 }
 
 //Iter wraps mongo Iter
