@@ -358,6 +358,18 @@ func (mr *MockRedisClientMockRecorder) SAdd(key interface{}, members ...interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SAdd", reflect.TypeOf((*MockRedisClient)(nil).SAdd), varargs...)
 }
 
+// SCard mocks base method
+func (m *MockRedisClient) SCard(key string) *redis.IntCmd {
+	ret := m.ctrl.Call(m, "SCard", key)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// SCard indicates an expected call of SCard
+func (mr *MockRedisClientMockRecorder) SCard(key interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SCard", reflect.TypeOf((*MockRedisClient)(nil).SCard), key)
+}
+
 // SIsMember mocks base method
 func (m *MockRedisClient) SIsMember(key string, member interface{}) *redis.BoolCmd {
 	ret := m.ctrl.Call(m, "SIsMember", key, member)
