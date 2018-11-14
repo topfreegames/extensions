@@ -51,6 +51,7 @@ type RedisClient interface {
 	HMSet(string, map[string]interface{}) *redis.StatusCmd
 	HSet(key, field string, value interface{}) *redis.BoolCmd
 	MGet(keys ...string) *redis.SliceCmd
+	LRange(key string, start, stop int64) *redis.StringSliceCmd
 	Ping() *redis.StatusCmd
 	RPopLPush(source string, destination string) *redis.StringCmd
 	RPush(key string, values ...interface{}) *redis.IntCmd

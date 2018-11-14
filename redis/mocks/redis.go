@@ -288,6 +288,18 @@ func (mr *MockRedisClientMockRecorder) MGet(keys ...interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MGet", reflect.TypeOf((*MockRedisClient)(nil).MGet), keys...)
 }
 
+// LRange mocks base method
+func (m *MockRedisClient) LRange(key string, start, stop int64) *redis.StringSliceCmd {
+	ret := m.ctrl.Call(m, "LRange", key, start, stop)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// LRange indicates an expected call of LRange
+func (mr *MockRedisClientMockRecorder) LRange(key, start, stop interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LRange", reflect.TypeOf((*MockRedisClient)(nil).LRange), key, start, stop)
+}
+
 // Ping mocks base method
 func (m *MockRedisClient) Ping() *redis.StatusCmd {
 	ret := m.ctrl.Call(m, "Ping")
