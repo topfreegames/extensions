@@ -20,18 +20,19 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package mongo
+package gorp
 
 import (
 	"context"
-	"fmt"
+	"regexp"
+	"strings"
 
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger"
+	"github.com/topfreegames/extensions/tracing"
 )
 
-// Trace wraps a MongoDB query and reports it to Jaeger
-func Trace(ctx context.Context, database, prefix, method, args string, next func() error) {
+// Trace wraps a gorp database call and reports it to tracing
+func Trace(ctx context.Context, name string, query string, next func() error) {
 	var parent opentracing.SpanContext
 
 	if ctx == nil {
@@ -42,27 +43,30 @@ func Trace(ctx context.Context, database, prefix, method, args string, next func
 		parent = span.Context()
 	}
 
-	operationName := "MongoDB " + method
+	operationName := "SQL " + parse(query)
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
-		"db.instance":  database,
-		"db.statement": format(prefix, method, args),
-		"db.type":      "mongodb",
+		"db.instance":  name,
+		"db.statement": query,
+		"db.type":      "postgres",
 
 		"span.kind": "client",
 	}
 
 	span := opentracing.StartSpan(operationName, reference, tags)
 	defer span.Finish()
-	defer jaeger.LogPanic(span)
+	defer tracing.LogPanic(span)
 
 	err := next()
 	if err != nil {
 		message := err.Error()
-		jaeger.LogError(span, message)
+		tracing.LogError(span, message)
 	}
 }
 
-func format(prefix, method, args string) string {
-	return fmt.Sprintf("%s.%s(%s)", prefix, method, args)
+func parse(query string) string {
+	re := regexp.MustCompile("\\s+")
+	array := re.Split(" "+query, 3)
+	command := array[1]
+	return strings.ToUpper(command)
 }

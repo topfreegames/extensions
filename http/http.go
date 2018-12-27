@@ -25,7 +25,7 @@ package http
 import (
 	"net/http"
 
-	jaeger "github.com/topfreegames/extensions/jaeger/http"
+	tracing "github.com/topfreegames/extensions/tracing/http"
 )
 
 // New creates and instruments an HTTP client
@@ -58,7 +58,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	var resp *http.Response
 	var err error
 
-	jaeger.Trace(req, func() error {
+	tracing.Trace(req, func() error {
 		resp, err = t.inner.RoundTrip(req)
 		return err
 	})

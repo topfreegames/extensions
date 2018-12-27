@@ -27,10 +27,10 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger"
+	"github.com/topfreegames/extensions/tracing"
 )
 
-// Instrument adds Jaeger instrumentation on a Redis client
+// Instrument adds tracing instrumentation on a Redis client
 func Instrument(client *redis.Client) {
 	middleware := makeMiddleware(client)
 	client.WrapProcess(middleware)
@@ -60,12 +60,12 @@ func makeMiddleware(client *redis.Client) func(old func(cmd redis.Cmder) error) 
 
 			span := opentracing.StartSpan(operationName, reference, tags)
 			defer span.Finish()
-			defer jaeger.LogPanic(span)
+			defer tracing.LogPanic(span)
 
 			err := old(cmd)
 			if err != nil {
 				message := err.Error()
-				jaeger.LogError(span, message)
+				tracing.LogError(span, message)
 			}
 
 			return err
@@ -102,12 +102,12 @@ func makeMiddlewarePipe(client *redis.Client) func(old func(cmds []redis.Cmder) 
 
 			span := opentracing.StartSpan(operationName, reference, tags)
 			defer span.Finish()
-			defer jaeger.LogPanic(span)
+			defer tracing.LogPanic(span)
 
 			err := old(cmds)
 			if err != nil {
 				message := err.Error()
-				jaeger.LogError(span, message)
+				tracing.LogError(span, message)
 			}
 
 			return err

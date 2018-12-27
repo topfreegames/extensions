@@ -24,7 +24,7 @@ package echo
 
 import (
 	"github.com/labstack/echo"
-	jecho "github.com/topfreegames/extensions/jaeger/echo"
+	techo "github.com/topfreegames/extensions/tracing/echo"
 )
 
 // Echo is the top-level framework instance.
@@ -35,6 +35,6 @@ type Echo struct {
 // New creates an instance of Echo.
 func New() *Echo {
 	app := echo.New()
-	jecho.Instrument(app)
+	techo.Instrument(app)
 	return &Echo{app}
 }

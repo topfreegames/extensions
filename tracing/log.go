@@ -20,46 +20,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package http
+package tracing
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger"
+	"github.com/opentracing/opentracing-go/log"
 )
 
-// Trace wraps an HTTP request and reports it to Jaeger
-func Trace(req *http.Request, next func() error) {
-	var parent opentracing.SpanContext
+// LogError logs an error to a Jaeger span
+func LogError(span opentracing.Span, message string) {
+	span.SetTag("error", true)
+	span.LogFields(
+		log.String("event", "error"),
+		log.String("message", message),
+	)
+}
 
-	ctx := req.Context()
-	if span := opentracing.SpanFromContext(ctx); span != nil {
-		parent = span.Context()
-	}
-
-	operationName := fmt.Sprintf("HTTP %s %s", req.Method, req.Host)
-	reference := opentracing.ChildOf(parent)
-	tags := opentracing.Tags{
-		"http.method":   req.Method,
-		"http.host":     req.Host,
-		"http.pathname": req.URL.Path,
-		"http.query":    req.URL.RawQuery,
-
-		"span.kind": "client",
-	}
-
-	span := opentracing.StartSpan(operationName, reference, tags)
-	defer span.Finish()
-	defer jaeger.LogPanic(span)
-
-	tracer := opentracing.GlobalTracer()
-	tracer.Inject(span.Context(), opentracing.HTTPHeaders, &req.Header)
-
-	err := next()
-	if err != nil {
-		message := err.Error()
-		jaeger.LogError(span, message)
+// LogPanic logs a panic to a Jaeger span
+func LogPanic(span opentracing.Span) {
+	if err := recover(); err != nil {
+		message := fmt.Sprint(err)
+		LogError(span, message)
+		panic(err)
 	}
 }

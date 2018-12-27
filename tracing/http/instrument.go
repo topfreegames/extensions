@@ -20,46 +20,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dat
+package http
 
 import (
-	"context"
-	"strings"
+	"fmt"
+	"net/http"
 
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger"
+	"github.com/topfreegames/extensions/tracing"
 )
 
-// Trace wraps a Dat/PosgreSQL query and reports it to Jaeger
-func Trace(ctx context.Context, statement string, next func() error) {
+// Trace wraps an HTTP request and reports it to tracing
+func Trace(req *http.Request, next func() error) {
 	var parent opentracing.SpanContext
 
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
+	ctx := req.Context()
 	if span := opentracing.SpanFromContext(ctx); span != nil {
 		parent = span.Context()
 	}
 
-	operation := strings.Fields(statement)[0]
-	operationName := "SQL " + operation
+	operationName := fmt.Sprintf("HTTP %s %s", req.Method, req.Host)
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
-		"db.operation": operation,
-		"db.type":      "postgres",
-		"db.statement": statement,
+		"http.method":   req.Method,
+		"http.host":     req.Host,
+		"http.pathname": req.URL.Path,
+		"http.query":    req.URL.RawQuery,
 
 		"span.kind": "client",
 	}
 
 	span := opentracing.StartSpan(operationName, reference, tags)
 	defer span.Finish()
-	defer jaeger.LogPanic(span)
+	defer tracing.LogPanic(span)
+
+	tracer := opentracing.GlobalTracer()
+	tracer.Inject(span.Context(), opentracing.HTTPHeaders, &req.Header)
 
 	err := next()
 	if err != nil {
 		message := err.Error()
-		jaeger.LogError(span, message)
+		tracing.LogError(span, message)
 	}
 }

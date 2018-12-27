@@ -26,8 +26,8 @@ import (
 	"context"
 
 	"github.com/eclipse/paho.mqtt.golang"
-	jaeger "github.com/topfreegames/extensions/jaeger/mqtt"
 	"github.com/topfreegames/extensions/mqtt/interfaces"
+	tracing "github.com/topfreegames/extensions/tracing/mqtt"
 )
 
 // Client wraps an MQTT client
@@ -44,6 +44,7 @@ func NewClient(opts *mqtt.ClientOptions) interfaces.Client {
 	return &Client{ctx, inner, opts}
 }
 
+// WithContext wraps the client with a context
 func (c *Client) WithContext(ctx context.Context) interfaces.Client {
 	if ctx == nil {
 		panic("Context must be non-nil")
@@ -55,7 +56,7 @@ func (c *Client) WithContext(ctx context.Context) interfaces.Client {
 func (c *Client) Publish(topic string, qos byte, retained bool, payload interface{}) mqtt.Token {
 	var token mqtt.Token
 
-	jaeger.Trace(c.ctx, "PUBLISH", topic, qos, c.opts.PingTimeout, func() mqtt.Token {
+	tracing.Trace(c.ctx, "PUBLISH", topic, qos, c.opts.PingTimeout, func() mqtt.Token {
 		token = c.inner.Publish(topic, qos, retained, payload)
 		return token
 	})
@@ -67,7 +68,7 @@ func (c *Client) Publish(topic string, qos byte, retained bool, payload interfac
 func (c *Client) Subscribe(topic string, qos byte, callback mqtt.MessageHandler) mqtt.Token {
 	var token mqtt.Token
 
-	jaeger.Trace(c.ctx, "SUBSCRIBE", topic, qos, c.opts.PingTimeout, func() mqtt.Token {
+	tracing.Trace(c.ctx, "SUBSCRIBE", topic, qos, c.opts.PingTimeout, func() mqtt.Token {
 		token = c.inner.Subscribe(topic, qos, callback)
 		return token
 	})

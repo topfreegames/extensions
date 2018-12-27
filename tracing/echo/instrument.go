@@ -29,10 +29,10 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine"
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger"
+	"github.com/topfreegames/extensions/tracing"
 )
 
-// Instrument adds Jaeger instrumentation on an Echo app
+// Instrument adds tracing instrumentation on an Echo app
 func Instrument(app *echo.Echo) {
 	middleware := makeMiddleware()
 	app.Use(middleware)
@@ -65,7 +65,7 @@ func makeMiddleware() func(echo.HandlerFunc) echo.HandlerFunc {
 
 			span := opentracing.StartSpan(operationName, reference, tags)
 			defer span.Finish()
-			defer jaeger.LogPanic(span)
+			defer tracing.LogPanic(span)
 
 			ctx := c.StdContext()
 			ctx = opentracing.ContextWithSpan(ctx, span)
@@ -74,7 +74,7 @@ func makeMiddleware() func(echo.HandlerFunc) echo.HandlerFunc {
 			err := next(c)
 			if err != nil {
 				message := err.Error()
-				jaeger.LogError(span, message)
+				tracing.LogError(span, message)
 			}
 
 			response := c.Response()

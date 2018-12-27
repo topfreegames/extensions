@@ -790,11 +790,8 @@
   digest = "1:c80894778314c7fb90d94a5ab925214900e1341afeddc953cda7398b8cdcd006"
   name = "gopkg.in/mgo.v2"
   packages = [
-    ".",
     "bson",
     "internal/json",
-    "internal/sasl",
-    "internal/scram",
   ]
   pruneopts = ""
   revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
@@ -873,7 +870,6 @@
     "github.com/uber/jaeger-client-go/config",
     "golang.org/x/oauth2",
     "golang.org/x/oauth2/google",
-    "gopkg.in/mgo.v2",
     "gopkg.in/mgo.v2/bson",
     "gopkg.in/mgutz/dat.v2/dat",
     "gopkg.in/olivere/elastic.v5",
