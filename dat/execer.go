@@ -26,7 +26,7 @@ import (
 	"context"
 	"time"
 
-	jaeger "github.com/topfreegames/extensions/jaeger/dat"
+	tracing "github.com/topfreegames/extensions/tracing/dat"
 	"gopkg.in/mgutz/dat.v2/dat"
 )
 
@@ -75,7 +75,7 @@ func (jex *Execer) Exec() (*dat.Result, error) {
 		return result, err
 	}
 
-	jaeger.Trace(jex.ctx, fullSQL, func() error {
+	tracing.Trace(jex.ctx, fullSQL, func() error {
 		result, err = jex.ex.Exec()
 		return err
 	})
@@ -90,7 +90,7 @@ func (jex *Execer) QueryScalar(destinations ...interface{}) error {
 		return err
 	}
 
-	jaeger.Trace(jex.ctx, fullSQL, func() error {
+	tracing.Trace(jex.ctx, fullSQL, func() error {
 		err = jex.ex.QueryScalar(destinations...)
 		return err
 	})
@@ -106,7 +106,7 @@ func (jex *Execer) QuerySlice(dest interface{}) error {
 		return err
 	}
 
-	jaeger.Trace(jex.ctx, fullSQL, func() error {
+	tracing.Trace(jex.ctx, fullSQL, func() error {
 		err = jex.ex.QuerySlice(dest)
 		return err
 	})
@@ -121,7 +121,7 @@ func (jex *Execer) QueryStruct(dest interface{}) error {
 		return err
 	}
 
-	jaeger.Trace(jex.ctx, fullSQL, func() error {
+	tracing.Trace(jex.ctx, fullSQL, func() error {
 		err = jex.ex.QueryStruct(dest)
 		return err
 	})
@@ -136,7 +136,7 @@ func (jex *Execer) QueryStructs(dest interface{}) error {
 		return err
 	}
 
-	jaeger.Trace(jex.ctx, fullSQL, func() error {
+	tracing.Trace(jex.ctx, fullSQL, func() error {
 		err = jex.ex.QueryStructs(dest)
 		return err
 	})
@@ -152,7 +152,7 @@ func (jex *Execer) QueryObject(dest interface{}) error {
 		return err
 	}
 
-	jaeger.Trace(jex.ctx, fullSQL, func() error {
+	tracing.Trace(jex.ctx, fullSQL, func() error {
 		err = jex.ex.QueryObject(dest)
 		return err
 	})
@@ -169,7 +169,7 @@ func (jex *Execer) QueryJSON() ([]byte, error) {
 		return result, err
 	}
 
-	jaeger.Trace(jex.ctx, fullSQL, func() error {
+	tracing.Trace(jex.ctx, fullSQL, func() error {
 		result, err = jex.ex.QueryJSON()
 		return err
 	})

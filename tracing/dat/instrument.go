@@ -20,55 +20,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package mqtt
+package dat
 
 import (
 	"context"
-	"fmt"
-	"time"
+	"strings"
 
-	"github.com/eclipse/paho.mqtt.golang"
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger"
+	"github.com/topfreegames/extensions/tracing"
 )
 
-// Trace wraps an MQTT request and reports it to Jaeger
-func Trace(ctx context.Context, method string, topic string, qos byte, timeout time.Duration, next func() mqtt.Token) {
+// Trace wraps a Dat/PosgreSQL query and reports it to tracing
+func Trace(ctx context.Context, statement string, next func() error) {
 	var parent opentracing.SpanContext
+
+	if ctx == nil {
+		ctx = context.Background()
+	}
 
 	if span := opentracing.SpanFromContext(ctx); span != nil {
 		parent = span.Context()
 	}
 
-	operationName := "MQTT " + method
+	operation := strings.Fields(statement)[0]
+	operationName := "SQL " + operation
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
-		"mqtt.qos":   qos,
-		"mqtt.topic": topic,
+		"db.operation": operation,
+		"db.type":      "postgres",
+		"db.statement": statement,
 
 		"span.kind": "client",
 	}
 
 	span := opentracing.StartSpan(operationName, reference, tags)
-	defer jaeger.LogPanic(span)
-
-	token := next()
-	go wait(span, token, timeout)
-}
-
-func wait(span opentracing.Span, token mqtt.Token, timeout time.Duration) {
 	defer span.Finish()
+	defer tracing.LogPanic(span)
 
-	ok := token.WaitTimeout(timeout)
-	err := token.Error()
-
-	if !ok {
-		message := fmt.Sprintf("Exceded maximum expected duration: %v", timeout)
-		jaeger.LogError(span, message)
-	}
-
+	err := next()
 	if err != nil {
 		message := err.Error()
-		jaeger.LogError(span, message)
+		tracing.LogError(span, message)
 	}
 }

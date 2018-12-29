@@ -28,10 +28,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger"
+	"github.com/topfreegames/extensions/tracing"
 )
 
-// Jaeger is a middleware for jaeger tracing
+// Jaeger is a middleware for tracing
 func Jaeger() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +52,7 @@ func Jaeger() func(next http.Handler) http.Handler {
 
 			span := opentracing.StartSpan(operationName, reference, tags)
 			defer span.Finish()
-			defer jaeger.LogPanic(span)
+			defer tracing.LogPanic(span)
 			defer func() {
 				status := GetStatusCode(w)
 				span.SetTag("http.status_code", status)

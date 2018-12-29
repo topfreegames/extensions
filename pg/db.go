@@ -29,8 +29,8 @@ import (
 
 	pg "github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
-	jaeger "github.com/topfreegames/extensions/jaeger/pg"
 	"github.com/topfreegames/extensions/pg/interfaces"
+	tracing "github.com/topfreegames/extensions/tracing/pg"
 )
 
 // DB implements the orm.DB interface with a few tweaks for tracing
@@ -101,12 +101,12 @@ func (db *DB) Model(model ...interface{}) *orm.Query {
 	return db.inner.Model(model...).DB(db)
 }
 
-// Exec wraps the inner db or tx Exec call in a jaeger trace
+// Exec wraps the inner db or tx Exec call in a tracing trace
 // If a tx is available it will be used
 func (db *DB) Exec(query interface{}, params ...interface{}) (orm.Result, error) {
 	var res orm.Result
 	var err error
-	jaeger.Trace(db.inner.Context(), query, func() error {
+	tracing.Trace(db.inner.Context(), query, func() error {
 		if db.tx != nil {
 			res, err = db.tx.Exec(query, params...)
 		} else {
@@ -117,12 +117,12 @@ func (db *DB) Exec(query interface{}, params ...interface{}) (orm.Result, error)
 	return res, err
 }
 
-// ExecOne wraps the inner db or tx ExecOne call in a jaeger trace
+// ExecOne wraps the inner db or tx ExecOne call in a tracing trace
 // If a tx is available it will be used
 func (db *DB) ExecOne(query interface{}, params ...interface{}) (orm.Result, error) {
 	var res orm.Result
 	var err error
-	jaeger.Trace(db.inner.Context(), query, func() error {
+	tracing.Trace(db.inner.Context(), query, func() error {
 		if db.tx != nil {
 			res, err = db.tx.ExecOne(query, params...)
 		} else {
@@ -133,12 +133,12 @@ func (db *DB) ExecOne(query interface{}, params ...interface{}) (orm.Result, err
 	return res, err
 }
 
-// Query wraps the inner db or tx Query call in a jaeger trace
+// Query wraps the inner db or tx Query call in a tracing trace
 // If a tx is available it will be used
 func (db *DB) Query(model, query interface{}, params ...interface{}) (orm.Result, error) {
 	var res orm.Result
 	var err error
-	jaeger.Trace(db.inner.Context(), query, func() error {
+	tracing.Trace(db.inner.Context(), query, func() error {
 		if db.tx != nil {
 			res, err = db.tx.Query(model, query, params...)
 		} else {
@@ -149,12 +149,12 @@ func (db *DB) Query(model, query interface{}, params ...interface{}) (orm.Result
 	return res, err
 }
 
-// QueryOne wraps the inner db or tx QueryOne call in a jaeger trace
+// QueryOne wraps the inner db or tx QueryOne call in a tracing trace
 // If a tx is available it will be used
 func (db *DB) QueryOne(model, query interface{}, params ...interface{}) (orm.Result, error) {
 	var res orm.Result
 	var err error
-	jaeger.Trace(db.inner.Context(), query, func() error {
+	tracing.Trace(db.inner.Context(), query, func() error {
 		if db.tx != nil {
 			res, err = db.tx.QueryOne(model, query, params...)
 		} else {
@@ -165,22 +165,22 @@ func (db *DB) QueryOne(model, query interface{}, params ...interface{}) (orm.Res
 	return res, err
 }
 
-// Begin wraps the inner db Begin call in a jaeger trace
+// Begin wraps the inner db Begin call in a tracing trace
 func (db *DB) Begin() (*pg.Tx, error) {
 	var tx *pg.Tx
 	var err error
-	jaeger.Trace(db.inner.Context(), "BEGIN", func() error {
+	tracing.Trace(db.inner.Context(), "BEGIN", func() error {
 		tx, err = db.inner.Begin()
 		return err
 	})
 	return tx, err
 }
 
-// Rollback wraps the inner db Rollback call in a jaeger trace
+// Rollback wraps the inner db Rollback call in a tracing trace
 // It returns an error if no tx is available in the current db
 func (db *DB) Rollback() error {
 	var err error
-	jaeger.Trace(db.inner.Context(), "ROLLBACK", func() error {
+	tracing.Trace(db.inner.Context(), "ROLLBACK", func() error {
 		if db.tx != nil {
 			err = db.tx.Rollback()
 		} else {
@@ -191,11 +191,11 @@ func (db *DB) Rollback() error {
 	return err
 }
 
-// Commit wraps the inner db Commit call in a jaeger trace
+// Commit wraps the inner db Commit call in a tracing trace
 // It returns an error if no tx is available in the current db
 func (db *DB) Commit() error {
 	var err error
-	jaeger.Trace(db.inner.Context(), "COMMIT", func() error {
+	tracing.Trace(db.inner.Context(), "COMMIT", func() error {
 		if db.tx != nil {
 			err = db.tx.Commit()
 		} else {

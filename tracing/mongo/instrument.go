@@ -20,19 +20,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package pg
+package mongo
 
 import (
 	"context"
-	"strings"
+	"fmt"
 
-	"github.com/go-pg/pg/orm"
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/jaeger"
+	"github.com/topfreegames/extensions/tracing"
 )
 
-// Trace wraps a go-pg query and reports it to Jaeger
-func Trace(ctx context.Context, query interface{}, next func() error) {
+// Trace wraps a MongoDB query and reports it to tracing
+func Trace(ctx context.Context, database, prefix, method, args string, next func() error) {
 	var parent opentracing.SpanContext
 
 	if ctx == nil {
@@ -43,33 +42,27 @@ func Trace(ctx context.Context, query interface{}, next func() error) {
 		parent = span.Context()
 	}
 
-	statement := "UNKNOWN STATEMENT"
-	if val, ok := query.(string); ok {
-		statement = val
-	} else if val, ok := query.(orm.QueryAppender); ok {
-		if statementBytes, err := val.AppendQuery(nil); err == nil {
-			statement = string(statementBytes)
-		}
-	}
-
-	operation := strings.Fields(statement)[0]
-	operationName := "SQL " + operation
+	operationName := "MongoDB " + method
 	reference := opentracing.ChildOf(parent)
 	tags := opentracing.Tags{
-		"db.operation": operation,
-		"db.type":      "postgres",
-		"db.statement": statement,
+		"db.instance":  database,
+		"db.statement": format(prefix, method, args),
+		"db.type":      "mongodb",
 
 		"span.kind": "client",
 	}
 
 	span := opentracing.StartSpan(operationName, reference, tags)
 	defer span.Finish()
-	defer jaeger.LogPanic(span)
+	defer tracing.LogPanic(span)
 
 	err := next()
 	if err != nil {
 		message := err.Error()
-		jaeger.LogError(span, message)
+		tracing.LogError(span, message)
 	}
+}
+
+func format(prefix, method, args string) string {
+	return fmt.Sprintf("%s.%s(%s)", prefix, method, args)
 }

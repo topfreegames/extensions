@@ -29,8 +29,8 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	jaeger "github.com/topfreegames/extensions/jaeger/mongo"
 	"github.com/topfreegames/extensions/mongo/interfaces"
+	tracing "github.com/topfreegames/extensions/tracing/mongo"
 )
 
 //Mongo holds the mongo database and connection
@@ -69,7 +69,7 @@ func (m *Mongo) Run(cmd interface{}, result interface{}) error {
 	database := m.db.Name
 	args := formatArgs(cmd)
 
-	jaeger.Trace(m.ctx, database, database, "runCommand", args, func() error {
+	tracing.Trace(m.ctx, database, database, "runCommand", args, func() error {
 		err = m.db.With(session).Run(cmd, result)
 		return err
 	})
@@ -131,7 +131,7 @@ func (c *Collection) Insert(docs ...interface{}) error {
 	collection := c.collection.FullName
 	args := formatArgs(docs)
 
-	jaeger.Trace(c.ctx, database, collection, "insert", args, func() error {
+	tracing.Trace(c.ctx, database, collection, "insert", args, func() error {
 		err = c.collection.Insert(docs...)
 		return err
 	})
@@ -148,7 +148,7 @@ func (c *Collection) UpsertId(id interface{}, update interface{}) (*mgo.ChangeIn
 	collection := c.collection.FullName
 	args := formatArgs(bson.D{{Name: "_id", Value: id}}, update)
 
-	jaeger.Trace(c.ctx, database, collection, "updateOne", args, func() error {
+	tracing.Trace(c.ctx, database, collection, "updateOne", args, func() error {
 		result, err = c.collection.UpsertId(id, update)
 		return err
 	})
@@ -165,7 +165,7 @@ func (c *Collection) Upsert(selector interface{}, update interface{}) (*mgo.Chan
 	collection := c.collection.FullName
 	args := formatArgs(selector, update)
 
-	jaeger.Trace(c.ctx, database, collection, "updateOne", args, func() error {
+	tracing.Trace(c.ctx, database, collection, "updateOne", args, func() error {
 		result, err = c.collection.Upsert(selector, update)
 		return err
 	})
@@ -181,7 +181,7 @@ func (c *Collection) RemoveId(id interface{}) error {
 	collection := c.collection.FullName
 	args := formatArgs(bson.D{{Name: "_id", Value: id}})
 
-	jaeger.Trace(c.ctx, database, collection, "remove", args, func() error {
+	tracing.Trace(c.ctx, database, collection, "remove", args, func() error {
 		err = c.collection.RemoveId(id)
 		return err
 	})
@@ -197,7 +197,7 @@ func (c *Collection) Remove(selector interface{}) error {
 	collection := c.collection.FullName
 	args := formatArgs(selector)
 
-	jaeger.Trace(c.ctx, database, collection, "remove", args, func() error {
+	tracing.Trace(c.ctx, database, collection, "remove", args, func() error {
 		err = c.collection.Remove(selector)
 		return err
 	})
@@ -214,7 +214,7 @@ func (c *Collection) RemoveAll(selector interface{}) (*mgo.ChangeInfo, error) {
 	collection := c.collection.FullName
 	args := formatArgs(selector)
 
-	jaeger.Trace(c.ctx, database, collection, "remove", args, func() error {
+	tracing.Trace(c.ctx, database, collection, "remove", args, func() error {
 		result, err = c.collection.RemoveAll(selector)
 		return err
 	})
@@ -252,7 +252,7 @@ func (b *Bulk) Run() (*mgo.BulkResult, error) {
 	collection := b.collection.FullName
 	args := ""
 
-	jaeger.Trace(b.ctx, database, collection, "bulkRun", args, func() error {
+	tracing.Trace(b.ctx, database, collection, "bulkRun", args, func() error {
 		result, err = b.bulk.Run()
 		return err
 	})
@@ -292,7 +292,7 @@ func (q *Query) Iter() interfaces.Iter {
 func (q *Query) All(result interface{}) error {
 	var err error
 
-	jaeger.Trace(q.ctx, q.database, q.prefix, "find", q.args, func() error {
+	tracing.Trace(q.ctx, q.database, q.prefix, "find", q.args, func() error {
 		err = q.query.All(result)
 		return err
 	})
@@ -304,7 +304,7 @@ func (q *Query) All(result interface{}) error {
 func (q *Query) One(result interface{}) error {
 	var err error
 
-	jaeger.Trace(q.ctx, q.database, q.prefix, "findOne", q.args, func() error {
+	tracing.Trace(q.ctx, q.database, q.prefix, "findOne", q.args, func() error {
 		err = q.query.One(result)
 		return err
 	})

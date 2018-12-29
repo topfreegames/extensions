@@ -30,8 +30,8 @@ import (
 	"github.com/bsm/redis-lock"
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
-	jredis "github.com/topfreegames/extensions/jaeger/redis"
 	"github.com/topfreegames/extensions/redis/interfaces"
+	tredis "github.com/topfreegames/extensions/tracing/redis"
 )
 
 // Client identifies uniquely one redis client with a pool of connections
@@ -81,13 +81,13 @@ func NewClient(prefix string, config *viper.Viper, ifaces ...interface{}) (*Clie
 	return client, nil
 }
 
-// Trace creates a Redis client that sends traces to Jaeger
+// Trace creates a Redis client that sends traces to tracing
 func (c *Client) Trace(ctx context.Context) interfaces.RedisClient {
 	if c.TraceWrapper != nil {
 		return c.TraceWrapper.WithContext(ctx, c.Client)
 	}
 	copy := c.Client.WithContext(ctx)
-	jredis.Instrument(copy)
+	tredis.Instrument(copy)
 	return copy
 }
 

@@ -20,29 +20,55 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jaeger
+package mqtt
 
 import (
+	"context"
 	"fmt"
+	"time"
 
+	"github.com/eclipse/paho.mqtt.golang"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/log"
+	"github.com/topfreegames/extensions/tracing"
 )
 
-// LogError logs an error to a Jaeger span
-func LogError(span opentracing.Span, message string) {
-	span.SetTag("error", true)
-	span.LogFields(
-		log.String("event", "error"),
-		log.String("message", message),
-	)
+// Trace wraps an MQTT request and reports it to tracing
+func Trace(ctx context.Context, method string, topic string, qos byte, timeout time.Duration, next func() mqtt.Token) {
+	var parent opentracing.SpanContext
+
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		parent = span.Context()
+	}
+
+	operationName := "MQTT " + method
+	reference := opentracing.ChildOf(parent)
+	tags := opentracing.Tags{
+		"mqtt.qos":   qos,
+		"mqtt.topic": topic,
+
+		"span.kind": "client",
+	}
+
+	span := opentracing.StartSpan(operationName, reference, tags)
+	defer tracing.LogPanic(span)
+
+	token := next()
+	go wait(span, token, timeout)
 }
 
-// LogPanic logs a panic to a Jaeger span
-func LogPanic(span opentracing.Span) {
-	if err := recover(); err != nil {
-		message := fmt.Sprint(err)
-		LogError(span, message)
-		panic(err)
+func wait(span opentracing.Span, token mqtt.Token, timeout time.Duration) {
+	defer span.Finish()
+
+	ok := token.WaitTimeout(timeout)
+	err := token.Error()
+
+	if !ok {
+		message := fmt.Sprintf("Exceded maximum expected duration: %v", timeout)
+		tracing.LogError(span, message)
+	}
+
+	if err != nil {
+		message := err.Error()
+		tracing.LogError(span, message)
 	}
 }
