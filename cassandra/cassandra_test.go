@@ -80,7 +80,8 @@ var _ = Describe("Cassandra Extension", func() {
 			It("Should use config to load connection details", func() {
 				params := &ClientParams{
 					ClusterConfig: ClusterConfig{
-						Prefix: "extensions.cassandra",
+						Prefix:      "extensions.cassandra",
+						Consistency: gocql.Quorum,
 					},
 					Config:    config,
 					CqlOrNil:  mockDb,
@@ -102,6 +103,7 @@ var _ = Describe("Cassandra Extension", func() {
 					ClusterConfig: ClusterConfig{
 						Prefix:        "extensions.cassandra",
 						QueryObserver: obs,
+						Consistency:   gocql.Quorum,
 					},
 					Config: config,
 				}
@@ -127,6 +129,7 @@ var _ = Describe("Cassandra Extension", func() {
 					ClusterConfig: ClusterConfig{
 						Prefix:        "extensions.cassandra",
 						BatchObserver: obs,
+						Consistency:   gocql.Quorum,
 					},
 					Config: config,
 				}
