@@ -38,10 +38,12 @@ type Client struct {
 	Session interfaces.Session
 }
 
+// ClusterConfig allow client to override some gocql defaults
 type ClusterConfig struct {
 	Prefix        string
 	QueryObserver gocql.QueryObserver
 	BatchObserver gocql.BatchObserver
+	Consistency   gocql.Consistency
 }
 
 // ClientParams is a wrapper for all creation parameters for a new client
@@ -78,6 +80,7 @@ func NewClient(params *ClientParams) (*Client, error) {
 	return client, nil
 }
 
+// SetClusterConfig overrides some gocql defaults
 func (c *Client) SetClusterConfig(db interfaces.DB, clusterConfig ClusterConfig) error {
 	if db != nil {
 		c.DB = db
@@ -88,7 +91,7 @@ func (c *Client) SetClusterConfig(db interfaces.DB, clusterConfig ClusterConfig)
 	cluster.Keyspace = c.Config.GetString(fmt.Sprintf("%s.keyspace", clusterConfig.Prefix))
 	cluster.QueryObserver = clusterConfig.QueryObserver
 	cluster.BatchObserver = clusterConfig.BatchObserver
-	cluster.Consistency = gocql.Quorum // TODO maybe pass as parameter ?
+	cluster.Consistency = clusterConfig.Consistency
 	c.DB = cluster
 
 	return nil
