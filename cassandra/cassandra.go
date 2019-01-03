@@ -33,40 +33,35 @@ import (
 
 // Client is the struct that connects to Cassandra
 type Client struct {
-	Config  *viper.Viper
-	DB      interfaces.DB
-	Session interfaces.Session
-}
-
-// ClusterConfig allow client to override some gocql defaults
-type ClusterConfig struct {
-	Prefix        string
-	QueryObserver gocql.QueryObserver
-	BatchObserver gocql.BatchObserver
-	Consistency   gocql.Consistency
+	ConfigPrefix string
+	Config       *viper.Viper
+	DB           interfaces.DB
+	Session      interfaces.Session
 }
 
 // ClientParams is a wrapper for all creation parameters for a new client
 type ClientParams struct {
-	ClusterConfig
-	Config    *viper.Viper
-	CqlOrNil  interfaces.DB
-	SessOrNil interfaces.Session
+	ConfigPrefix  string
+	Config        *viper.Viper
+	CqlOrNil      interfaces.DB
+	SessOrNil     interfaces.Session
+	ClusterConfig *gocql.ClusterConfig
 }
 
 // NewClient returns a new Cassandra client
 func NewClient(params *ClientParams) (*Client, error) {
 	client := &Client{
-		Config: params.Config,
+		ConfigPrefix: params.ConfigPrefix,
+		Config:       params.Config,
 	}
-
-	var db interfaces.DB
 	if params.CqlOrNil != nil {
-		db = params.CqlOrNil
-	}
-	err := client.SetClusterConfig(db, params.ClusterConfig)
-	if err != nil {
-		return nil, err
+		client.DB = params.CqlOrNil
+	} else if params.ClusterConfig != nil {
+		params.ClusterConfig.Hosts = client.getHosts()
+		params.ClusterConfig.Keyspace = client.getKeyspace()
+		client.DB = params.ClusterConfig
+	} else {
+		client.setDefaultCluster()
 	}
 	if params.SessOrNil != nil {
 		client.Session = params.SessOrNil
@@ -80,19 +75,20 @@ func NewClient(params *ClientParams) (*Client, error) {
 	return client, nil
 }
 
-// SetClusterConfig overrides some gocql defaults
-func (c *Client) SetClusterConfig(db interfaces.DB, clusterConfig ClusterConfig) error {
-	if db != nil {
-		c.DB = db
-		return nil
-	}
-	hosts := strings.Split(c.Config.GetString(fmt.Sprintf("%s.hosts", clusterConfig.Prefix)), ",")
-	cluster := gocql.NewCluster(hosts...)
-	cluster.Keyspace = c.Config.GetString(fmt.Sprintf("%s.keyspace", clusterConfig.Prefix))
-	cluster.QueryObserver = clusterConfig.QueryObserver
-	cluster.BatchObserver = clusterConfig.BatchObserver
-	cluster.Consistency = clusterConfig.Consistency
-	c.DB = cluster
+func (c *Client) getHosts() []string {
+	return strings.Split(
+		c.Config.GetString(fmt.Sprintf("%s.hosts", c.ConfigPrefix)), ",",
+	)
+}
 
-	return nil
+func (c *Client) getKeyspace() string {
+	return c.Config.GetString(
+		fmt.Sprintf("%s.keyspace", c.ConfigPrefix),
+	)
+}
+
+func (c *Client) setDefaultCluster() {
+	cluster := gocql.NewCluster(c.getHosts()...)
+	cluster.Keyspace = c.getKeyspace()
+	c.DB = cluster
 }

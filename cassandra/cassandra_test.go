@@ -78,14 +78,14 @@ var _ = Describe("Cassandra Extension", func() {
 
 		Describe("Connect", func() {
 			It("Should use config to load connection details", func() {
+				clusterConfig := gocql.NewCluster()
+				clusterConfig.Consistency = gocql.Quorum
 				params := &ClientParams{
-					ClusterConfig: ClusterConfig{
-						Prefix:      "extensions.cassandra",
-						Consistency: gocql.Quorum,
-					},
-					Config:    config,
-					CqlOrNil:  mockDb,
-					SessOrNil: mockSession,
+					ClusterConfig: clusterConfig,
+					ConfigPrefix:  "extensions.cassandra",
+					Config:        config,
+					CqlOrNil:      mockDb,
+					SessOrNil:     mockSession,
 				}
 				client, err := NewClient(params)
 				Expect(err).NotTo(HaveOccurred())
@@ -98,14 +98,14 @@ var _ = Describe("Cassandra Extension", func() {
 		Describe("Query with Observer", func() {
 			It("Should use config to load connection details", func() {
 				obs := &TestQueryObserver{}
+				clusterConfig := gocql.NewCluster()
+				clusterConfig.QueryObserver = obs
+				clusterConfig.Consistency = gocql.Quorum
 
 				params := &ClientParams{
-					ClusterConfig: ClusterConfig{
-						Prefix:        "extensions.cassandra",
-						QueryObserver: obs,
-						Consistency:   gocql.Quorum,
-					},
-					Config: config,
+					ClusterConfig: clusterConfig,
+					ConfigPrefix:  "extensions.cassandra",
+					Config:        config,
 				}
 
 				client, err := NewClient(params)
@@ -124,14 +124,14 @@ var _ = Describe("Cassandra Extension", func() {
 		Describe("Barch with Observer", func() {
 			It("Should use config to load connection details", func() {
 				obs := &TestBatchObserver{}
+				clusterConfig := gocql.NewCluster()
+				clusterConfig.BatchObserver = obs
+				clusterConfig.Consistency = gocql.Quorum
 
 				params := &ClientParams{
-					ClusterConfig: ClusterConfig{
-						Prefix:        "extensions.cassandra",
-						BatchObserver: obs,
-						Consistency:   gocql.Quorum,
-					},
-					Config: config,
+					ClusterConfig: clusterConfig,
+					ConfigPrefix:  "extensions.cassandra",
+					Config:        config,
 				}
 
 				client, err := NewClient(params)
