@@ -28,5 +28,5 @@ import "net/http"
 type S3 interface {
 	DeleteObject(key string) error
 	PutObjectRequest(key, acl string) (string, http.Header, error)
-	PutObject(key string, body *[]byte)
+	PutObject(key string, body *[]byte) error
 }
