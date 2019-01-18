@@ -64,9 +64,11 @@ func (mr *MockS3MockRecorder) PutObjectRequest(key, acl interface{}) *gomock.Cal
 }
 
 // PutObject mocks base method
-func (m *MockS3) PutObject(key string, body *[]byte) {
+func (m *MockS3) PutObject(key string, body *[]byte) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "PutObject", key, body)
+	ret := m.ctrl.Call(m, "PutObject", key, body)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // PutObject indicates an expected call of PutObject
