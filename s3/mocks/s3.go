@@ -5,6 +5,7 @@
 package mock_interfaces
 
 import (
+	s3 "github.com/aws/aws-sdk-go/service/s3"
 	gomock "github.com/golang/mock/gomock"
 	http "net/http"
 	reflect "reflect"
@@ -75,4 +76,18 @@ func (m *MockS3) PutObject(key string, body *[]byte) error {
 func (mr *MockS3MockRecorder) PutObject(key, body interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutObject", reflect.TypeOf((*MockS3)(nil).PutObject), key, body)
+}
+
+// PutObjectInput mocks base method
+func (m *MockS3) PutObjectInput(params *s3.PutObjectInput, body *[]byte) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PutObjectInput", params, body)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PutObjectInput indicates an expected call of PutObjectInput
+func (mr *MockS3MockRecorder) PutObjectInput(params, body interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutObjectInput", reflect.TypeOf((*MockS3)(nil).PutObjectInput), params, body)
 }
