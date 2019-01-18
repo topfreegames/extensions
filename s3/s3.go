@@ -152,3 +152,20 @@ func (c Client) DeleteObject(key string) error {
 	}
 	return nil
 }
+
+// PutObjectInput puts an object into s3, if params.Bucket or params.Body
+// are equal nil, they will be overwrite
+func (c Client) PutObjectInput(params *s3.PutObjectInput, body *[]byte) error {
+	b := bytes.NewReader(*body)
+	if params.Bucket == nil {
+		params.Bucket = &c.bucket
+	}
+	if params.Body == nil {
+		params.Body = b
+	}
+	_, err := c.client.PutObject(params)
+	if err != nil {
+		return err
+	}
+	return nil
+}
