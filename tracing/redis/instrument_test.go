@@ -23,7 +23,6 @@ package redis
  */
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/go-redis/redis"
@@ -83,7 +82,6 @@ var _ = Describe("Tracing Redis", func() {
 })
 
 func TestTracingRedis(t *testing.T) {
-	fmt.Println(".....")
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Tracing Redis")
 }
