@@ -54,8 +54,7 @@ func makeMiddleware(client *redis.Client) func(old func(cmd redis.Cmder) error) 
 				"db.instance":  client.Options().DB,
 				"db.statement": parseLong(cmd),
 				"db.type":      "redis",
-
-				"span.kind": "client",
+				"span.kind":    "client",
 			}
 
 			span := opentracing.StartSpan(operationName, reference, tags)
@@ -87,9 +86,9 @@ func makeMiddlewarePipe(client *redis.Client) func(old func(cmds []redis.Cmder) 
 			statement := ""
 			for idx, cmd := range cmds {
 				if idx > 0 {
-					statement = statement + " " + parseLong(cmd)
+					statement = statement + "\n" + parseLong(cmd)
 				} else {
-					statement = statement + parseLong(cmd)
+					statement = parseLong(cmd)
 				}
 			}
 			reference := opentracing.ChildOf(parent)
@@ -121,6 +120,6 @@ func parseShort(cmd redis.Cmder) string {
 }
 
 func parseLong(cmd redis.Cmder) string {
-	array := strings.Split(cmd.String(), ":")
-	return array[0]
+	str := cmd.String()
+	return str[0:strings.LastIndexByte(str, ':')]
 }
