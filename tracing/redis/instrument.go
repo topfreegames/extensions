@@ -121,5 +121,5 @@ func parseShort(cmd redis.Cmder) string {
 
 func parseLong(cmd redis.Cmder) string {
 	str := cmd.String()
-	return str[0:strings.LastIndexByte(str, ':')]
+	return str
 }
