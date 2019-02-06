@@ -59,6 +59,11 @@ func (db *DB) Delete(model interface{}) error {
 	return db.inner.Delete(model)
 }
 
+// ForceDelete calls inner db force delete
+func (db *DB) ForceDelete(model interface{}) error {
+	return db.inner.ForceDelete(model)
+}
+
 // CopyFrom calls inner db copyFrom
 func (db *DB) CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error) {
 	return db.inner.CopyFrom(r, query, params...)

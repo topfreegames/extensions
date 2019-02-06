@@ -36,7 +36,7 @@ import (
 	"github.com/topfreegames/extensions/pg/mocks"
 )
 
-var _ = FDescribe("PG Extension - DB", func() {
+var _ = Describe("PG Extension - DB", func() {
 	var mockCtrl *gomock.Controller
 	var mockDb *mocks.MockDB
 	var mockTx *mocks.MockTx

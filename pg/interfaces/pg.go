@@ -40,11 +40,13 @@ type Queryable interface {
 	Model(model ...interface{}) *orm.Query
 }
 
+// ORM defines the ORM interface
 type ORM interface {
 	Select(model interface{}) error
 	Insert(model ...interface{}) error
 	Update(model interface{}) error
 	Delete(model interface{}) error
+	ForceDelete(model interface{}) error
 
 	CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error)
 	CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error)

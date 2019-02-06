@@ -227,7 +227,7 @@
   version = "v1.35.0"
 
 [[projects]]
-  digest = "1:cf612e4907ff90dcd1b1ea52c4bdd182dee6437e6035aaf1ff518b1372b9ada5"
+  digest = "1:f02ce599b8e76c373d1b5308134f2a4ead6ed45156114ce8a2febc9703a03e86"
   name = "github.com/go-pg/pg"
   packages = [
     ".",
@@ -238,8 +238,8 @@
     "types",
   ]
   pruneopts = ""
-  revision = "2cb96043eb15699002a72c64f2b38d62cf6e4bc0"
-  version = "v6.12.0"
+  revision = "ae5d5e7df4b2e598390e10b66b849c6af94f092b"
+  version = "v6.15.1"
 
 [[projects]]
   digest = "1:3dfd659219b6f63dc0677a62b8d4e8f10b5cf53900aef40858db10a19407e41d"
@@ -272,12 +272,12 @@
   revision = "2e9f2912ba58e37f34af3554659b576eac655760"
 
 [[projects]]
-  digest = "1:a1bad350477afbc84e8cbe5c78be4579478c55335377239631ff0adb985fbabc"
+  digest = "1:530233672f656641b365f8efb38ed9fba80e420baff2ce87633813ab3755ed6d"
   name = "github.com/golang/mock"
   packages = ["gomock"]
   pruneopts = ""
-  revision = "13f360950a79f5864a972c786a10a50e44b69541"
-  version = "v1.0.0"
+  revision = "51421b967af1f557f93a59e0057aaf15ca02e29c"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:bcb38c8fc9b21bb8682ce2d605a7d4aeb618abc7f827e3ac0b27c0371fdb23fb"
@@ -684,7 +684,10 @@
   branch = "master"
   digest = "1:febc7d7c1a817016b83441742910a3eab682d5c64613fcd91fde7ca06107ea49"
   name = "golang.org/x/crypto"
-  packages = ["ssh/terminal"]
+  packages = [
+    "pbkdf2",
+    "ssh/terminal",
+  ]
   pruneopts = ""
   revision = "1875d0a70c90e57f11972aefd42276df65e895b9"
 
@@ -827,6 +830,14 @@
   packages = ["."]
   pruneopts = ""
   revision = "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
+
+[[projects]]
+  digest = "1:70b0b4531f255ded5a2d15f61c21d83e4d9f5b798adc26cc751fc96d0d94a9d4"
+  name = "mellium.im/sasl"
+  packages = ["."]
+  pruneopts = ""
+  revision = "e58e780e1378aa4df5dc705364ff5ae9a4dd1e04"
+  version = "v0.2.1"
 
 [solve-meta]
   analyzer-name = "dep"

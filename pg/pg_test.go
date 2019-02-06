@@ -154,8 +154,8 @@ var _ = Describe("PG Extension", func() {
 		})
 	})
 
-	XDescribe("[Integration]", func() {
-		Describe("Creating new client", func() {
+	Describe("[Integration]", func() {
+		XDescribe("Creating new client", func() {
 			It("should return connected client", func() {
 				client, err := NewClient("extensions.pg", config, nil, nil)
 				Expect(err).NotTo(HaveOccurred())

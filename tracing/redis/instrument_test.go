@@ -41,7 +41,7 @@ var _ = Describe("Tracing Redis", func() {
 		It("del command", func() {
 			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 				return func(cmd redis.Cmder) error {
-					Expect(parseLong(cmd)).Should(Equal("del 123"))
+					Expect(parseLong(cmd)).Should(Equal("del 123: 0"))
 					Expect(parseShort(cmd)).Should(Equal("del"))
 					return nil
 				}
@@ -51,7 +51,7 @@ var _ = Describe("Tracing Redis", func() {
 		It("ZRevRange command", func() {
 			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 				return func(cmd redis.Cmder) error {
-					Expect(parseLong(cmd)).Should(Equal("zrevrange 123 1 2"))
+					Expect(parseLong(cmd)).Should(Equal("zrevrange 123 1 2: []"))
 					Expect(parseShort(cmd)).Should(Equal("zrevrange"))
 					return nil
 				}
@@ -61,7 +61,7 @@ var _ = Describe("Tracing Redis", func() {
 		It("set command", func() {
 			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 				return func(cmd redis.Cmder) error {
-					Expect(parseLong(cmd)).Should(Equal("set AAA BBB"))
+					Expect(parseLong(cmd)).Should(Equal("set AAA BBB: "))
 					Expect(parseShort(cmd)).Should(Equal("set"))
 					return nil
 				}
@@ -71,7 +71,7 @@ var _ = Describe("Tracing Redis", func() {
 		It("exists with prefix", func() {
 			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 				return func(cmd redis.Cmder) error {
-					Expect(parseLong(cmd)).Should(Equal("set topid:AAA BBB"))
+					Expect(parseLong(cmd)).Should(Equal("set topid:AAA BBB: "))
 					Expect(parseShort(cmd)).Should(Equal("set"))
 					return nil
 				}

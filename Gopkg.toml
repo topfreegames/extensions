@@ -43,11 +43,11 @@
 
 [[constraint]]
   name = "github.com/go-pg/pg"
-  version = "~6.12.0"
+  version = "~6.15.0"
 
 [[constraint]]
   name = "github.com/go-redis/redis"
-  version = "6.12.0"
+  version = "~6.12.0"
 
 [[constraint]]
   name = "github.com/golang/mock"
