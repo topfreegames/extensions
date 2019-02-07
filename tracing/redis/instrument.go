@@ -23,8 +23,6 @@
 package redis
 
 import (
-	"strings"
-
 	"github.com/go-redis/redis"
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/tracing"
@@ -48,7 +46,7 @@ func makeMiddleware(client *redis.Client) func(old func(cmd redis.Cmder) error) 
 				parent = span.Context()
 			}
 
-			operationName := "redis " + parseShort(cmd)
+			operationName := "redis " + cmd.Name()
 			reference := opentracing.ChildOf(parent)
 			tags := opentracing.Tags{
 				"db.instance":  client.Options().DB,
@@ -112,11 +110,6 @@ func makeMiddlewarePipe(client *redis.Client) func(old func(cmds []redis.Cmder) 
 			return err
 		}
 	}
-}
-
-func parseShort(cmd redis.Cmder) string {
-	array := strings.Split(parseLong(cmd), " ")
-	return array[0]
 }
 
 func parseLong(cmd redis.Cmder) string {

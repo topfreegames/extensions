@@ -42,7 +42,7 @@ var _ = Describe("Tracing Redis", func() {
 			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 				return func(cmd redis.Cmder) error {
 					Expect(parseLong(cmd)).Should(Equal("del 123: 0"))
-					Expect(parseShort(cmd)).Should(Equal("del"))
+					Expect(cmd.Name()).Should(Equal("del"))
 					return nil
 				}
 			})
@@ -52,7 +52,7 @@ var _ = Describe("Tracing Redis", func() {
 			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 				return func(cmd redis.Cmder) error {
 					Expect(parseLong(cmd)).Should(Equal("zrevrange 123 1 2: []"))
-					Expect(parseShort(cmd)).Should(Equal("zrevrange"))
+					Expect(cmd.Name()).Should(Equal("zrevrange"))
 					return nil
 				}
 			})
@@ -62,7 +62,7 @@ var _ = Describe("Tracing Redis", func() {
 			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 				return func(cmd redis.Cmder) error {
 					Expect(parseLong(cmd)).Should(Equal("set AAA BBB: "))
-					Expect(parseShort(cmd)).Should(Equal("set"))
+					Expect(cmd.Name()).Should(Equal("set"))
 					return nil
 				}
 			})
@@ -72,7 +72,7 @@ var _ = Describe("Tracing Redis", func() {
 			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 				return func(cmd redis.Cmder) error {
 					Expect(parseLong(cmd)).Should(Equal("set topid:AAA BBB: "))
-					Expect(parseShort(cmd)).Should(Equal("set"))
+					Expect(cmd.Name()).Should(Equal("set"))
 					return nil
 				}
 			})
