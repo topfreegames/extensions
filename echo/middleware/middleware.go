@@ -20,17 +20,20 @@ type ResponseTimeMetricsMiddleware struct {
 func (responseTimeMiddleware ResponseTimeMetricsMiddleware) Serve(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		startTime := time.Now()
+		gameID := c.Param("gameID")
 		result := next(c)
 		status := c.Response().Status()
 		route := c.Path()
 		method := c.Request().Method()
-
 		timeUsed := time.Since(startTime)
 
 		tags := []string{
 			fmt.Sprintf("route:%s", route),
 			fmt.Sprintf("method:%s", method),
 			fmt.Sprintf("status:%d", status),
+		}
+		if gameID != "" {
+			tags = append(tags, fmt.Sprintf("game:%s", gameID))
 		}
 
 		responseTimeMiddleware.DDStatsD.Timing(metricName, timeUsed, tags...)
