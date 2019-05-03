@@ -26,9 +26,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/sirupsen/logrus"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	raven "github.com/getsentry/raven-go"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/kafka/interfaces"
 	"github.com/topfreegames/extensions/util"
@@ -44,6 +44,7 @@ type Consumer struct {
 	Logger                         *logrus.Logger
 	messagesReceived               int64
 	msgChan                        chan []byte
+	readyChan                      chan bool
 	OffsetResetStrategy            string
 	run                            bool
 	SessionTimeout                 int
@@ -63,6 +64,7 @@ func NewConsumer(
 		Logger:            logger,
 		messagesReceived:  0,
 		pendingMessagesWG: nil,
+		readyChan:         make(chan bool, 1),
 	}
 	var client interfaces.KafkaConsumerClient
 	if len(clientOrNil) == 1 {
@@ -189,7 +191,9 @@ func (q *Consumer) ConsumeLoop() error {
 				err = q.assignPartitions(e.Partitions)
 				if err != nil {
 					l.WithError(err).Error("error assigning partitions")
+					continue
 				}
+				q.readyChan <- true
 			case kafka.RevokedPartitions:
 				err = q.unassignPartitions()
 				if err != nil {
@@ -301,6 +305,11 @@ func (q *Consumer) handleUnrecognized(ev kafka.Event) {
 		"event":  fmt.Sprintf("%v", ev),
 	})
 	l.Warn("Kafka event not recognized.")
+}
+
+//WaitUntilReady blocks until q.assignPartitions runs succesfully for the first time
+func (q *Consumer) WaitUntilReady() {
+	<-q.readyChan
 }
 
 //Cleanup closes kafka consumer connection

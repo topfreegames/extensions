@@ -263,6 +263,42 @@ var _ = Describe("Kafka Extension", func() {
 			})
 		})
 
+		Describe("WaitUntilReady", func() {
+			It("should receive kafka.AssignedPartitions and be ready", func() {
+				go consumer.ConsumeLoop()
+				defer consumer.StopConsuming()
+				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
+				part := kafka.TopicPartition{
+					Topic:     &topic,
+					Partition: 1,
+				}
+
+				event := kafka.AssignedPartitions{
+					Partitions: []kafka.TopicPartition{part},
+				}
+				publishEvent(event)
+				Eventually(kafkaConsumerClientMock.AssignedPartitions, 5).Should(ContainElement(part))
+				consumer.WaitUntilReady() // should not block
+			})
+
+			It("should block forever if no kafka.AssignedPartitions arrive", func() {
+				go consumer.ConsumeLoop()
+				defer consumer.StopConsuming()
+				ready := make(chan bool, 1)
+				go func() {
+					consumer.WaitUntilReady()
+					ready <- true
+				}()
+				ticker := time.NewTicker(10 * time.Millisecond)
+				select {
+				case <-ready:
+					panic(fmt.Errorf("should not happen"))
+				case <-ticker.C:
+					return // synthetic timeout
+				}
+			})
+		})
+
 		Describe("Cleanup", func() {
 			It("should stop running upon cleanup", func() {
 				consumer.run = true
