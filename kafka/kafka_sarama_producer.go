@@ -58,8 +58,12 @@ func NewSyncProducerWithPrefix(
 	prefix string,
 	clientOrNil ...sarama.SyncProducer,
 ) (*SyncProducer, error) {
+	subconfig := config.Sub(prefix)
+	if subconfig == nil {
+		subconfig = viper.New()
+	}
 	s := &SyncProducer{
-		config:      config.Sub(prefix),
+		config:      subconfig,
 		logger:      logger,
 		kafkaConfig: kafkaConfig,
 	}

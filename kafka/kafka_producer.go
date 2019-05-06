@@ -55,8 +55,12 @@ func NewProducerWithPrefix(
 	prefix string,
 	clientOrNil ...interfaces.KafkaProducerClient,
 ) (*Producer, error) {
+	subconfig := config.Sub(prefix)
+	if subconfig == nil {
+		subconfig = viper.New()
+	}
 	q := &Producer{
-		Config: config.Sub(prefix),
+		Config: subconfig,
 		Logger: logger,
 	}
 	var producer interfaces.KafkaProducerClient
