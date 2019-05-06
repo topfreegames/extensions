@@ -92,6 +92,28 @@ var _ = XDescribe("SyncProducer Extension", func() {
 		})
 	})
 
+	Describe("Configuration Defaults", func() {
+		It("should configure defaults", func() {
+			cnf := viper.New()
+			c := sarama.NewConfig()
+			cons, err := NewSyncProducer(cnf, logger, c, mockProducer)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(cons.config.GetString("brokers")).To(Equal("localhost:9092"))
+		})
+
+		It("should read a config with prefix", func() {
+			cnf := viper.New()
+			cnf.Set("brokers", "localhost:1234")
+			c := sarama.NewConfig()
+			cons, err := NewSyncProducerWithPrefix(cnf, logger, c, "test", mockProducer)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(cons.config.GetString("brokers")).To(Equal("localhost:1234"))
+
+		})
+	})
+
 	XDescribe("[Integration]", func() {
 		Describe("Create a new producer", func() {
 			It("should return a connected client", func() {

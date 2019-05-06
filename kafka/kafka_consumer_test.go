@@ -255,6 +255,22 @@ var _ = Describe("Kafka Extension", func() {
 				Expect(cons.Config.GetString("offsetResetStrategy")).To(Equal("latest"))
 				Expect(cons.Config.GetBool("handleAllMessagesBeforeExiting")).To(BeTrue())
 			})
+
+			It("should read a config with prefix", func() {
+				cnf := viper.New()
+				cnf.Set("test.sessionTimeout", 123)
+				cons, err := NewConsumerWithPrefix(cnf, logger, "test", kafkaConsumerClientMock)
+				Expect(err).NotTo(HaveOccurred())
+				cnf = cons.Config
+				cons.loadConfigurationDefaults()
+
+				Expect(cons.Config.GetStringSlice("topics")).To(Equal([]string{"com.games.test"}))
+				Expect(cons.Config.GetString("brokers")).To(Equal("localhost:9092"))
+				Expect(cons.Config.GetString("group")).To(Equal("test"))
+				Expect(cons.Config.GetInt("sessionTimeout")).To(Equal(123))
+				Expect(cons.Config.GetString("offsetResetStrategy")).To(Equal("latest"))
+				Expect(cons.Config.GetBool("handleAllMessagesBeforeExiting")).To(BeTrue())
+			})
 		})
 
 		Describe("Pending Messages Waiting Group", func() {

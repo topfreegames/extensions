@@ -78,6 +78,26 @@ var _ = Describe("Producer Extension", func() {
 		})
 	})
 
+	Describe("Configuration Defaults", func() {
+		It("should configure defaults", func() {
+			cnf := viper.New()
+			cons, err := NewProducer(cnf, logger, mockProducer)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(cons.Config.GetString("brokers")).To(Equal("localhost:9092"))
+		})
+
+		It("should read a config with prefix", func() {
+			cnf := viper.New()
+			cnf.Set("brokers", "localhost:1234")
+			cons, err := NewProducerWithPrefix(cnf, logger, "test", mockProducer)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(cons.Config.GetString("brokers")).To(Equal("localhost:1234"))
+
+		})
+	})
+
 	XDescribe("[Integration]", func() {
 		Describe("Creating new producer", func() {
 			It("should return connected client", func() {
