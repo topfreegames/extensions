@@ -41,12 +41,25 @@ type SyncProducer struct {
 }
 
 // NewSyncProducer creates a new kafka sync producer
-func NewSyncProducer(config *viper.Viper,
+func NewSyncProducer(
+	config *viper.Viper,
 	logger *log.Logger,
 	kafkaConfig *sarama.Config,
-	clientOrNil ...sarama.SyncProducer) (*SyncProducer, error) {
+	clientOrNil ...sarama.SyncProducer,
+) (*SyncProducer, error) {
+	return NewSyncProducerWithPrefix(config, logger, kafkaConfig, "extensions.kafkaproducer", clientOrNil...)
+}
+
+// NewSyncProducerWithPrefix creates a new kafka sync producer
+func NewSyncProducerWithPrefix(
+	config *viper.Viper,
+	logger *log.Logger,
+	kafkaConfig *sarama.Config,
+	prefix string,
+	clientOrNil ...sarama.SyncProducer,
+) (*SyncProducer, error) {
 	s := &SyncProducer{
-		config:      config,
+		config:      config.Sub(prefix),
 		logger:      logger,
 		kafkaConfig: kafkaConfig,
 	}
@@ -59,12 +72,12 @@ func NewSyncProducer(config *viper.Viper,
 }
 
 func (s *SyncProducer) loadConfigurationDefaults() {
-	s.config.SetDefault("extensions.kafkaproducer.brokers", "localhost:9092")
+	s.config.SetDefault("brokers", "localhost:9092")
 }
 
 func (s *SyncProducer) configure(producer sarama.SyncProducer) error {
 	s.loadConfigurationDefaults()
-	s.Brokers = s.config.GetString("extensions.kafkaproducer.brokers")
+	s.Brokers = s.config.GetString("brokers")
 	l := s.logger.WithFields(log.Fields{
 		"brokers": s.Brokers,
 	})

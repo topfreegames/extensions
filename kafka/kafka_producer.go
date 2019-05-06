@@ -40,9 +40,23 @@ type Producer struct {
 }
 
 // NewProducer for creating a new Producer instance
-func NewProducer(config *viper.Viper, logger *log.Logger, clientOrNil ...interfaces.KafkaProducerClient) (*Producer, error) {
+func NewProducer(
+	config *viper.Viper,
+	logger *log.Logger,
+	clientOrNil ...interfaces.KafkaProducerClient,
+) (*Producer, error) {
+	return NewProducerWithPrefix(config, logger, "extensions.kafkaproducer", clientOrNil...)
+}
+
+// NewProducerWithPrefix for creating a new Producer instance
+func NewProducerWithPrefix(
+	config *viper.Viper,
+	logger *log.Logger,
+	prefix string,
+	clientOrNil ...interfaces.KafkaProducerClient,
+) (*Producer, error) {
 	q := &Producer{
-		Config: config,
+		Config: config.Sub(prefix),
 		Logger: logger,
 	}
 	var producer interfaces.KafkaProducerClient
@@ -54,12 +68,12 @@ func NewProducer(config *viper.Viper, logger *log.Logger, clientOrNil ...interfa
 }
 
 func (q *Producer) loadConfigurationDefaults() {
-	q.Config.SetDefault("extensions.kafkaproducer.brokers", "localhost:9941")
+	q.Config.SetDefault("brokers", "localhost:9941")
 }
 
 func (q *Producer) configure(producer interfaces.KafkaProducerClient) error {
 	q.loadConfigurationDefaults()
-	q.Brokers = q.Config.GetString("extensions.kafkaproducer.brokers")
+	q.Brokers = q.Config.GetString("brokers")
 	c := &kafka.ConfigMap{
 		"bootstrap.servers": q.Brokers,
 	}
