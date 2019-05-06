@@ -112,7 +112,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should assign partition", func() {
-				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
+				topic := consumer.Config.GetStringSlice("topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 				part := kafka.TopicPartition{
@@ -128,7 +128,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should log error if fails to assign partition", func() {
-				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
+				topic := consumer.Config.GetStringSlice("topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 
@@ -149,7 +149,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should revoke partitions", func() {
-				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
+				topic := consumer.Config.GetStringSlice("topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 				part := kafka.TopicPartition{
@@ -165,7 +165,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should stop loop if fails to revoke partitions", func() {
-				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
+				topic := consumer.Config.GetStringSlice("topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 				part := kafka.TopicPartition{
@@ -182,7 +182,7 @@ var _ = Describe("Kafka Extension", func() {
 			})
 
 			It("should receive message", func() {
-				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
+				topic := consumer.Config.GetStringSlice("topics")[0]
 				startConsuming()
 				defer consumer.StopConsuming()
 				part := kafka.TopicPartition{
@@ -245,14 +245,31 @@ var _ = Describe("Kafka Extension", func() {
 				cnf := viper.New()
 				cons, err := NewConsumer(cnf, logger, kafkaConsumerClientMock)
 				Expect(err).NotTo(HaveOccurred())
+				cnf = cons.Config
 				cons.loadConfigurationDefaults()
 
-				Expect(cnf.GetStringSlice("extensions.kafkaconsumer.topics")).To(Equal([]string{"com.games.test"}))
-				Expect(cnf.GetString("extensions.kafkaconsumer.brokers")).To(Equal("localhost:9092"))
-				Expect(cnf.GetString("extensions.kafkaconsumer.group")).To(Equal("test"))
-				Expect(cnf.GetInt("extensions.kafkaconsumer.sessionTimeout")).To(Equal(6000))
-				Expect(cnf.GetString("extensions.kafkaconsumer.offsetResetStrategy")).To(Equal("latest"))
-				Expect(cnf.GetBool("extensions.kafkaconsumer.handleAllMessagesBeforeExiting")).To(BeTrue())
+				Expect(cons.Config.GetStringSlice("topics")).To(Equal([]string{"com.games.test"}))
+				Expect(cons.Config.GetString("brokers")).To(Equal("localhost:9092"))
+				Expect(cons.Config.GetString("group")).To(Equal("test"))
+				Expect(cons.Config.GetInt("sessionTimeout")).To(Equal(6000))
+				Expect(cons.Config.GetString("offsetResetStrategy")).To(Equal("latest"))
+				Expect(cons.Config.GetBool("handleAllMessagesBeforeExiting")).To(BeTrue())
+			})
+
+			It("should read a config with prefix", func() {
+				cnf := viper.New()
+				cnf.Set("test.sessionTimeout", 123)
+				cons, err := NewConsumerWithPrefix(cnf, logger, "test", kafkaConsumerClientMock)
+				Expect(err).NotTo(HaveOccurred())
+				cnf = cons.Config
+				cons.loadConfigurationDefaults()
+
+				Expect(cons.Config.GetStringSlice("topics")).To(Equal([]string{"com.games.test"}))
+				Expect(cons.Config.GetString("brokers")).To(Equal("localhost:9092"))
+				Expect(cons.Config.GetString("group")).To(Equal("test"))
+				Expect(cons.Config.GetInt("sessionTimeout")).To(Equal(123))
+				Expect(cons.Config.GetString("offsetResetStrategy")).To(Equal("latest"))
+				Expect(cons.Config.GetBool("handleAllMessagesBeforeExiting")).To(BeTrue())
 			})
 		})
 
@@ -267,7 +284,7 @@ var _ = Describe("Kafka Extension", func() {
 			It("should receive kafka.AssignedPartitions and be ready", func() {
 				go consumer.ConsumeLoop()
 				defer consumer.StopConsuming()
-				topic := consumer.Config.GetStringSlice("extensions.kafkaconsumer.topics")[0]
+				topic := consumer.Config.GetStringSlice("topics")[0]
 				part := kafka.TopicPartition{
 					Topic:     &topic,
 					Partition: 1,

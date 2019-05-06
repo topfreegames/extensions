@@ -59,8 +59,22 @@ func NewConsumer(
 	logger *logrus.Logger,
 	clientOrNil ...interfaces.KafkaConsumerClient,
 ) (*Consumer, error) {
+	return NewConsumerWithPrefix(config, logger, "extensions.kafkaconsumer", clientOrNil...)
+}
+
+// NewConsumerWithPrefix for creating a new Consumer instance
+func NewConsumerWithPrefix(
+	config *viper.Viper,
+	logger *logrus.Logger,
+	prefix string,
+	clientOrNil ...interfaces.KafkaConsumerClient,
+) (*Consumer, error) {
+	subconfig := config.Sub(prefix)
+	if subconfig == nil {
+		subconfig = viper.New()
+	}
 	q := &Consumer{
-		Config:            config,
+		Config:            subconfig,
 		Logger:            logger,
 		messagesReceived:  0,
 		pendingMessagesWG: nil,
@@ -78,23 +92,23 @@ func NewConsumer(
 }
 
 func (q *Consumer) loadConfigurationDefaults() {
-	q.Config.SetDefault("extensions.kafkaconsumer.topics", []string{"com.games.test"})
-	q.Config.SetDefault("extensions.kafkaconsumer.brokers", "localhost:9092")
-	q.Config.SetDefault("extensions.kafkaconsumer.channelSize", 100)
-	q.Config.SetDefault("extensions.kafkaconsumer.group", "test")
-	q.Config.SetDefault("extensions.kafkaconsumer.sessionTimeout", 6000)
-	q.Config.SetDefault("extensions.kafkaconsumer.offsetResetStrategy", "latest")
-	q.Config.SetDefault("extensions.kafkaconsumer.handleAllMessagesBeforeExiting", true)
+	q.Config.SetDefault("topics", []string{"com.games.test"})
+	q.Config.SetDefault("brokers", "localhost:9092")
+	q.Config.SetDefault("channelSize", 100)
+	q.Config.SetDefault("group", "test")
+	q.Config.SetDefault("sessionTimeout", 6000)
+	q.Config.SetDefault("offsetResetStrategy", "latest")
+	q.Config.SetDefault("handleAllMessagesBeforeExiting", true)
 }
 
 func (q *Consumer) configure(client interfaces.KafkaConsumerClient) error {
-	q.OffsetResetStrategy = q.Config.GetString("extensions.kafkaconsumer.offsetResetStrategy")
-	q.Brokers = q.Config.GetString("extensions.kafkaconsumer.brokers")
-	q.ConsumerGroup = q.Config.GetString("extensions.kafkaconsumer.group")
-	q.SessionTimeout = q.Config.GetInt("extensions.kafkaconsumer.sessionTimeout")
-	q.Topics = q.Config.GetStringSlice("extensions.kafkaconsumer.topics")
-	q.ChannelSize = q.Config.GetInt("extensions.kafkaconsumer.channelSize")
-	q.HandleAllMessagesBeforeExiting = q.Config.GetBool("extensions.kafkaconsumer.handleAllMessagesBeforeExiting")
+	q.OffsetResetStrategy = q.Config.GetString("offsetResetStrategy")
+	q.Brokers = q.Config.GetString("brokers")
+	q.ConsumerGroup = q.Config.GetString("group")
+	q.SessionTimeout = q.Config.GetInt("sessionTimeout")
+	q.Topics = q.Config.GetStringSlice("topics")
+	q.ChannelSize = q.Config.GetInt("channelSize")
+	q.HandleAllMessagesBeforeExiting = q.Config.GetBool("handleAllMessagesBeforeExiting")
 
 	q.msgChan = make(chan []byte, q.ChannelSize)
 
