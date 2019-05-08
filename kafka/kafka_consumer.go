@@ -102,7 +102,7 @@ func (q *Consumer) loadConfigurationDefaults(prefix string) {
 
 func (q *Consumer) configure(client interfaces.KafkaConsumerClient, prefix string) error {
 	q.loadConfigurationDefaults(prefix)
-	q.OffsetResetStrategy = q.Config.GetString(prefix + ".offsetResetStrategy")
+	q.OffsetResetStrategy = q.Config.GetString(prefix + "offsetResetStrategy")
 	q.Brokers = q.Config.GetString(prefix + "brokers")
 	q.ConsumerGroup = q.Config.GetString(prefix + "group")
 	q.SessionTimeout = q.Config.GetInt(prefix + "sessionTimeout")
