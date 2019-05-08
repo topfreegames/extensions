@@ -55,29 +55,28 @@ func NewProducerWithPrefix(
 	prefix string,
 	clientOrNil ...interfaces.KafkaProducerClient,
 ) (*Producer, error) {
-	subconfig := config.Sub(prefix)
-	if subconfig == nil {
-		subconfig = viper.New()
+	if prefix != "" {
+		prefix += "."
 	}
 	q := &Producer{
-		Config: subconfig,
+		Config: config,
 		Logger: logger,
 	}
 	var producer interfaces.KafkaProducerClient
 	if len(clientOrNil) == 1 {
 		producer = clientOrNil[0]
 	}
-	err := q.configure(producer)
+	err := q.configure(producer, prefix)
 	return q, err
 }
 
-func (q *Producer) loadConfigurationDefaults() {
-	q.Config.SetDefault("brokers", "localhost:9941")
+func (q *Producer) loadConfigurationDefaults(prefix string) {
+	q.Config.SetDefault(prefix+"brokers", "localhost:9941")
 }
 
-func (q *Producer) configure(producer interfaces.KafkaProducerClient) error {
-	q.loadConfigurationDefaults()
-	q.Brokers = q.Config.GetString("brokers")
+func (q *Producer) configure(producer interfaces.KafkaProducerClient, prefix string) error {
+	q.loadConfigurationDefaults(prefix)
+	q.Brokers = q.Config.GetString(prefix + "brokers")
 	c := &kafka.ConfigMap{
 		"bootstrap.servers": q.Brokers,
 	}
