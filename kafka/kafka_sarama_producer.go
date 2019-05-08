@@ -58,12 +58,11 @@ func NewSyncProducerWithPrefix(
 	prefix string,
 	clientOrNil ...sarama.SyncProducer,
 ) (*SyncProducer, error) {
-	subconfig := config.Sub(prefix)
-	if subconfig == nil {
-		subconfig = viper.New()
+	if prefix != "" {
+		prefix += "."
 	}
 	s := &SyncProducer{
-		config:      subconfig,
+		config:      config,
 		logger:      logger,
 		kafkaConfig: kafkaConfig,
 	}
@@ -71,17 +70,17 @@ func NewSyncProducerWithPrefix(
 	if len(clientOrNil) == 1 {
 		producer = clientOrNil[0]
 	}
-	err := s.configure(producer)
+	err := s.configure(producer, prefix)
 	return s, err
 }
 
-func (s *SyncProducer) loadConfigurationDefaults() {
-	s.config.SetDefault("brokers", "localhost:9092")
+func (s *SyncProducer) loadConfigurationDefaults(prefix string) {
+	s.config.SetDefault(prefix+"brokers", "localhost:9092")
 }
 
-func (s *SyncProducer) configure(producer sarama.SyncProducer) error {
-	s.loadConfigurationDefaults()
-	s.Brokers = s.config.GetString("brokers")
+func (s *SyncProducer) configure(producer sarama.SyncProducer, prefix string) error {
+	s.loadConfigurationDefaults(prefix)
+	s.Brokers = s.config.GetString(prefix + "brokers")
 	l := s.logger.WithFields(log.Fields{
 		"brokers": s.Brokers,
 	})

@@ -69,12 +69,11 @@ func NewConsumerWithPrefix(
 	prefix string,
 	clientOrNil ...interfaces.KafkaConsumerClient,
 ) (*Consumer, error) {
-	subconfig := config.Sub(prefix)
-	if subconfig == nil {
-		subconfig = viper.New()
+	if prefix != "" {
+		prefix += "."
 	}
 	q := &Consumer{
-		Config:            subconfig,
+		Config:            config,
 		Logger:            logger,
 		messagesReceived:  0,
 		pendingMessagesWG: nil,
@@ -84,31 +83,32 @@ func NewConsumerWithPrefix(
 	if len(clientOrNil) == 1 {
 		client = clientOrNil[0]
 	}
-	err := q.configure(client)
+	err := q.configure(client, prefix)
 	if err != nil {
 		return nil, err
 	}
 	return q, nil
 }
 
-func (q *Consumer) loadConfigurationDefaults() {
-	q.Config.SetDefault("topics", []string{"com.games.test"})
-	q.Config.SetDefault("brokers", "localhost:9092")
-	q.Config.SetDefault("channelSize", 100)
-	q.Config.SetDefault("group", "test")
-	q.Config.SetDefault("sessionTimeout", 6000)
-	q.Config.SetDefault("offsetResetStrategy", "latest")
-	q.Config.SetDefault("handleAllMessagesBeforeExiting", true)
+func (q *Consumer) loadConfigurationDefaults(prefix string) {
+	q.Config.SetDefault(prefix+"topics", []string{"com.games.test"})
+	q.Config.SetDefault(prefix+"brokers", "localhost:9092")
+	q.Config.SetDefault(prefix+"channelSize", 100)
+	q.Config.SetDefault(prefix+"group", "test")
+	q.Config.SetDefault(prefix+"sessionTimeout", 6000)
+	q.Config.SetDefault(prefix+"offsetResetStrategy", "latest")
+	q.Config.SetDefault(prefix+"handleAllMessagesBeforeExiting", true)
 }
 
-func (q *Consumer) configure(client interfaces.KafkaConsumerClient) error {
-	q.OffsetResetStrategy = q.Config.GetString("offsetResetStrategy")
-	q.Brokers = q.Config.GetString("brokers")
-	q.ConsumerGroup = q.Config.GetString("group")
-	q.SessionTimeout = q.Config.GetInt("sessionTimeout")
-	q.Topics = q.Config.GetStringSlice("topics")
-	q.ChannelSize = q.Config.GetInt("channelSize")
-	q.HandleAllMessagesBeforeExiting = q.Config.GetBool("handleAllMessagesBeforeExiting")
+func (q *Consumer) configure(client interfaces.KafkaConsumerClient, prefix string) error {
+	q.loadConfigurationDefaults(prefix)
+	q.OffsetResetStrategy = q.Config.GetString(prefix + ".offsetResetStrategy")
+	q.Brokers = q.Config.GetString(prefix + "brokers")
+	q.ConsumerGroup = q.Config.GetString(prefix + "group")
+	q.SessionTimeout = q.Config.GetInt(prefix + "sessionTimeout")
+	q.Topics = q.Config.GetStringSlice(prefix + "topics")
+	q.ChannelSize = q.Config.GetInt(prefix + "channelSize")
+	q.HandleAllMessagesBeforeExiting = q.Config.GetBool(prefix + "handleAllMessagesBeforeExiting")
 
 	q.msgChan = make(chan []byte, q.ChannelSize)
 
