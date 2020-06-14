@@ -17,6 +17,8 @@ services:
     ports:
       - "8585:5432"
     container_name: extensions_postgres_1
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
   statsd:
     image: hopsoft/graphite-statsd
     ports:
