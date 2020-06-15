@@ -34,6 +34,12 @@ import (
 	tredis "github.com/topfreegames/extensions/tracing/redis"
 )
 
+// ClientConfig holds the input configs for a client.
+type ClientConfig struct {
+	URL               string
+	ConnectionTimeout int
+}
+
 // Client identifies uniquely one redis client with a pool of connections
 type Client struct {
 	Client       interfaces.RedisClient
@@ -48,6 +54,14 @@ type TraceWrapper struct{}
 // WithContext is a wrapper for returning a client with context
 func (t *TraceWrapper) WithContext(ctx context.Context, c interfaces.RedisClient) interfaces.RedisClient {
 	return c.WithContext(ctx)
+}
+
+// NewClientFromConfig creates a Client with a ClientConfig.
+func NewClientFromConfig(config *ClientConfig, ifaces ...interface{}) (*Client, error) {
+	viperConfig := viper.New()
+	viperConfig.Set("prefix.url", config.URL)
+	viperConfig.Set("prefix.connectionTimeout", config.ConnectionTimeout)
+	return NewClient("prefix", viperConfig, ifaces...)
 }
 
 // NewClient creates and returns a new redis client based on the given settings
