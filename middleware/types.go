@@ -12,7 +12,7 @@ type ResponseWriter struct {
 func NewResponseWriter(w http.ResponseWriter) *ResponseWriter {
 	return &ResponseWriter{
 		ResponseWriter: w,
-		StatusCode:     -1,
+		StatusCode:     http.StatusOK,
 	}
 }
 
