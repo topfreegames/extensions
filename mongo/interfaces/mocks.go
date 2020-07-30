@@ -128,6 +128,18 @@ func (mr *MockCollectionMockRecorder) FindId(id interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindId", reflect.TypeOf((*MockCollection)(nil).FindId), id)
 }
 
+// Pipe mocks base method
+func (m *MockCollection) Pipe(pipeline interface{}) Pipe {
+	ret := m.ctrl.Call(m, "Pipe", pipeline)
+	ret0, _ := ret[0].(Pipe)
+	return ret0
+}
+
+// Pipe indicates an expected call of Pipe
+func (mr *MockCollectionMockRecorder) Pipe(pipeline interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Pipe", reflect.TypeOf((*MockCollection)(nil).Pipe), pipeline)
+}
+
 // Insert mocks base method
 func (m *MockCollection) Insert(docs ...interface{}) error {
 	varargs := []interface{}{}
@@ -321,6 +333,65 @@ func (m *MockQuery) One(result interface{}) error {
 // One indicates an expected call of One
 func (mr *MockQueryMockRecorder) One(result interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "One", reflect.TypeOf((*MockQuery)(nil).One), result)
+}
+
+// Limit mocks base method
+func (m *MockQuery) Limit(n int) Query {
+	ret := m.ctrl.Call(m, "Limit", n)
+	ret0, _ := ret[0].(Query)
+	return ret0
+}
+
+// Limit indicates an expected call of Limit
+func (mr *MockQueryMockRecorder) Limit(n interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Limit", reflect.TypeOf((*MockQuery)(nil).Limit), n)
+}
+
+// MockPipe is a mock of Pipe interface
+type MockPipe struct {
+	ctrl     *gomock.Controller
+	recorder *MockPipeMockRecorder
+}
+
+// MockPipeMockRecorder is the mock recorder for MockPipe
+type MockPipeMockRecorder struct {
+	mock *MockPipe
+}
+
+// NewMockPipe creates a new mock instance
+func NewMockPipe(ctrl *gomock.Controller) *MockPipe {
+	mock := &MockPipe{ctrl: ctrl}
+	mock.recorder = &MockPipeMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockPipe) EXPECT() *MockPipeMockRecorder {
+	return m.recorder
+}
+
+// All mocks base method
+func (m *MockPipe) All(result interface{}) error {
+	ret := m.ctrl.Call(m, "All", result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// All indicates an expected call of All
+func (mr *MockPipeMockRecorder) All(result interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockPipe)(nil).All), result)
+}
+
+// Batch mocks base method
+func (m *MockPipe) Batch(n int) Pipe {
+	ret := m.ctrl.Call(m, "Batch", n)
+	ret0, _ := ret[0].(Pipe)
+	return ret0
+}
+
+// Batch indicates an expected call of Batch
+func (mr *MockPipeMockRecorder) Batch(n interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Batch", reflect.TypeOf((*MockPipe)(nil).Batch), n)
 }
 
 // MockIter is a mock of Iter interface
