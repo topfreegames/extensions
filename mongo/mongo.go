@@ -123,6 +123,18 @@ func (c *Collection) FindId(id interface{}) interfaces.Query {
 	}
 }
 
+//Pipe calls mongo collection Pipe
+func (c *Collection) Pipe(pipeline interface{}) interfaces.Pipe {
+	return &Pipe{
+		ctx:  c.ctx,
+		pipe: c.collection.Pipe(pipeline),
+
+		database: c.collection.Database.Name,
+		prefix:   c.collection.FullName,
+		args:     formatArgs(pipeline),
+	}
+}
+
 //Insert calls mongo collection Insert
 func (c *Collection) Insert(docs ...interface{}) error {
 	var err error
@@ -310,6 +322,39 @@ func (q *Query) One(result interface{}) error {
 	})
 
 	return err
+}
+
+//Pipe holds a mongo pipe and implements Pipe interface
+type Pipe struct {
+	ctx  context.Context
+	pipe *mgo.Pipe
+
+	database string
+	prefix   string
+	args     string
+}
+
+//All calls mongo pipe All
+func (p *Pipe) All(result interface{}) error {
+	var err error
+
+	tracing.Trace(p.ctx, p.database, p.prefix, "aggregate", p.args, func() error {
+		err = p.pipe.All(result)
+		return err
+	})
+
+	return err
+}
+
+//Batch calls mongo pipe Batch
+func (p *Pipe) Batch(n int) interfaces.Pipe {
+	return &Pipe{
+		ctx:      p.ctx,
+		pipe:     p.pipe.Batch(n),
+		database: p.database,
+		prefix:   p.prefix,
+		args:     p.args,
+	}
 }
 
 //Iter wraps mongo Iter
