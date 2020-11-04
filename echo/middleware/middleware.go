@@ -12,7 +12,8 @@ const metricName = "response_time_milliseconds"
 
 // ResponseTimeMetricsMiddleware struct encapsulating DDStatsD
 type ResponseTimeMetricsMiddleware struct {
-	DDStatsD *middleware.DogStatsD
+	DDStatsD      *middleware.DogStatsD
+	AddCustomTags func(echo.Context) []string
 }
 
 //ResponseTimeMetricsMiddleware is a middleware to measure the response time
@@ -34,6 +35,10 @@ func (responseTimeMiddleware ResponseTimeMetricsMiddleware) Serve(next echo.Hand
 		}
 		if gameID != "" {
 			tags = append(tags, fmt.Sprintf("game:%s", gameID))
+		}
+		if responseTimeMiddleware.AddCustomTags != nil {
+			customizedTags := responseTimeMiddleware.AddCustomTags(c)
+			tags = append(tags, customizedTags)
 		}
 
 		responseTimeMiddleware.DDStatsD.Timing(metricName, timeUsed, tags...)
