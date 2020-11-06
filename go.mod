@@ -17,7 +17,7 @@ require (
 	github.com/bsm/redis-lock v6.0.0+incompatible
 	github.com/certifi/gocertifi v0.0.0-20170727155124-3fd9e1adb12b // indirect
 	github.com/codahale/hdrhistogram v0.0.0-00010101000000-000000000000 // indirect
-	github.com/confluentinc/confluent-kafka-go v0.11.6
+	github.com/confluentinc/confluent-kafka-go v0.11.0
 	github.com/customerio/gospec v0.0.0-20130710230057-a5cc0e48aa39 // indirect
 	github.com/eapache/go-resiliency v1.0.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20160609142408-bb955e01b934 // indirect
