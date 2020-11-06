@@ -47,3 +47,11 @@ Bugfixes:
 Breaking Changes:
 
 * Each extension has its own package now
+
+### v9.0.0
+
+Breaking Changes:
+
+* Depreciate support to go deps
+* Add go modules `github.com/topfreegames/extensions/v9`
+* Update minimum go version to 1.12 (including travis)
