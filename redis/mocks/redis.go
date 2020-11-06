@@ -6,11 +6,12 @@ package mocks
 
 import (
 	context "context"
-	redis "github.com/go-redis/redis"
-	gomock "github.com/golang/mock/gomock"
-	interfaces "github.com/topfreegames/extensions/redis/interfaces"
 	reflect "reflect"
 	time "time"
+
+	redis "github.com/go-redis/redis"
+	gomock "github.com/golang/mock/gomock"
+	interfaces "github.com/topfreegames/extensions/v9/redis/interfaces"
 )
 
 // MockTraceWrapper is a mock of TraceWrapper interface

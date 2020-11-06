@@ -25,7 +25,7 @@ setup:
 	@/bin/bash -c '[ "`uname -s`" == "Linux" ] && [ "`which apt-get`" != "" ] && echo "Ensuring librdkafka is installed..." && ./debian-install-librdkafka.sh; exit 0'
 	@go get -u github.com/onsi/ginkgo/ginkgo
 	@go get github.com/gordonklaus/ineffassign
-	@dep ensure
+	@go mod tidy
 
 mocks: mongo-mocks dog-mocks pg-mocks redis-mocks
 

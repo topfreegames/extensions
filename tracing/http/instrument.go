@@ -27,7 +27,7 @@ import (
 	"net/http"
 
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/tracing"
+	"github.com/topfreegames/extensions/v9/tracing"
 )
 
 // Trace wraps an HTTP request and reports it to tracing

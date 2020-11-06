@@ -32,9 +32,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/kafka/mocks"
-	. "github.com/topfreegames/extensions/testing"
-	"github.com/topfreegames/extensions/util"
+	"github.com/topfreegames/extensions/v9/kafka/mocks"
+	. "github.com/topfreegames/extensions/v9/testing"
+	"github.com/topfreegames/extensions/v9/util"
 )
 
 var _ = Describe("Kafka Extension", func() {
@@ -366,7 +366,7 @@ var _ = Describe("Kafka Extension", func() {
 				defer client.StopConsuming()
 				go client.ConsumeLoop()
 
-				Eventually(func() []*logrus.Entry {
+				Eventually(func() []logrus.Entry {
 					return hook.Entries
 				}, 10*time.Second).Should(ContainLogMessage("reached EOF at com.games.teste[0]@0(Broker: No more messages)"))
 				p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": client.Brokers})

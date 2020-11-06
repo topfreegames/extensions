@@ -29,8 +29,8 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/topfreegames/extensions/mongo/interfaces"
-	tracing "github.com/topfreegames/extensions/tracing/mongo"
+	"github.com/topfreegames/extensions/v9/mongo/interfaces"
+	tracing "github.com/topfreegames/extensions/v9/tracing/mongo"
 )
 
 //Mongo holds the mongo database and connection

@@ -24,7 +24,7 @@ package router
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/topfreegames/extensions/middleware"
+	"github.com/topfreegames/extensions/v9/middleware"
 )
 
 // NewRouter creates an instance of mux.Router with jaeger middleware.

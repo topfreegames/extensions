@@ -3,7 +3,7 @@
 ### oauth2 authenticator
 ```go
 	import (
-		"github.com/topfreegames/extensions/oauth2"
+		"github.com/topfreegames/extensions/v9/oauth2"
 		o2 "golang.org/x/oauth2"
 	)
 

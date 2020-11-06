@@ -25,7 +25,7 @@ package regex_test
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/topfreegames/extensions/regex"
+	"github.com/topfreegames/extensions/v9/regex"
 )
 
 var _ = Describe("Regex Extension", func() {

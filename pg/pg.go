@@ -30,7 +30,7 @@ import (
 	pg "github.com/go-pg/pg"
 
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/pg/interfaces"
+	"github.com/topfreegames/extensions/v9/pg/interfaces"
 )
 
 // Client is the struct that connects to PostgreSQL

@@ -6,7 +6,7 @@ import (
 
 	workers "github.com/jrallison/go-workers"
 
-	"github.com/topfreegames/extensions/middleware"
+	"github.com/topfreegames/extensions/v9/middleware"
 )
 
 const metricName = "worker_response_time_milliseconds"

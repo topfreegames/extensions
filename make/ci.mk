@@ -19,9 +19,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 setup-ci-deps:
-	@go get -u github.com/golang/dep/...
 	@go get github.com/mattn/goveralls
 	@go get github.com/onsi/ginkgo/ginkgo
-	@dep ensure
+	@go mod tidy
 
 setup-ci: setup-ci-deps

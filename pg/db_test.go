@@ -33,7 +33,7 @@ import (
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/topfreegames/extensions/pg/mocks"
+	"github.com/topfreegames/extensions/v9/pg/mocks"
 )
 
 var _ = Describe("PG Extension - DB", func() {

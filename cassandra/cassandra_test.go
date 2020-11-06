@@ -30,7 +30,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/cassandra/mocks"
+	"github.com/topfreegames/extensions/v9/cassandra/mocks"
 )
 
 type TestQueryObserver struct {

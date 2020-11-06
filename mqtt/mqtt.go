@@ -25,9 +25,9 @@ package mqtt
 import (
 	"context"
 
-	"github.com/eclipse/paho.mqtt.golang"
-	"github.com/topfreegames/extensions/mqtt/interfaces"
-	tracing "github.com/topfreegames/extensions/tracing/mqtt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/topfreegames/extensions/v9/mqtt/interfaces"
+	tracing "github.com/topfreegames/extensions/v9/tracing/mqtt"
 )
 
 // Client wraps an MQTT client

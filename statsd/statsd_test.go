@@ -27,8 +27,8 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/statsd/mocks"
-	"github.com/topfreegames/extensions/util"
+	"github.com/topfreegames/extensions/v9/statsd/mocks"
+	"github.com/topfreegames/extensions/v9/util"
 )
 
 var _ = Describe("StatsD Extension", func() {

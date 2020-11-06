@@ -29,7 +29,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine"
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/tracing"
+	"github.com/topfreegames/extensions/v9/tracing"
 )
 
 // Instrument adds tracing instrumentation on an Echo app

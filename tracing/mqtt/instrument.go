@@ -27,9 +27,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/eclipse/paho.mqtt.golang"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/tracing"
+	"github.com/topfreegames/extensions/v9/tracing"
 )
 
 // Trace wraps an MQTT request and reports it to tracing

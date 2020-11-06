@@ -27,8 +27,8 @@ import (
 	raven "github.com/getsentry/raven-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/kafka/interfaces"
-	"github.com/topfreegames/extensions/util"
+	"github.com/topfreegames/extensions/v9/kafka/interfaces"
+	"github.com/topfreegames/extensions/v9/util"
 )
 
 // Producer for producing push feedbacks to a kafka queue
