@@ -25,10 +25,10 @@ package statsd
 import (
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/alexcesaro/statsd"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/statsd/interfaces"
+	"github.com/topfreegames/extensions/v9/statsd/interfaces"
 )
 
 // StatsD for sending metrics

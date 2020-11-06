@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	pg "github.com/topfreegames/extensions/pg/interfaces"
+	pg "github.com/topfreegames/extensions/v9/pg/interfaces"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )

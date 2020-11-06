@@ -15,8 +15,8 @@ import (
 	"github.com/gorilla/mux"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
-	"github.com/topfreegames/extensions/oauth2"
-	pg "github.com/topfreegames/extensions/pg/interfaces"
+	"github.com/topfreegames/extensions/v9/oauth2"
+	pg "github.com/topfreegames/extensions/v9/pg/interfaces"
 )
 
 type ctxKey string

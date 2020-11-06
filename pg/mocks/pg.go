@@ -6,12 +6,13 @@ package mocks
 
 import (
 	context "context"
+	io "io"
+	reflect "reflect"
+
 	pg "github.com/go-pg/pg"
 	orm "github.com/go-pg/pg/orm"
 	gomock "github.com/golang/mock/gomock"
-	interfaces "github.com/topfreegames/extensions/pg/interfaces"
-	io "io"
-	reflect "reflect"
+	interfaces "github.com/topfreegames/extensions/v9/pg/interfaces"
 )
 
 // MockQueryable is a mock of Queryable interface

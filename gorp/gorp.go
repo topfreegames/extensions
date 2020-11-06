@@ -30,8 +30,8 @@ import (
 	"regexp"
 
 	"github.com/go-gorp/gorp"
-	"github.com/topfreegames/extensions/gorp/interfaces"
-	tgorp "github.com/topfreegames/extensions/tracing/gorp"
+	"github.com/topfreegames/extensions/v9/gorp/interfaces"
+	tgorp "github.com/topfreegames/extensions/v9/tracing/gorp"
 )
 
 // New wraps and instruments an existing connection to a database

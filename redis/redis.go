@@ -27,11 +27,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/bsm/redis-lock"
+	lock "github.com/bsm/redis-lock"
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/redis/interfaces"
-	tredis "github.com/topfreegames/extensions/tracing/redis"
+	"github.com/topfreegames/extensions/v9/redis/interfaces"
+	tredis "github.com/topfreegames/extensions/v9/tracing/redis"
 )
 
 // ClientConfig holds the input configs for a client.
