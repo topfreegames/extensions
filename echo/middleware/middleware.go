@@ -38,7 +38,9 @@ func (responseTimeMiddleware ResponseTimeMetricsMiddleware) Serve(next echo.Hand
 		}
 		if responseTimeMiddleware.AddCustomTags != nil {
 			customizedTags := responseTimeMiddleware.AddCustomTags(c)
-			tags = append(tags, customizedTags...)
+			if len(customizedTags) > 0 {
+				tags = append(tags, customizedTags...)
+			}
 		}
 
 		responseTimeMiddleware.DDStatsD.Timing(metricName, timeUsed, tags...)
