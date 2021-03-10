@@ -65,3 +65,7 @@ Breaking Changes:
 * Depreciate support to go deps
 * Add go modules `github.com/topfreegames/extensions/v9`
 * Update minimum go version to 1.12 (including travis)
+* The `jaeger-client-go` requires a dependency that change its name. To keep compability replace the required name by your module while the community don't release a new version with this fixed:
+```
+$ go mod edit -replace github.com/codahale/hdrhistogram=github.com/HdrHistogram/hdrhistogram-go@v0.0.0-20200919145931-8dac23c8dac1
+```
