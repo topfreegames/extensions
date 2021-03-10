@@ -69,3 +69,7 @@ Breaking Changes:
 ```
 $ go mod edit -replace github.com/codahale/hdrhistogram=github.com/HdrHistogram/hdrhistogram-go@v0.0.0-20200919145931-8dac23c8dac1
 ```
+
+### v9.0.1
+
+* Fix `jaeger-client-go` to avoid package replace
