@@ -5,10 +5,10 @@ go 1.12
 require (
 	cloud.google.com/go v0.46.3 // indirect
 	github.com/DataDog/datadog-go v2.2.0+incompatible
-	github.com/HdrHistogram/hdrhistogram-go v0.9.0 // indirect
 	github.com/Shopify/sarama v1.15.0
 	github.com/Shopify/toxiproxy v2.1.4+incompatible // indirect
 	github.com/alexcesaro/statsd v2.0.0+incompatible
+	github.com/apache/thrift/lib/go/thrift v0.0.0-20210120171102-e27e82c46ba4 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20171111151018-521b25f4b05f
 	github.com/aws/aws-sdk-go v1.13.32
 	github.com/bitly/go-hostpool v0.1.0 // indirect
@@ -16,7 +16,6 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/bsm/redis-lock v6.0.0+incompatible
 	github.com/certifi/gocertifi v0.0.0-20170727155124-3fd9e1adb12b // indirect
-	github.com/codahale/hdrhistogram v0.0.0-00010101000000-000000000000 // indirect
 	github.com/confluentinc/confluent-kafka-go v0.11.0
 	github.com/customerio/gospec v0.0.0-20130710230057-a5cc0e48aa39 // indirect
 	github.com/eapache/go-resiliency v1.0.0 // indirect
@@ -72,8 +71,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.6.1 // indirect
-	github.com/uber/jaeger-client-go v2.25.0+incompatible
-	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
+	github.com/uber/jaeger-client-go v1.6.0
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
@@ -91,5 +89,3 @@ require (
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
 	mellium.im/sasl v0.2.1 // indirect
 )
-
-replace github.com/codahale/hdrhistogram => github.com/HdrHistogram/hdrhistogram-go v0.0.0-20200919145931-8dac23c8dac1
