@@ -39,6 +39,7 @@ type RedisClient interface {
 	BLPop(timeout time.Duration, keys ...string) *redis.StringSliceCmd
 	Close() error
 	Context() context.Context
+	Scan(cursor uint64, match string, count int64) *redis.ScanCmd
 	Del(keys ...string) *redis.IntCmd
 	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
 	EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd
@@ -50,6 +51,7 @@ type RedisClient interface {
 	HMGet(string, ...string) *redis.SliceCmd
 	HMSet(string, map[string]interface{}) *redis.StatusCmd
 	HSet(key, field string, value interface{}) *redis.BoolCmd
+	HScan(key string, cursor uint64, match string, count int64) *redis.ScanCmd
 	MGet(keys ...string) *redis.SliceCmd
 	LRange(key string, start, stop int64) *redis.StringSliceCmd
 	Ping() *redis.StatusCmd
