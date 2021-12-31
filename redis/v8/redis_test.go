@@ -1,4 +1,4 @@
-package redisextensions_test
+package redis_test
 
 /*
  * Copyright (c) 2021 TFG Co <backend@tfgco.com>
@@ -31,7 +31,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/v9/redisextensions"
+	redisextensions "github.com/topfreegames/extensions/v9/redis/v8"
 )
 
 var _ = Describe("Redis", func() {
@@ -41,7 +41,7 @@ var _ = Describe("Redis", func() {
 	BeforeEach(func() {
 		var err error
 		config := viper.New()
-		config.SetConfigFile("../config/test.yaml")
+		config.SetConfigFile("../../config/test.yaml")
 		Expect(config.ReadInConfig()).NotTo(HaveOccurred())
 		client, err = redisextensions.NewClient(ctx, "extensions.redis", config)
 		Expect(err).NotTo(HaveOccurred())

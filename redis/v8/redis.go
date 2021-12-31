@@ -1,4 +1,4 @@
-package redisextensions
+package redis
 
 /*
  * Copyright (c) 2021 TFG Co <backend@tfgco.com>
@@ -24,6 +24,7 @@ package redisextensions
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -51,14 +52,14 @@ func NewClient(ctx context.Context, prefix string, config *viper.Viper) (*redis.
 func NewClientFromConfig(ctx context.Context, config *ClientConfig) (*redis.Client, error) {
 	options, err := redis.ParseURL(config.URL)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse redis url: %w", err)
 	}
 	client := redis.NewClient(options)
 
 	timeout := time.Duration(config.ConnectionTimeout) * time.Second
 	err = waitForConnection(ctx, client, timeout)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to connect to redis: %w", err)
 	}
 
 	redistracing.Instrument(client)
@@ -75,7 +76,7 @@ func waitForConnection(ctx context.Context, client *redis.Client, timeout time.D
 	for {
 		select {
 		case <-timeoutTimer.C:
-			return fmt.Errorf("timed out waiting for Redis to connect")
+			return errors.New("timed out waiting for Redis to connect")
 		case <-ticker.C:
 			if isConnected(ctx, client) {
 				return nil
