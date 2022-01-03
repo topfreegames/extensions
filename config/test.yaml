@@ -30,6 +30,9 @@ extensions:
   redis:
     url: redis://localhost:6333/0
     connectionTimeout: 100
+  redisV8:
+    url: redis://localhost:6333/0
+    connectionTimeout: 100s
   mongo:
     host: localhost
     port: 27017
