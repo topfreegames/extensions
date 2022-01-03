@@ -34,16 +34,15 @@ import (
 )
 
 type ClientConfig struct {
-	URL string
-	// Timeout in seconds
-	ConnectionTimeout int
+	URL               string
+	ConnectionTimeout time.Duration
 }
 
 // NewClient creates and returns a new redis client based on the given settings
 func NewClient(ctx context.Context, prefix string, config *viper.Viper) (*redis.Client, error) {
 	clientConfig := &ClientConfig{
 		URL:               config.GetString(fmt.Sprintf("%s.url", prefix)),
-		ConnectionTimeout: config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix)),
+		ConnectionTimeout: config.GetDuration(fmt.Sprintf("%s.connectionTimeout", prefix)),
 	}
 	return NewClientFromConfig(ctx, clientConfig)
 }
@@ -56,8 +55,7 @@ func NewClientFromConfig(ctx context.Context, config *ClientConfig) (*redis.Clie
 	}
 	client := redis.NewClient(options)
 
-	timeout := time.Duration(config.ConnectionTimeout) * time.Second
-	err = waitForConnection(ctx, client, timeout)
+	err = waitForConnection(ctx, client, config.ConnectionTimeout)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to redis: %w", err)
 	}

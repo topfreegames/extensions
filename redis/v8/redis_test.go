@@ -43,7 +43,7 @@ var _ = Describe("Redis", func() {
 		config := viper.New()
 		config.SetConfigFile("../../config/test.yaml")
 		Expect(config.ReadInConfig()).NotTo(HaveOccurred())
-		client, err = redisextensions.NewClient(ctx, "extensions.redis", config)
+		client, err = redisextensions.NewClient(ctx, "extensions.redisV8", config)
 		Expect(err).NotTo(HaveOccurred())
 	})
 
