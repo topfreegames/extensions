@@ -69,3 +69,8 @@ Breaking Changes:
 ```
 $ go mod edit -replace github.com/codahale/hdrhistogram=github.com/HdrHistogram/hdrhistogram-go@v0.0.0-20200919145931-8dac23c8dac1
 ```
+
+#### v9.1.0
+
+* Add support to Redis v8 (`github.com/go-redis/redis/v8`)
+
