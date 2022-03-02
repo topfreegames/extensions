@@ -16,7 +16,6 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/bsm/redis-lock v6.0.0+incompatible
 	github.com/certifi/gocertifi v0.0.0-20170727155124-3fd9e1adb12b // indirect
-	github.com/codahale/hdrhistogram v0.0.0-00010101000000-000000000000 // indirect
 	github.com/confluentinc/confluent-kafka-go v0.11.0
 	github.com/customerio/gospec v0.0.0-20130710230057-a5cc0e48aa39 // indirect
 	github.com/eapache/go-resiliency v1.0.0 // indirect
@@ -45,7 +44,6 @@ require (
 	github.com/jrallison/go-workers v0.0.0-20180112190529-dbf81d0b75bb
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/kr/pretty v0.2.1 // indirect
-	github.com/kr/text v0.2.0 // indirect
 	github.com/labstack/echo v2.2.0+incompatible
 	github.com/labstack/gommon v0.2.2-0.20170925052817-57409ada9da0 // indirect
 	github.com/lib/pq v1.0.0 // indirect
@@ -72,8 +70,8 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.6.1 // indirect
-	github.com/uber/jaeger-client-go v2.25.0+incompatible
-	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
+	github.com/uber/jaeger-client-go v2.30.0+incompatible
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
@@ -81,6 +79,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/text v0.3.7 // indirect
+	google.golang.org/grpc v1.36.0
 	gopkg.in/alexcesaro/statsd.v2 v2.0.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 	gopkg.in/inf.v0 v0.9.0 // indirect
@@ -92,4 +91,4 @@ require (
 	mellium.im/sasl v0.2.1 // indirect
 )
 
-replace github.com/codahale/hdrhistogram => github.com/HdrHistogram/hdrhistogram-go v0.0.0-20200919145931-8dac23c8dac1
+replace github.com/codahale/hdrhistogram => github.com/HdrHistogram/hdrhistogram-go v0.9.0
