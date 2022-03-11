@@ -74,3 +74,7 @@ $ go mod edit -replace github.com/codahale/hdrhistogram=github.com/HdrHistogram/
 
 * Add support to Redis v8 (`github.com/go-redis/redis/v8`)
 
+#### v9.2.0
+
+* Add gRPC client tracing methods
+* Fix github.com/codahale/hdrhistogram dependency import issue
