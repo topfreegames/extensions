@@ -66,6 +66,7 @@ type DB interface {
 // Tx represents the contract for a Postgres Tx
 type Tx interface {
 	Queryable
+	ORM
 	Rollback() error
 	Commit() error
 }

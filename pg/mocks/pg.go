@@ -15,30 +15,30 @@ import (
 	interfaces "github.com/topfreegames/extensions/v9/pg/interfaces"
 )
 
-// MockQueryable is a mock of Queryable interface
+// MockQueryable is a mock of Queryable interface.
 type MockQueryable struct {
 	ctrl     *gomock.Controller
 	recorder *MockQueryableMockRecorder
 }
 
-// MockQueryableMockRecorder is the mock recorder for MockQueryable
+// MockQueryableMockRecorder is the mock recorder for MockQueryable.
 type MockQueryableMockRecorder struct {
 	mock *MockQueryable
 }
 
-// NewMockQueryable creates a new mock instance
+// NewMockQueryable creates a new mock instance.
 func NewMockQueryable(ctrl *gomock.Controller) *MockQueryable {
 	mock := &MockQueryable{ctrl: ctrl}
 	mock.recorder = &MockQueryableMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockQueryable) EXPECT() *MockQueryableMockRecorder {
 	return m.recorder
 }
 
-// Exec mocks base method
+// Exec mocks base method.
 func (m *MockQueryable) Exec(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
@@ -51,14 +51,14 @@ func (m *MockQueryable) Exec(arg0 interface{}, arg1 ...interface{}) (orm.Result,
 	return ret0, ret1
 }
 
-// Exec indicates an expected call of Exec
+// Exec indicates an expected call of Exec.
 func (mr *MockQueryableMockRecorder) Exec(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockQueryable)(nil).Exec), varargs...)
 }
 
-// ExecOne mocks base method
+// ExecOne mocks base method.
 func (m *MockQueryable) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
@@ -71,14 +71,32 @@ func (m *MockQueryable) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Resu
 	return ret0, ret1
 }
 
-// ExecOne indicates an expected call of ExecOne
+// ExecOne indicates an expected call of ExecOne.
 func (mr *MockQueryableMockRecorder) ExecOne(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOne", reflect.TypeOf((*MockQueryable)(nil).ExecOne), varargs...)
 }
 
-// Query mocks base method
+// Model mocks base method.
+func (m *MockQueryable) Model(model ...interface{}) *orm.Query {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range model {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Model", varargs...)
+	ret0, _ := ret[0].(*orm.Query)
+	return ret0
+}
+
+// Model indicates an expected call of Model.
+func (mr *MockQueryableMockRecorder) Model(model ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Model", reflect.TypeOf((*MockQueryable)(nil).Model), model...)
+}
+
+// Query mocks base method.
 func (m *MockQueryable) Query(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -91,14 +109,14 @@ func (m *MockQueryable) Query(arg0, arg1 interface{}, arg2 ...interface{}) (orm.
 	return ret0, ret1
 }
 
-// Query indicates an expected call of Query
+// Query indicates an expected call of Query.
 func (mr *MockQueryableMockRecorder) Query(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockQueryable)(nil).Query), varargs...)
 }
 
-// QueryOne mocks base method
+// QueryOne mocks base method.
 func (m *MockQueryable) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -111,129 +129,37 @@ func (m *MockQueryable) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (o
 	return ret0, ret1
 }
 
-// QueryOne indicates an expected call of QueryOne
+// QueryOne indicates an expected call of QueryOne.
 func (mr *MockQueryableMockRecorder) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOne", reflect.TypeOf((*MockQueryable)(nil).QueryOne), varargs...)
 }
 
-// Model mocks base method
-func (m *MockQueryable) Model(model ...interface{}) *orm.Query {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{}
-	for _, a := range model {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Model", varargs...)
-	ret0, _ := ret[0].(*orm.Query)
-	return ret0
-}
-
-// Model indicates an expected call of Model
-func (mr *MockQueryableMockRecorder) Model(model ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Model", reflect.TypeOf((*MockQueryable)(nil).Model), model...)
-}
-
-// MockORM is a mock of ORM interface
+// MockORM is a mock of ORM interface.
 type MockORM struct {
 	ctrl     *gomock.Controller
 	recorder *MockORMMockRecorder
 }
 
-// MockORMMockRecorder is the mock recorder for MockORM
+// MockORMMockRecorder is the mock recorder for MockORM.
 type MockORMMockRecorder struct {
 	mock *MockORM
 }
 
-// NewMockORM creates a new mock instance
+// NewMockORM creates a new mock instance.
 func NewMockORM(ctrl *gomock.Controller) *MockORM {
 	mock := &MockORM{ctrl: ctrl}
 	mock.recorder = &MockORMMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockORM) EXPECT() *MockORMMockRecorder {
 	return m.recorder
 }
 
-// Select mocks base method
-func (m *MockORM) Select(model interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Select", model)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Select indicates an expected call of Select
-func (mr *MockORMMockRecorder) Select(model interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Select", reflect.TypeOf((*MockORM)(nil).Select), model)
-}
-
-// Insert mocks base method
-func (m *MockORM) Insert(model ...interface{}) error {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{}
-	for _, a := range model {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Insert", varargs...)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Insert indicates an expected call of Insert
-func (mr *MockORMMockRecorder) Insert(model ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockORM)(nil).Insert), model...)
-}
-
-// Update mocks base method
-func (m *MockORM) Update(model interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", model)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Update indicates an expected call of Update
-func (mr *MockORMMockRecorder) Update(model interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockORM)(nil).Update), model)
-}
-
-// Delete mocks base method
-func (m *MockORM) Delete(model interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Delete indicates an expected call of Delete
-func (mr *MockORMMockRecorder) Delete(model interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockORM)(nil).Delete), model)
-}
-
-// ForceDelete mocks base method
-func (m *MockORM) ForceDelete(model interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ForceDelete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// ForceDelete indicates an expected call of ForceDelete
-func (mr *MockORMMockRecorder) ForceDelete(model interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForceDelete", reflect.TypeOf((*MockORM)(nil).ForceDelete), model)
-}
-
-// CopyFrom mocks base method
+// CopyFrom mocks base method.
 func (m *MockORM) CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{r, query}
@@ -246,14 +172,14 @@ func (m *MockORM) CopyFrom(r io.Reader, query interface{}, params ...interface{}
 	return ret0, ret1
 }
 
-// CopyFrom indicates an expected call of CopyFrom
+// CopyFrom indicates an expected call of CopyFrom.
 func (mr *MockORMMockRecorder) CopyFrom(r, query interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{r, query}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyFrom", reflect.TypeOf((*MockORM)(nil).CopyFrom), varargs...)
 }
 
-// CopyTo mocks base method
+// CopyTo mocks base method.
 func (m *MockORM) CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{w, query}
@@ -266,14 +192,42 @@ func (m *MockORM) CopyTo(w io.Writer, query interface{}, params ...interface{}) 
 	return ret0, ret1
 }
 
-// CopyTo indicates an expected call of CopyTo
+// CopyTo indicates an expected call of CopyTo.
 func (mr *MockORMMockRecorder) CopyTo(w, query interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{w, query}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyTo", reflect.TypeOf((*MockORM)(nil).CopyTo), varargs...)
 }
 
-// FormatQuery mocks base method
+// Delete mocks base method.
+func (m *MockORM) Delete(model interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockORMMockRecorder) Delete(model interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockORM)(nil).Delete), model)
+}
+
+// ForceDelete mocks base method.
+func (m *MockORM) ForceDelete(model interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ForceDelete", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ForceDelete indicates an expected call of ForceDelete.
+func (mr *MockORMMockRecorder) ForceDelete(model interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForceDelete", reflect.TypeOf((*MockORM)(nil).ForceDelete), model)
+}
+
+// FormatQuery mocks base method.
 func (m *MockORM) FormatQuery(b []byte, query string, params ...interface{}) []byte {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{b, query}
@@ -285,52 +239,15 @@ func (m *MockORM) FormatQuery(b []byte, query string, params ...interface{}) []b
 	return ret0
 }
 
-// FormatQuery indicates an expected call of FormatQuery
+// FormatQuery indicates an expected call of FormatQuery.
 func (mr *MockORMMockRecorder) FormatQuery(b, query interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{b, query}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FormatQuery", reflect.TypeOf((*MockORM)(nil).FormatQuery), varargs...)
 }
 
-// MockDB is a mock of DB interface
-type MockDB struct {
-	ctrl     *gomock.Controller
-	recorder *MockDBMockRecorder
-}
-
-// MockDBMockRecorder is the mock recorder for MockDB
-type MockDBMockRecorder struct {
-	mock *MockDB
-}
-
-// NewMockDB creates a new mock instance
-func NewMockDB(ctrl *gomock.Controller) *MockDB {
-	mock := &MockDB{ctrl: ctrl}
-	mock.recorder = &MockDBMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockDB) EXPECT() *MockDBMockRecorder {
-	return m.recorder
-}
-
-// Select mocks base method
-func (m *MockDB) Select(model interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Select", model)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Select indicates an expected call of Select
-func (mr *MockDBMockRecorder) Select(model interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Select", reflect.TypeOf((*MockDB)(nil).Select), model)
-}
-
-// Insert mocks base method
-func (m *MockDB) Insert(model ...interface{}) error {
+// Insert mocks base method.
+func (m *MockORM) Insert(model ...interface{}) error {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{}
 	for _, a := range model {
@@ -341,55 +258,107 @@ func (m *MockDB) Insert(model ...interface{}) error {
 	return ret0
 }
 
-// Insert indicates an expected call of Insert
-func (mr *MockDBMockRecorder) Insert(model ...interface{}) *gomock.Call {
+// Insert indicates an expected call of Insert.
+func (mr *MockORMMockRecorder) Insert(model ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockDB)(nil).Insert), model...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockORM)(nil).Insert), model...)
 }
 
-// Update mocks base method
-func (m *MockDB) Update(model interface{}) error {
+// Select mocks base method.
+func (m *MockORM) Select(model interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Select", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Select indicates an expected call of Select.
+func (mr *MockORMMockRecorder) Select(model interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Select", reflect.TypeOf((*MockORM)(nil).Select), model)
+}
+
+// Update mocks base method.
+func (m *MockORM) Update(model interface{}) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", model)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Update indicates an expected call of Update
-func (mr *MockDBMockRecorder) Update(model interface{}) *gomock.Call {
+// Update indicates an expected call of Update.
+func (mr *MockORMMockRecorder) Update(model interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDB)(nil).Update), model)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockORM)(nil).Update), model)
 }
 
-// Delete mocks base method
-func (m *MockDB) Delete(model interface{}) error {
+// MockDB is a mock of DB interface.
+type MockDB struct {
+	ctrl     *gomock.Controller
+	recorder *MockDBMockRecorder
+}
+
+// MockDBMockRecorder is the mock recorder for MockDB.
+type MockDBMockRecorder struct {
+	mock *MockDB
+}
+
+// NewMockDB creates a new mock instance.
+func NewMockDB(ctrl *gomock.Controller) *MockDB {
+	mock := &MockDB{ctrl: ctrl}
+	mock.recorder = &MockDBMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockDB) EXPECT() *MockDBMockRecorder {
+	return m.recorder
+}
+
+// Begin mocks base method.
+func (m *MockDB) Begin() (*pg.Tx, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", model)
+	ret := m.ctrl.Call(m, "Begin")
+	ret0, _ := ret[0].(*pg.Tx)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Begin indicates an expected call of Begin.
+func (mr *MockDBMockRecorder) Begin() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Begin", reflect.TypeOf((*MockDB)(nil).Begin))
+}
+
+// Close mocks base method.
+func (m *MockDB) Close() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Close")
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Delete indicates an expected call of Delete
-func (mr *MockDBMockRecorder) Delete(model interface{}) *gomock.Call {
+// Close indicates an expected call of Close.
+func (mr *MockDBMockRecorder) Close() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDB)(nil).Delete), model)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockDB)(nil).Close))
 }
 
-// ForceDelete mocks base method
-func (m *MockDB) ForceDelete(model interface{}) error {
+// Context mocks base method.
+func (m *MockDB) Context() context.Context {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ForceDelete", model)
-	ret0, _ := ret[0].(error)
+	ret := m.ctrl.Call(m, "Context")
+	ret0, _ := ret[0].(context.Context)
 	return ret0
 }
 
-// ForceDelete indicates an expected call of ForceDelete
-func (mr *MockDBMockRecorder) ForceDelete(model interface{}) *gomock.Call {
+// Context indicates an expected call of Context.
+func (mr *MockDBMockRecorder) Context() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForceDelete", reflect.TypeOf((*MockDB)(nil).ForceDelete), model)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockDB)(nil).Context))
 }
 
-// CopyFrom mocks base method
+// CopyFrom mocks base method.
 func (m *MockDB) CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{r, query}
@@ -402,14 +371,14 @@ func (m *MockDB) CopyFrom(r io.Reader, query interface{}, params ...interface{})
 	return ret0, ret1
 }
 
-// CopyFrom indicates an expected call of CopyFrom
+// CopyFrom indicates an expected call of CopyFrom.
 func (mr *MockDBMockRecorder) CopyFrom(r, query interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{r, query}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyFrom", reflect.TypeOf((*MockDB)(nil).CopyFrom), varargs...)
 }
 
-// CopyTo mocks base method
+// CopyTo mocks base method.
 func (m *MockDB) CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{w, query}
@@ -422,33 +391,28 @@ func (m *MockDB) CopyTo(w io.Writer, query interface{}, params ...interface{}) (
 	return ret0, ret1
 }
 
-// CopyTo indicates an expected call of CopyTo
+// CopyTo indicates an expected call of CopyTo.
 func (mr *MockDBMockRecorder) CopyTo(w, query interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{w, query}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyTo", reflect.TypeOf((*MockDB)(nil).CopyTo), varargs...)
 }
 
-// FormatQuery mocks base method
-func (m *MockDB) FormatQuery(b []byte, query string, params ...interface{}) []byte {
+// Delete mocks base method.
+func (m *MockDB) Delete(model interface{}) error {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{b, query}
-	for _, a := range params {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "FormatQuery", varargs...)
-	ret0, _ := ret[0].([]byte)
+	ret := m.ctrl.Call(m, "Delete", model)
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// FormatQuery indicates an expected call of FormatQuery
-func (mr *MockDBMockRecorder) FormatQuery(b, query interface{}, params ...interface{}) *gomock.Call {
+// Delete indicates an expected call of Delete.
+func (mr *MockDBMockRecorder) Delete(model interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{b, query}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FormatQuery", reflect.TypeOf((*MockDB)(nil).FormatQuery), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDB)(nil).Delete), model)
 }
 
-// Exec mocks base method
+// Exec mocks base method.
 func (m *MockDB) Exec(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
@@ -461,14 +425,14 @@ func (m *MockDB) Exec(arg0 interface{}, arg1 ...interface{}) (orm.Result, error)
 	return ret0, ret1
 }
 
-// Exec indicates an expected call of Exec
+// Exec indicates an expected call of Exec.
 func (mr *MockDBMockRecorder) Exec(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockDB)(nil).Exec), varargs...)
 }
 
-// ExecOne mocks base method
+// ExecOne mocks base method.
 func (m *MockDB) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
@@ -481,14 +445,83 @@ func (m *MockDB) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, err
 	return ret0, ret1
 }
 
-// ExecOne indicates an expected call of ExecOne
+// ExecOne indicates an expected call of ExecOne.
 func (mr *MockDBMockRecorder) ExecOne(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOne", reflect.TypeOf((*MockDB)(nil).ExecOne), varargs...)
 }
 
-// Query mocks base method
+// ForceDelete mocks base method.
+func (m *MockDB) ForceDelete(model interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ForceDelete", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ForceDelete indicates an expected call of ForceDelete.
+func (mr *MockDBMockRecorder) ForceDelete(model interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForceDelete", reflect.TypeOf((*MockDB)(nil).ForceDelete), model)
+}
+
+// FormatQuery mocks base method.
+func (m *MockDB) FormatQuery(b []byte, query string, params ...interface{}) []byte {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{b, query}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FormatQuery", varargs...)
+	ret0, _ := ret[0].([]byte)
+	return ret0
+}
+
+// FormatQuery indicates an expected call of FormatQuery.
+func (mr *MockDBMockRecorder) FormatQuery(b, query interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{b, query}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FormatQuery", reflect.TypeOf((*MockDB)(nil).FormatQuery), varargs...)
+}
+
+// Insert mocks base method.
+func (m *MockDB) Insert(model ...interface{}) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range model {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Insert", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Insert indicates an expected call of Insert.
+func (mr *MockDBMockRecorder) Insert(model ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockDB)(nil).Insert), model...)
+}
+
+// Model mocks base method.
+func (m *MockDB) Model(model ...interface{}) *orm.Query {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range model {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Model", varargs...)
+	ret0, _ := ret[0].(*orm.Query)
+	return ret0
+}
+
+// Model indicates an expected call of Model.
+func (mr *MockDBMockRecorder) Model(model ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Model", reflect.TypeOf((*MockDB)(nil).Model), model...)
+}
+
+// Query mocks base method.
 func (m *MockDB) Query(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -501,14 +534,14 @@ func (m *MockDB) Query(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result,
 	return ret0, ret1
 }
 
-// Query indicates an expected call of Query
+// Query indicates an expected call of Query.
 func (mr *MockDBMockRecorder) Query(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockDB)(nil).Query), varargs...)
 }
 
-// QueryOne mocks base method
+// QueryOne mocks base method.
 func (m *MockDB) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -521,61 +554,42 @@ func (m *MockDB) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Resu
 	return ret0, ret1
 }
 
-// QueryOne indicates an expected call of QueryOne
+// QueryOne indicates an expected call of QueryOne.
 func (mr *MockDBMockRecorder) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOne", reflect.TypeOf((*MockDB)(nil).QueryOne), varargs...)
 }
 
-// Model mocks base method
-func (m *MockDB) Model(model ...interface{}) *orm.Query {
+// Select mocks base method.
+func (m *MockDB) Select(model interface{}) error {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{}
-	for _, a := range model {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Model", varargs...)
-	ret0, _ := ret[0].(*orm.Query)
-	return ret0
-}
-
-// Model indicates an expected call of Model
-func (mr *MockDBMockRecorder) Model(model ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Model", reflect.TypeOf((*MockDB)(nil).Model), model...)
-}
-
-// Close mocks base method
-func (m *MockDB) Close() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Close")
+	ret := m.ctrl.Call(m, "Select", model)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Close indicates an expected call of Close
-func (mr *MockDBMockRecorder) Close() *gomock.Call {
+// Select indicates an expected call of Select.
+func (mr *MockDBMockRecorder) Select(model interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockDB)(nil).Close))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Select", reflect.TypeOf((*MockDB)(nil).Select), model)
 }
 
-// Begin mocks base method
-func (m *MockDB) Begin() (*pg.Tx, error) {
+// Update mocks base method.
+func (m *MockDB) Update(model interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Begin")
-	ret0, _ := ret[0].(*pg.Tx)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "Update", model)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-// Begin indicates an expected call of Begin
-func (mr *MockDBMockRecorder) Begin() *gomock.Call {
+// Update indicates an expected call of Update.
+func (mr *MockDBMockRecorder) Update(model interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Begin", reflect.TypeOf((*MockDB)(nil).Begin))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDB)(nil).Update), model)
 }
 
-// WithContext mocks base method
+// WithContext mocks base method.
 func (m *MockDB) WithContext(ctx context.Context) *pg.DB {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WithContext", ctx)
@@ -583,50 +597,104 @@ func (m *MockDB) WithContext(ctx context.Context) *pg.DB {
 	return ret0
 }
 
-// WithContext indicates an expected call of WithContext
+// WithContext indicates an expected call of WithContext.
 func (mr *MockDBMockRecorder) WithContext(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockDB)(nil).WithContext), ctx)
 }
 
-// Context mocks base method
-func (m *MockDB) Context() context.Context {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Context")
-	ret0, _ := ret[0].(context.Context)
-	return ret0
-}
-
-// Context indicates an expected call of Context
-func (mr *MockDBMockRecorder) Context() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockDB)(nil).Context))
-}
-
-// MockTx is a mock of Tx interface
+// MockTx is a mock of Tx interface.
 type MockTx struct {
 	ctrl     *gomock.Controller
 	recorder *MockTxMockRecorder
 }
 
-// MockTxMockRecorder is the mock recorder for MockTx
+// MockTxMockRecorder is the mock recorder for MockTx.
 type MockTxMockRecorder struct {
 	mock *MockTx
 }
 
-// NewMockTx creates a new mock instance
+// NewMockTx creates a new mock instance.
 func NewMockTx(ctrl *gomock.Controller) *MockTx {
 	mock := &MockTx{ctrl: ctrl}
 	mock.recorder = &MockTxMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockTx) EXPECT() *MockTxMockRecorder {
 	return m.recorder
 }
 
-// Exec mocks base method
+// Commit mocks base method.
+func (m *MockTx) Commit() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Commit")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Commit indicates an expected call of Commit.
+func (mr *MockTxMockRecorder) Commit() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Commit", reflect.TypeOf((*MockTx)(nil).Commit))
+}
+
+// CopyFrom mocks base method.
+func (m *MockTx) CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{r, query}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CopyFrom", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CopyFrom indicates an expected call of CopyFrom.
+func (mr *MockTxMockRecorder) CopyFrom(r, query interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{r, query}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyFrom", reflect.TypeOf((*MockTx)(nil).CopyFrom), varargs...)
+}
+
+// CopyTo mocks base method.
+func (m *MockTx) CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{w, query}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CopyTo", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CopyTo indicates an expected call of CopyTo.
+func (mr *MockTxMockRecorder) CopyTo(w, query interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{w, query}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyTo", reflect.TypeOf((*MockTx)(nil).CopyTo), varargs...)
+}
+
+// Delete mocks base method.
+func (m *MockTx) Delete(model interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockTxMockRecorder) Delete(model interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTx)(nil).Delete), model)
+}
+
+// Exec mocks base method.
 func (m *MockTx) Exec(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
@@ -639,14 +707,14 @@ func (m *MockTx) Exec(arg0 interface{}, arg1 ...interface{}) (orm.Result, error)
 	return ret0, ret1
 }
 
-// Exec indicates an expected call of Exec
+// Exec indicates an expected call of Exec.
 func (mr *MockTxMockRecorder) Exec(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockTx)(nil).Exec), varargs...)
 }
 
-// ExecOne mocks base method
+// ExecOne mocks base method.
 func (m *MockTx) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
@@ -659,14 +727,83 @@ func (m *MockTx) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, err
 	return ret0, ret1
 }
 
-// ExecOne indicates an expected call of ExecOne
+// ExecOne indicates an expected call of ExecOne.
 func (mr *MockTxMockRecorder) ExecOne(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOne", reflect.TypeOf((*MockTx)(nil).ExecOne), varargs...)
 }
 
-// Query mocks base method
+// ForceDelete mocks base method.
+func (m *MockTx) ForceDelete(model interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ForceDelete", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ForceDelete indicates an expected call of ForceDelete.
+func (mr *MockTxMockRecorder) ForceDelete(model interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForceDelete", reflect.TypeOf((*MockTx)(nil).ForceDelete), model)
+}
+
+// FormatQuery mocks base method.
+func (m *MockTx) FormatQuery(b []byte, query string, params ...interface{}) []byte {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{b, query}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FormatQuery", varargs...)
+	ret0, _ := ret[0].([]byte)
+	return ret0
+}
+
+// FormatQuery indicates an expected call of FormatQuery.
+func (mr *MockTxMockRecorder) FormatQuery(b, query interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{b, query}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FormatQuery", reflect.TypeOf((*MockTx)(nil).FormatQuery), varargs...)
+}
+
+// Insert mocks base method.
+func (m *MockTx) Insert(model ...interface{}) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range model {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Insert", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Insert indicates an expected call of Insert.
+func (mr *MockTxMockRecorder) Insert(model ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockTx)(nil).Insert), model...)
+}
+
+// Model mocks base method.
+func (m *MockTx) Model(model ...interface{}) *orm.Query {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range model {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Model", varargs...)
+	ret0, _ := ret[0].(*orm.Query)
+	return ret0
+}
+
+// Model indicates an expected call of Model.
+func (mr *MockTxMockRecorder) Model(model ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Model", reflect.TypeOf((*MockTx)(nil).Model), model...)
+}
+
+// Query mocks base method.
 func (m *MockTx) Query(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -679,14 +816,14 @@ func (m *MockTx) Query(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result,
 	return ret0, ret1
 }
 
-// Query indicates an expected call of Query
+// Query indicates an expected call of Query.
 func (mr *MockTxMockRecorder) Query(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockTx)(nil).Query), varargs...)
 }
 
-// QueryOne mocks base method
+// QueryOne mocks base method.
 func (m *MockTx) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -699,32 +836,14 @@ func (m *MockTx) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Resu
 	return ret0, ret1
 }
 
-// QueryOne indicates an expected call of QueryOne
+// QueryOne indicates an expected call of QueryOne.
 func (mr *MockTxMockRecorder) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOne", reflect.TypeOf((*MockTx)(nil).QueryOne), varargs...)
 }
 
-// Model mocks base method
-func (m *MockTx) Model(model ...interface{}) *orm.Query {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{}
-	for _, a := range model {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Model", varargs...)
-	ret0, _ := ret[0].(*orm.Query)
-	return ret0
-}
-
-// Model indicates an expected call of Model
-func (mr *MockTxMockRecorder) Model(model ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Model", reflect.TypeOf((*MockTx)(nil).Model), model...)
-}
-
-// Rollback mocks base method
+// Rollback mocks base method.
 func (m *MockTx) Rollback() error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Rollback")
@@ -732,50 +851,64 @@ func (m *MockTx) Rollback() error {
 	return ret0
 }
 
-// Rollback indicates an expected call of Rollback
+// Rollback indicates an expected call of Rollback.
 func (mr *MockTxMockRecorder) Rollback() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rollback", reflect.TypeOf((*MockTx)(nil).Rollback))
 }
 
-// Commit mocks base method
-func (m *MockTx) Commit() error {
+// Select mocks base method.
+func (m *MockTx) Select(model interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Commit")
+	ret := m.ctrl.Call(m, "Select", model)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Commit indicates an expected call of Commit
-func (mr *MockTxMockRecorder) Commit() *gomock.Call {
+// Select indicates an expected call of Select.
+func (mr *MockTxMockRecorder) Select(model interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Commit", reflect.TypeOf((*MockTx)(nil).Commit))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Select", reflect.TypeOf((*MockTx)(nil).Select), model)
 }
 
-// MockTxWrapper is a mock of TxWrapper interface
+// Update mocks base method.
+func (m *MockTx) Update(model interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockTxMockRecorder) Update(model interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTx)(nil).Update), model)
+}
+
+// MockTxWrapper is a mock of TxWrapper interface.
 type MockTxWrapper struct {
 	ctrl     *gomock.Controller
 	recorder *MockTxWrapperMockRecorder
 }
 
-// MockTxWrapperMockRecorder is the mock recorder for MockTxWrapper
+// MockTxWrapperMockRecorder is the mock recorder for MockTxWrapper.
 type MockTxWrapperMockRecorder struct {
 	mock *MockTxWrapper
 }
 
-// NewMockTxWrapper creates a new mock instance
+// NewMockTxWrapper creates a new mock instance.
 func NewMockTxWrapper(ctrl *gomock.Controller) *MockTxWrapper {
 	mock := &MockTxWrapper{ctrl: ctrl}
 	mock.recorder = &MockTxWrapperMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockTxWrapper) EXPECT() *MockTxWrapperMockRecorder {
 	return m.recorder
 }
 
-// DbBegin mocks base method
+// DbBegin mocks base method.
 func (m *MockTxWrapper) DbBegin(db interfaces.DB) (interfaces.DB, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DbBegin", db)
@@ -784,36 +917,36 @@ func (m *MockTxWrapper) DbBegin(db interfaces.DB) (interfaces.DB, error) {
 	return ret0, ret1
 }
 
-// DbBegin indicates an expected call of DbBegin
+// DbBegin indicates an expected call of DbBegin.
 func (mr *MockTxWrapperMockRecorder) DbBegin(db interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DbBegin", reflect.TypeOf((*MockTxWrapper)(nil).DbBegin), db)
 }
 
-// MockCtxWrapper is a mock of CtxWrapper interface
+// MockCtxWrapper is a mock of CtxWrapper interface.
 type MockCtxWrapper struct {
 	ctrl     *gomock.Controller
 	recorder *MockCtxWrapperMockRecorder
 }
 
-// MockCtxWrapperMockRecorder is the mock recorder for MockCtxWrapper
+// MockCtxWrapperMockRecorder is the mock recorder for MockCtxWrapper.
 type MockCtxWrapperMockRecorder struct {
 	mock *MockCtxWrapper
 }
 
-// NewMockCtxWrapper creates a new mock instance
+// NewMockCtxWrapper creates a new mock instance.
 func NewMockCtxWrapper(ctrl *gomock.Controller) *MockCtxWrapper {
 	mock := &MockCtxWrapper{ctrl: ctrl}
 	mock.recorder = &MockCtxWrapperMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockCtxWrapper) EXPECT() *MockCtxWrapperMockRecorder {
 	return m.recorder
 }
 
-// WithContext mocks base method
+// WithContext mocks base method.
 func (m *MockCtxWrapper) WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WithContext", ctx, db)
@@ -821,110 +954,93 @@ func (m *MockCtxWrapper) WithContext(ctx context.Context, db interfaces.DB) inte
 	return ret0
 }
 
-// WithContext indicates an expected call of WithContext
+// WithContext indicates an expected call of WithContext.
 func (mr *MockCtxWrapperMockRecorder) WithContext(ctx, db interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockCtxWrapper)(nil).WithContext), ctx, db)
 }
 
-// MockDBTx is a mock of DBTx interface
+// MockDBTx is a mock of DBTx interface.
 type MockDBTx struct {
 	ctrl     *gomock.Controller
 	recorder *MockDBTxMockRecorder
 }
 
-// MockDBTxMockRecorder is the mock recorder for MockDBTx
+// MockDBTxMockRecorder is the mock recorder for MockDBTx.
 type MockDBTxMockRecorder struct {
 	mock *MockDBTx
 }
 
-// NewMockDBTx creates a new mock instance
+// NewMockDBTx creates a new mock instance.
 func NewMockDBTx(ctrl *gomock.Controller) *MockDBTx {
 	mock := &MockDBTx{ctrl: ctrl}
 	mock.recorder = &MockDBTxMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockDBTx) EXPECT() *MockDBTxMockRecorder {
 	return m.recorder
 }
 
-// Select mocks base method
-func (m *MockDBTx) Select(model interface{}) error {
+// Begin mocks base method.
+func (m *MockDBTx) Begin() (*pg.Tx, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Select", model)
+	ret := m.ctrl.Call(m, "Begin")
+	ret0, _ := ret[0].(*pg.Tx)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Begin indicates an expected call of Begin.
+func (mr *MockDBTxMockRecorder) Begin() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Begin", reflect.TypeOf((*MockDBTx)(nil).Begin))
+}
+
+// Close mocks base method.
+func (m *MockDBTx) Close() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Close")
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Select indicates an expected call of Select
-func (mr *MockDBTxMockRecorder) Select(model interface{}) *gomock.Call {
+// Close indicates an expected call of Close.
+func (mr *MockDBTxMockRecorder) Close() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Select", reflect.TypeOf((*MockDBTx)(nil).Select), model)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockDBTx)(nil).Close))
 }
 
-// Insert mocks base method
-func (m *MockDBTx) Insert(model ...interface{}) error {
+// Commit mocks base method.
+func (m *MockDBTx) Commit() error {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{}
-	for _, a := range model {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Insert", varargs...)
+	ret := m.ctrl.Call(m, "Commit")
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Insert indicates an expected call of Insert
-func (mr *MockDBTxMockRecorder) Insert(model ...interface{}) *gomock.Call {
+// Commit indicates an expected call of Commit.
+func (mr *MockDBTxMockRecorder) Commit() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockDBTx)(nil).Insert), model...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Commit", reflect.TypeOf((*MockDBTx)(nil).Commit))
 }
 
-// Update mocks base method
-func (m *MockDBTx) Update(model interface{}) error {
+// Context mocks base method.
+func (m *MockDBTx) Context() context.Context {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", model)
-	ret0, _ := ret[0].(error)
+	ret := m.ctrl.Call(m, "Context")
+	ret0, _ := ret[0].(context.Context)
 	return ret0
 }
 
-// Update indicates an expected call of Update
-func (mr *MockDBTxMockRecorder) Update(model interface{}) *gomock.Call {
+// Context indicates an expected call of Context.
+func (mr *MockDBTxMockRecorder) Context() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDBTx)(nil).Update), model)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockDBTx)(nil).Context))
 }
 
-// Delete mocks base method
-func (m *MockDBTx) Delete(model interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Delete indicates an expected call of Delete
-func (mr *MockDBTxMockRecorder) Delete(model interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDBTx)(nil).Delete), model)
-}
-
-// ForceDelete mocks base method
-func (m *MockDBTx) ForceDelete(model interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ForceDelete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// ForceDelete indicates an expected call of ForceDelete
-func (mr *MockDBTxMockRecorder) ForceDelete(model interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForceDelete", reflect.TypeOf((*MockDBTx)(nil).ForceDelete), model)
-}
-
-// CopyFrom mocks base method
+// CopyFrom mocks base method.
 func (m *MockDBTx) CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{r, query}
@@ -937,14 +1053,14 @@ func (m *MockDBTx) CopyFrom(r io.Reader, query interface{}, params ...interface{
 	return ret0, ret1
 }
 
-// CopyFrom indicates an expected call of CopyFrom
+// CopyFrom indicates an expected call of CopyFrom.
 func (mr *MockDBTxMockRecorder) CopyFrom(r, query interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{r, query}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyFrom", reflect.TypeOf((*MockDBTx)(nil).CopyFrom), varargs...)
 }
 
-// CopyTo mocks base method
+// CopyTo mocks base method.
 func (m *MockDBTx) CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{w, query}
@@ -957,33 +1073,28 @@ func (m *MockDBTx) CopyTo(w io.Writer, query interface{}, params ...interface{})
 	return ret0, ret1
 }
 
-// CopyTo indicates an expected call of CopyTo
+// CopyTo indicates an expected call of CopyTo.
 func (mr *MockDBTxMockRecorder) CopyTo(w, query interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{w, query}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyTo", reflect.TypeOf((*MockDBTx)(nil).CopyTo), varargs...)
 }
 
-// FormatQuery mocks base method
-func (m *MockDBTx) FormatQuery(b []byte, query string, params ...interface{}) []byte {
+// Delete mocks base method.
+func (m *MockDBTx) Delete(model interface{}) error {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{b, query}
-	for _, a := range params {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "FormatQuery", varargs...)
-	ret0, _ := ret[0].([]byte)
+	ret := m.ctrl.Call(m, "Delete", model)
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// FormatQuery indicates an expected call of FormatQuery
-func (mr *MockDBTxMockRecorder) FormatQuery(b, query interface{}, params ...interface{}) *gomock.Call {
+// Delete indicates an expected call of Delete.
+func (mr *MockDBTxMockRecorder) Delete(model interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{b, query}, params...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FormatQuery", reflect.TypeOf((*MockDBTx)(nil).FormatQuery), varargs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDBTx)(nil).Delete), model)
 }
 
-// Exec mocks base method
+// Exec mocks base method.
 func (m *MockDBTx) Exec(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
@@ -996,14 +1107,14 @@ func (m *MockDBTx) Exec(arg0 interface{}, arg1 ...interface{}) (orm.Result, erro
 	return ret0, ret1
 }
 
-// Exec indicates an expected call of Exec
+// Exec indicates an expected call of Exec.
 func (mr *MockDBTxMockRecorder) Exec(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockDBTx)(nil).Exec), varargs...)
 }
 
-// ExecOne mocks base method
+// ExecOne mocks base method.
 func (m *MockDBTx) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
@@ -1016,14 +1127,83 @@ func (m *MockDBTx) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, e
 	return ret0, ret1
 }
 
-// ExecOne indicates an expected call of ExecOne
+// ExecOne indicates an expected call of ExecOne.
 func (mr *MockDBTxMockRecorder) ExecOne(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOne", reflect.TypeOf((*MockDBTx)(nil).ExecOne), varargs...)
 }
 
-// Query mocks base method
+// ForceDelete mocks base method.
+func (m *MockDBTx) ForceDelete(model interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ForceDelete", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ForceDelete indicates an expected call of ForceDelete.
+func (mr *MockDBTxMockRecorder) ForceDelete(model interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForceDelete", reflect.TypeOf((*MockDBTx)(nil).ForceDelete), model)
+}
+
+// FormatQuery mocks base method.
+func (m *MockDBTx) FormatQuery(b []byte, query string, params ...interface{}) []byte {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{b, query}
+	for _, a := range params {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FormatQuery", varargs...)
+	ret0, _ := ret[0].([]byte)
+	return ret0
+}
+
+// FormatQuery indicates an expected call of FormatQuery.
+func (mr *MockDBTxMockRecorder) FormatQuery(b, query interface{}, params ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{b, query}, params...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FormatQuery", reflect.TypeOf((*MockDBTx)(nil).FormatQuery), varargs...)
+}
+
+// Insert mocks base method.
+func (m *MockDBTx) Insert(model ...interface{}) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range model {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Insert", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Insert indicates an expected call of Insert.
+func (mr *MockDBTxMockRecorder) Insert(model ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockDBTx)(nil).Insert), model...)
+}
+
+// Model mocks base method.
+func (m *MockDBTx) Model(model ...interface{}) *orm.Query {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{}
+	for _, a := range model {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Model", varargs...)
+	ret0, _ := ret[0].(*orm.Query)
+	return ret0
+}
+
+// Model indicates an expected call of Model.
+func (mr *MockDBTxMockRecorder) Model(model ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Model", reflect.TypeOf((*MockDBTx)(nil).Model), model...)
+}
+
+// Query mocks base method.
 func (m *MockDBTx) Query(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -1036,14 +1216,14 @@ func (m *MockDBTx) Query(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Resul
 	return ret0, ret1
 }
 
-// Query indicates an expected call of Query
+// Query indicates an expected call of Query.
 func (mr *MockDBTxMockRecorder) Query(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockDBTx)(nil).Query), varargs...)
 }
 
-// QueryOne mocks base method
+// QueryOne mocks base method.
 func (m *MockDBTx) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -1056,89 +1236,14 @@ func (m *MockDBTx) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Re
 	return ret0, ret1
 }
 
-// QueryOne indicates an expected call of QueryOne
+// QueryOne indicates an expected call of QueryOne.
 func (mr *MockDBTxMockRecorder) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOne", reflect.TypeOf((*MockDBTx)(nil).QueryOne), varargs...)
 }
 
-// Model mocks base method
-func (m *MockDBTx) Model(model ...interface{}) *orm.Query {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{}
-	for _, a := range model {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Model", varargs...)
-	ret0, _ := ret[0].(*orm.Query)
-	return ret0
-}
-
-// Model indicates an expected call of Model
-func (mr *MockDBTxMockRecorder) Model(model ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Model", reflect.TypeOf((*MockDBTx)(nil).Model), model...)
-}
-
-// Close mocks base method
-func (m *MockDBTx) Close() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Close")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Close indicates an expected call of Close
-func (mr *MockDBTxMockRecorder) Close() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockDBTx)(nil).Close))
-}
-
-// Begin mocks base method
-func (m *MockDBTx) Begin() (*pg.Tx, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Begin")
-	ret0, _ := ret[0].(*pg.Tx)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Begin indicates an expected call of Begin
-func (mr *MockDBTxMockRecorder) Begin() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Begin", reflect.TypeOf((*MockDBTx)(nil).Begin))
-}
-
-// WithContext mocks base method
-func (m *MockDBTx) WithContext(ctx context.Context) *pg.DB {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "WithContext", ctx)
-	ret0, _ := ret[0].(*pg.DB)
-	return ret0
-}
-
-// WithContext indicates an expected call of WithContext
-func (mr *MockDBTxMockRecorder) WithContext(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockDBTx)(nil).WithContext), ctx)
-}
-
-// Context mocks base method
-func (m *MockDBTx) Context() context.Context {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Context")
-	ret0, _ := ret[0].(context.Context)
-	return ret0
-}
-
-// Context indicates an expected call of Context
-func (mr *MockDBTxMockRecorder) Context() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockDBTx)(nil).Context))
-}
-
-// Rollback mocks base method
+// Rollback mocks base method.
 func (m *MockDBTx) Rollback() error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Rollback")
@@ -1146,22 +1251,50 @@ func (m *MockDBTx) Rollback() error {
 	return ret0
 }
 
-// Rollback indicates an expected call of Rollback
+// Rollback indicates an expected call of Rollback.
 func (mr *MockDBTxMockRecorder) Rollback() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rollback", reflect.TypeOf((*MockDBTx)(nil).Rollback))
 }
 
-// Commit mocks base method
-func (m *MockDBTx) Commit() error {
+// Select mocks base method.
+func (m *MockDBTx) Select(model interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Commit")
+	ret := m.ctrl.Call(m, "Select", model)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Commit indicates an expected call of Commit
-func (mr *MockDBTxMockRecorder) Commit() *gomock.Call {
+// Select indicates an expected call of Select.
+func (mr *MockDBTxMockRecorder) Select(model interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Commit", reflect.TypeOf((*MockDBTx)(nil).Commit))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Select", reflect.TypeOf((*MockDBTx)(nil).Select), model)
+}
+
+// Update mocks base method.
+func (m *MockDBTx) Update(model interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", model)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockDBTxMockRecorder) Update(model interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockDBTx)(nil).Update), model)
+}
+
+// WithContext mocks base method.
+func (m *MockDBTx) WithContext(ctx context.Context) *pg.DB {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "WithContext", ctx)
+	ret0, _ := ret[0].(*pg.DB)
+	return ret0
+}
+
+// WithContext indicates an expected call of WithContext.
+func (mr *MockDBTxMockRecorder) WithContext(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithContext", reflect.TypeOf((*MockDBTx)(nil).WithContext), ctx)
 }
