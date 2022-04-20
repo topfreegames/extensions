@@ -78,3 +78,8 @@ $ go mod edit -replace github.com/codahale/hdrhistogram=github.com/HdrHistogram/
 
 * Add gRPC client tracing methods
 * Fix github.com/codahale/hdrhistogram dependency import issue
+
+#### v9.3.0
+
+* Fix postgresql transaction orm operations.
+

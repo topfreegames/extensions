@@ -41,41 +41,65 @@ type DB struct {
 
 // Select calls inner db select
 func (db *DB) Select(model interface{}) error {
+	if db.tx != nil {
+		return db.tx.Select(model)
+	}
 	return db.inner.Select(model)
 }
 
 // Insert calls inner db insert
 func (db *DB) Insert(model ...interface{}) error {
+	if db.tx != nil {
+		return db.tx.Insert(model...)
+	}
 	return db.inner.Insert(model...)
 }
 
 // Update calls inner db update
 func (db *DB) Update(model interface{}) error {
+	if db.tx != nil {
+		return db.tx.Update(model)
+	}
 	return db.inner.Update(model)
 }
 
 // Delete calls inner db delete
 func (db *DB) Delete(model interface{}) error {
+	if db.tx != nil {
+		return db.tx.Delete(model)
+	}
 	return db.inner.Delete(model)
 }
 
 // ForceDelete calls inner db force delete
 func (db *DB) ForceDelete(model interface{}) error {
+	if db.tx != nil {
+		return db.tx.ForceDelete(model)
+	}
 	return db.inner.ForceDelete(model)
 }
 
 // CopyFrom calls inner db copyFrom
 func (db *DB) CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error) {
+	if db.tx != nil {
+		return db.tx.CopyFrom(r, query, params...)
+	}
 	return db.inner.CopyFrom(r, query, params...)
 }
 
 // CopyTo calls inner db copyTo
 func (db *DB) CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error) {
+	if db.tx != nil {
+		return db.tx.CopyTo(w, query, params...)
+	}
 	return db.inner.CopyTo(w, query, params...)
 }
 
 // FormatQuery calls inner db formatQuery
 func (db *DB) FormatQuery(b []byte, query string, params ...interface{}) []byte {
+	if db.tx != nil {
+		return db.tx.FormatQuery(b, query, params...)
+	}
 	return db.inner.FormatQuery(b, query, params...)
 }
 
