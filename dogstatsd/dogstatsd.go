@@ -10,7 +10,7 @@ package dogstatsd
 import (
 	"time"
 
-	"github.com/DataDog/datadog-go/statsd"
+	"github.com/DataDog/datadog-go/v5/statsd"
 )
 
 // Client is the interface to required dogstatsd functions
@@ -29,11 +29,10 @@ type DogStatsD struct {
 
 // New ctor
 func New(host, prefix string) (*DogStatsD, error) {
-	c, err := statsd.New(host)
+	c, err := statsd.New(host,WithNamespace(prefix))
 	if err != nil {
 		return nil, err
 	}
-	c.Namespace = prefix
 	d := &DogStatsD{Client: c}
 	return d, nil
 }

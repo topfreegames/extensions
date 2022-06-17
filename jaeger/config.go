@@ -26,7 +26,8 @@ import (
 	"io"
 
 	"github.com/uber/jaeger-client-go"
-	"github.com/uber/jaeger-client-go/config"
+	jaegercfg "github.com/uber/jaeger-client-go/config"
+	opentracing "github.com/opentracing/opentracing-go"
 )
 
 // Options holds configuration options for Jaeger
@@ -38,13 +39,24 @@ type Options struct {
 
 // Configure configures a global Jaeger tracer
 func Configure(options Options) (io.Closer, error) {
-	cfg := config.Configuration{
-		Disabled: options.Disabled,
-		Sampler: &config.SamplerConfig{
-			Type:  jaeger.SamplerTypeProbabilistic,
-			Param: options.Probability,
-		},
+	cfg, err := jaegercfg.FromEnv()
+	if err != nil {
+		cfg = config.Configuration{
+			Disabled: options.Disabled,
+			Sampler: &config.SamplerConfig{
+				Type:  jaeger.SamplerTypeProbabilistic,
+		 		Param: options.Probability,
+			},
+		}
+	} else {
+		if cfg.ServiceName == "" {
+			cfg.ServiceName = options.ServiceName
+		}
 	}
-
-	return cfg.InitGlobalTracer(options.ServiceName)
+	tracer, closer, err := cfg.NewTracer()
+	if err != nil {
+		return nil, err
+	}
+        opentracing.SetGlobalTracer(tracer)
+	return closer, nil
 }
