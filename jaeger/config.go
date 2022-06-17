@@ -26,7 +26,7 @@ import (
 	"io"
 
 	"github.com/uber/jaeger-client-go"
-	jaegercfg "github.com/uber/jaeger-client-go/config"
+	"github.com/uber/jaeger-client-go/config"
 	opentracing "github.com/opentracing/opentracing-go"
 )
 
@@ -39,7 +39,7 @@ type Options struct {
 
 // Configure configures a global Jaeger tracer
 func Configure(options Options) (io.Closer, error) {
-	cfg, err := jaegercfg.FromEnv()
+	cfg, err := config.FromEnv()
 	if err != nil {
 		cfg = config.Configuration{
 			Disabled: options.Disabled,
