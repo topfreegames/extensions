@@ -79,7 +79,7 @@ $ go mod edit -replace github.com/codahale/hdrhistogram=github.com/HdrHistogram/
 * Add gRPC client tracing methods
 * Fix github.com/codahale/hdrhistogram dependency import issue
 
-#### v9.3.0
+#### v9.3.1
 
 * Upgrade datadog-go dependency from 2.2.0 to 5.1.1 to fix various statsd metrics problems and limitations
 * Update jaeger tracer configuration to allow configuring and overriding settings from env vars
