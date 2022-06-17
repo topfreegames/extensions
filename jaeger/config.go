@@ -41,7 +41,7 @@ type Options struct {
 func Configure(options Options) (io.Closer, error) {
 	cfg, err := config.FromEnv()
 	if err != nil {
-		cfg = config.Configuration{
+		cfg = &config.Configuration{
 			Disabled: options.Disabled,
 			Sampler: &config.SamplerConfig{
 				Type:  jaeger.SamplerTypeProbabilistic,
