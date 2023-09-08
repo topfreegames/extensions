@@ -56,7 +56,7 @@ func makeMiddleware(client *redis.Client) func(old func(cmd redis.Cmder) error) 
 			}
 
 			span := opentracing.StartSpan(operationName, reference, tags)
-			tracing.RunCustomTracingHooks(ctx, span)
+			tracing.RunCustomTracingHooks(ctx, operationName, span)
 			defer span.Finish()
 			defer tracing.LogPanic(span)
 
@@ -99,7 +99,7 @@ func makeMiddlewarePipe(client *redis.Client) func(old func(cmds []redis.Cmder) 
 			}
 
 			span := opentracing.StartSpan(operationName, reference, tags)
-			tracing.RunCustomTracingHooks(ctx, span)
+			tracing.RunCustomTracingHooks(ctx, operationName, span)
 			defer span.Finish()
 			defer tracing.LogPanic(span)
 
