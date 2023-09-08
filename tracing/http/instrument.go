@@ -51,6 +51,7 @@ func Trace(req *http.Request, next func() error) {
 	}
 
 	span := opentracing.StartSpan(operationName, reference, tags)
+	tracing.RunCustomTracingHooks(span)
 	defer span.Finish()
 	defer tracing.LogPanic(span)
 
