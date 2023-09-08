@@ -64,6 +64,7 @@ func makeMiddleware() func(echo.HandlerFunc) echo.HandlerFunc {
 			}
 
 			span := opentracing.StartSpan(operationName, reference, tags)
+			tracing.RunCustomTracingHooks(span)
 			defer span.Finish()
 			defer tracing.LogPanic(span)
 

@@ -54,6 +54,7 @@ func Trace(ctx context.Context, statement string, next func() error) {
 	}
 
 	span := opentracing.StartSpan(operationName, reference, tags)
+	tracing.RunCustomTracingHooks(span)
 	defer span.Finish()
 	defer tracing.LogPanic(span)
 

@@ -20,56 +20,23 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package mqtt
+package tracing
 
 import (
-	"context"
-	"fmt"
-	"time"
-
-	"github.com/eclipse/paho.mqtt.golang"
 	"github.com/opentracing/opentracing-go"
-	"github.com/topfreegames/extensions/tracing"
 )
 
-// Trace wraps an MQTT request and reports it to tracing
-func Trace(ctx context.Context, method string, topic string, qos byte, timeout time.Duration, next func() mqtt.Token) {
-	var parent opentracing.SpanContext
+// CustomTracingHookFn is a type alias for the function that can be hooked along tracing operations.
+type CustomTracingHookFn func(opentracing.Span)
 
-	if span := opentracing.SpanFromContext(ctx); span != nil {
-		parent = span.Context()
-	}
+var customHooks []CustomTracingHookFn
 
-	operationName := "MQTT " + method
-	reference := opentracing.ChildOf(parent)
-	tags := opentracing.Tags{
-		"mqtt.qos":   qos,
-		"mqtt.topic": topic,
-
-		"span.kind": "client",
-	}
-
-	span := opentracing.StartSpan(operationName, reference, tags)
-	tracing.RunCustomTracingHooks(span)
-	defer tracing.LogPanic(span)
-
-	token := next()
-	go wait(span, token, timeout)
+func AddCustomTracingHook(hook CustomTracingHookFn) {
+	customHooks = append(customHooks, hook)
 }
 
-func wait(span opentracing.Span, token mqtt.Token, timeout time.Duration) {
-	defer span.Finish()
-
-	ok := token.WaitTimeout(timeout)
-	err := token.Error()
-
-	if !ok {
-		message := fmt.Sprintf("Exceded maximum expected duration: %v", timeout)
-		tracing.LogError(span, message)
-	}
-
-	if err != nil {
-		message := err.Error()
-		tracing.LogError(span, message)
+func RunCustomTracingHooks(span opentracing.Span) {
+	for _, hook := range customHooks {
+		hook(span)
 	}
 }
