@@ -1,11 +1,13 @@
 package tracing
 
 import (
+	"context"
+
 	"github.com/opentracing/opentracing-go"
 )
 
 // CustomTracingHookFn is a type alias for the function that can be hooked along tracing operations.
-type CustomTracingHookFn func(opentracing.Span)
+type CustomTracingHookFn func(context.Context, opentracing.Span)
 
 var customHooks []CustomTracingHookFn
 
@@ -13,8 +15,8 @@ func AddCustomTracingHook(hook CustomTracingHookFn) {
 	customHooks = append(customHooks, hook)
 }
 
-func RunCustomTracingHooks(span opentracing.Span) {
+func RunCustomTracingHooks(ctx context.Context, span opentracing.Span) {
 	for _, hook := range customHooks {
-		hook(span)
+		hook(ctx, span)
 	}
 }

@@ -51,7 +51,7 @@ func (hook redisTracingHook) createSpan(ctx context.Context, operationName strin
 	if span != nil {
 
 		childSpan := opentracing.StartSpan(operationName, opentracing.ChildOf(span.Context()), tags)
-		tracing.RunCustomTracingHooks(childSpan)
+		tracing.RunCustomTracingHooks(ctx, childSpan)
 		return childSpan, opentracing.ContextWithSpan(ctx, childSpan)
 	}
 
