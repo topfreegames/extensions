@@ -29,7 +29,7 @@ type DogStatsD struct {
 
 // New ctor
 func New(host, prefix string) (*DogStatsD, error) {
-	c, err := statsd.New(host,WithNamespace(prefix))
+	c, err := statsd.New(host,statsd.WithNamespace(prefix))
 	if err != nil {
 		return nil, err
 	}
