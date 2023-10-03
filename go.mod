@@ -19,13 +19,13 @@ require (
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/gocql/gocql v0.0.0-20180224092422-2e9f2912ba58
 	github.com/golang/mock v1.6.0
+	github.com/google/uuid v1.1.2
 	github.com/gorilla/mux v1.8.0
 	github.com/jrallison/go-workers v0.0.0-20180112190529-dbf81d0b75bb
 	github.com/labstack/echo v2.2.0+incompatible
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.16.0
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.13.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible

@@ -13,7 +13,7 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gorilla/mux"
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/topfreegames/extensions/v9/oauth2"
 	pg "github.com/topfreegames/extensions/v9/pg/interfaces"
@@ -74,7 +74,7 @@ func Version(v string) func(http.Handler) http.Handler {
 func Logging(logger logrus.FieldLogger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			reqID := uuid.NewV4().String()
+			reqID := uuid.NewString()
 			l := logger.WithField("requestID", reqID)
 			ctx := SetLogger(r.Context(), l)
 			start := time.Now()
