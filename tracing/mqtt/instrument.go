@@ -50,6 +50,7 @@ func Trace(ctx context.Context, method string, topic string, qos byte, timeout t
 	}
 
 	span := opentracing.StartSpan(operationName, reference, tags)
+	tracing.RunCustomTracingHooks(ctx, operationName, span)
 	defer tracing.LogPanic(span)
 
 	token := next()
