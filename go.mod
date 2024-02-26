@@ -12,7 +12,6 @@ require (
 	github.com/confluentinc/confluent-kafka-go v0.11.0
 	github.com/eclipse/paho.mqtt.golang v1.1.0
 	github.com/getsentry/raven-go v0.0.0-20170918144728-1452f6376ddb
-	github.com/globalsign/mgo v0.0.0-20180615134936-113d3961e731
 	github.com/go-gorp/gorp v2.2.0+incompatible
 	github.com/go-pg/pg v6.15.1+incompatible
 	github.com/go-redis/redis v6.13.2+incompatible
@@ -23,6 +22,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/jrallison/go-workers v0.0.0-20180112190529-dbf81d0b75bb
 	github.com/labstack/echo v2.2.0+incompatible
+	github.com/libi/mgo v0.0.0-20220929064522-e4a63beaa353
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.16.0
 	github.com/opentracing/opentracing-go v1.2.0

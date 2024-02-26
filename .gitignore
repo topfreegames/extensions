@@ -6,6 +6,7 @@
 # Folders
 _obj
 _test
+.idea
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -25,6 +26,7 @@ _testmain.go
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+*.coverprofile
 
 # External packages folder
 vendor/

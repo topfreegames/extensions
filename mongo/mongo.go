@@ -27,8 +27,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/globalsign/mgo"
-	"github.com/globalsign/mgo/bson"
+	"github.com/libi/mgo"
+	"github.com/libi/mgo/bson"
 	"github.com/topfreegames/extensions/v9/mongo/interfaces"
 	tracing "github.com/topfreegames/extensions/v9/tracing/mongo"
 )

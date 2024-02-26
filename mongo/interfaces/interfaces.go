@@ -25,7 +25,7 @@ package interfaces
 import (
 	"context"
 
-	"github.com/globalsign/mgo"
+	"github.com/libi/mgo"
 )
 
 //MongoDB represents the contract for a Mongo DB

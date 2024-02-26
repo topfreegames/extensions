@@ -25,7 +25,7 @@ package mongo
 import (
 	"fmt"
 
-	"github.com/globalsign/mgo"
+	"github.com/libi/mgo"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/v9/mongo/interfaces"
 )
