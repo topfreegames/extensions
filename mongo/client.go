@@ -36,7 +36,7 @@ type Client struct {
 	MongoDB interfaces.MongoDB
 }
 
-//NewClient connects to Mongo server and return its client
+// NewClient connects to Mongo server and return its client
 func NewClient(prefix string, config *viper.Viper, mongoOrNil ...interfaces.MongoDB) (*Client, error) {
 	client := &Client{
 		Config: config,
@@ -56,7 +56,7 @@ func makeKey(prefix, sufix string) string {
 	return fmt.Sprintf("%s.%s", prefix, sufix)
 }
 
-//Connect connects to mongo database and saves on Client
+// Connect connects to mongo database and saves on Client
 func (c *Client) Connect(prefix string, db interfaces.MongoDB) error {
 	url := c.Config.GetString(makeKey(prefix, "url"))
 	user := c.Config.GetString(makeKey(prefix, "user"))
@@ -71,7 +71,10 @@ func (c *Client) Connect(prefix string, db interfaces.MongoDB) error {
 		var err error
 
 		if timeout > 0 {
-			session, err = mgo.DialWithTimeout(url, timeout)
+			session, err = mgo.DialWithInfo(&mgo.DialInfo{
+				Addrs:   []string{url},
+				Timeout: timeout,
+			})
 		} else {
 			session, err = mgo.Dial(url)
 		}
@@ -92,7 +95,7 @@ func (c *Client) Connect(prefix string, db interfaces.MongoDB) error {
 	return nil
 }
 
-//Close closes the session and the connection with database
+// Close closes the session and the connection with database
 func (c *Client) Close() {
 	c.MongoDB.Close()
 }
