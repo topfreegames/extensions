@@ -64,5 +64,13 @@ var _ = Describe("DogStatsD", func() {
 			mC.EXPECT().Histogram("key", float64(200), []string{}, float64(1))
 			d.Histogram("key", 200, []string{}, 1)
 		})
+
+		It("Distribution", func() {
+			mC.EXPECT().Distribution("key", float64(100), []string{}, float64(1))
+			d.Distribution("key", 100, []string{}, 1)
+
+			mC.EXPECT().Distribution("key", float64(200), []string{}, float64(1))
+			d.Distribution("key", 200, []string{}, 1)
+		})
 	})
 })
