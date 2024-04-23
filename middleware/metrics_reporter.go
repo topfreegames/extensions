@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/v9/dogstatsd"
 	"strconv"
+	"time"
 )
 
 // MetricTypes constants
@@ -16,9 +17,10 @@ var MetricTypes = struct {
 
 // MetricsReporter interface
 type MetricsReporter interface {
-	Distribution(metric string, value float64, tags ...string) error
+	Timing(metric string, value time.Duration, tags ...string) error
 	Gauge(metrics string, value float64, tags ...string) error
 	Increment(metric string, tags ...string) error
+	Distribution(metric string, value float64, tags ...string) error
 }
 
 // NewMetricsReporter ctor
@@ -69,12 +71,12 @@ func prefixTags(prefix string, tags ...string) {
 	}
 }
 
-// Distribution reports distribution interval taken for something
-func (d *DogStatsD) Distribution(
-	metric string, value float64, tags ...string,
+// Timing reports time interval taken for something
+func (d *DogStatsD) Timing(
+	metric string, value time.Duration, tags ...string,
 ) error {
 	prefixTags(d.tagsPrefix, tags...)
-	return d.client.Distribution(metric, value, tags, d.rate)
+	return d.client.Timing(metric, value, tags, d.rate)
 }
 
 // Gauge reports a numeric value that can go up or down
@@ -89,4 +91,12 @@ func (d *DogStatsD) Gauge(
 func (d *DogStatsD) Increment(metric string, tags ...string) error {
 	prefixTags(d.tagsPrefix, tags...)
 	return d.client.Incr(metric, tags, d.rate)
+}
+
+// Distribution reports distribution interval taken for something
+func (d *DogStatsD) Distribution(
+	metric string, value float64, tags ...string,
+) error {
+	prefixTags(d.tagsPrefix, tags...)
+	return d.client.Distribution(metric, value, tags, d.rate)
 }
