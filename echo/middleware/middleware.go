@@ -41,7 +41,7 @@ func (responseTimeMiddleware ResponseTimeMetricsMiddleware) Serve(next echo.Hand
 			tags = append(tags, customizedTags...)
 		}
 
-		responseTimeMiddleware.DDStatsD.Timing(metricName, timeUsed, tags...)
+		responseTimeMiddleware.DDStatsD.Distribution(metricName, float64(timeUsed), tags...)
 
 		return result
 	}
