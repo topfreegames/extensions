@@ -48,6 +48,20 @@ func (mr *MockClientMockRecorder) Count(name, value, tags, rate interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockClient)(nil).Count), name, value, tags, rate)
 }
 
+// Distribution mocks base method.
+func (m *MockClient) Distribution(name string, value float64, tags []string, rate float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Distribution", name, value, tags, rate)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Distribution indicates an expected call of Distribution.
+func (mr *MockClientMockRecorder) Distribution(name, value, tags, rate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Distribution", reflect.TypeOf((*MockClient)(nil).Distribution), name, value, tags, rate)
+}
+
 // Gauge mocks base method.
 func (m *MockClient) Gauge(name string, value float64, tags []string, rate float64) error {
 	m.ctrl.T.Helper()

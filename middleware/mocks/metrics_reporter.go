@@ -83,3 +83,20 @@ func (mr *MockMetricsReporterMockRecorder) Increment(metric interface{}, tags ..
 	varargs := append([]interface{}{metric}, tags...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Increment", reflect.TypeOf((*MockMetricsReporter)(nil).Increment), varargs...)
 }
+
+// Distribution mocks base method
+func (m *MockMetricsReporter) Distribution(metric string, value float64, tags ...string) error {
+	varargs := []interface{}{metric, value}
+	for _, a := range tags {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Distribution", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Distribution indicates an expected call of Distribution
+func (mr *MockMetricsReporterMockRecorder) Distribution(metric, value interface{}, tags ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{metric, value}, tags...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Distribution", reflect.TypeOf((*MockMetricsReporter)(nil).Distribution), varargs...)
+}
