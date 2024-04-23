@@ -123,7 +123,7 @@ func Metrics(mr MetricsReporter) func(http.Handler) http.Handler {
 					fmt.Sprintf("type:http"),
 					fmt.Sprintf("error:%t", errored),
 				}
-				mr.Timing(MetricTypes.ResponseTimeMs, elapsed, tags...)
+				mr.Distribution(MetricTypes.ResponseTimeMs, float64(elapsed.Milliseconds()), tags...)
 			}()
 
 			next.ServeHTTP(w, r.WithContext(ctx))
