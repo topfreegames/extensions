@@ -57,7 +57,7 @@ func (m *MockClient) Distribution(name string, value float64, tags []string, rat
 }
 
 // Distribution indicates an expected call of Distribution.
-func (mr *MockClientMockRecorder) Distribution(name, value, tags, rate any) *gomock.Call {
+func (mr *MockClientMockRecorder) Distribution(name, value, tags, rate interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Distribution", reflect.TypeOf((*MockClient)(nil).Distribution), name, value, tags, rate)
 }
