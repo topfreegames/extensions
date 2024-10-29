@@ -1,4 +1,4 @@
-module github.com/WildGabs/extensions
+module github.com/topfreegames/extensions/v9
 
 go 1.17
 
