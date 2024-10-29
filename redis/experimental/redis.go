@@ -25,6 +25,7 @@ package redis
 import (
 	"context"
 	"fmt"
+	tredis "github.com/topfreegames/extensions/v9/tracing/redis/experimental"
 	"time"
 
 	lock "github.com/bsm/redis-lock"
@@ -77,6 +78,16 @@ func (c *Client) Instance() interfaces.RedisInstance {
 
 func (c *Client) SetupTraceWrapper(traceWrapper interfaces.TraceWrapper) {
 	c.traceWrapper = traceWrapper
+}
+
+// Trace creates a Redis client that sends traces to tracing
+func (c *Client) Trace(ctx context.Context) interfaces.RedisInstance {
+	if c.traceWrapper != nil {
+		return c.traceWrapper.WithContext(ctx, c.instance)
+	}
+	copiedInstance := c.instance.WithContext(ctx)
+	tredis.Instrument(copiedInstance)
+	return copiedInstance
 }
 
 // Connect to Redis
