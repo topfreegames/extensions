@@ -71,6 +71,10 @@ func NewClient(prefix string, config *viper.Viper, clusterMode bool) (*Client, e
 	return client, nil
 }
 
+func (c *Client) Instance() interfaces.RedisInstance {
+	return c.instance
+}
+
 func (c *Client) SetupTraceWrapper(traceWrapper interfaces.TraceWrapper) {
 	c.traceWrapper = traceWrapper
 }
