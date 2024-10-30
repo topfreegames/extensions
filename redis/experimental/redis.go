@@ -103,7 +103,7 @@ func (c *Client) Connect(prefix string) error {
 			Addrs:    []string{addr},
 			Password: pass,
 			TLSConfig: &tls.Config{
-				MinVersion: tls.VersionTLS12,
+				InsecureSkipVerify: true,
 			},
 		}
 
