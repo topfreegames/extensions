@@ -30,11 +30,8 @@ import (
 
 // MongoDB represents the contract for a Mongo DB
 type MongoDB interface {
-	// Run executes run command on database inside a Mongo session
 	Run(cmd interface{}, result interface{}) error
-	// C returns a collection with the given name and a session that must be closed after used
 	C(name string) (Collection, Session)
-	// Close closes the session
 	Close()
 	WithContext(ctx context.Context) MongoDB
 }
