@@ -41,6 +41,7 @@ type RedisInstance interface {
 }
 
 type RedisTracer interface {
+	Context() context.Context
 	InstanceName() string
 	WrapProcess(middleware func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error)
 	WrapProcessPipeline(pipe func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error)
@@ -90,4 +91,9 @@ type RedisOperator interface {
 	ZRevRangeWithScores(key string, start, stop int64) *redis.ZSliceCmd
 	ZRevRank(key, member string) *redis.IntCmd
 	ZScore(key, member string) *redis.FloatCmd
+	HIncrBy(key, field string, incr int64) *redis.IntCmd
+	Expire(key string, expiration time.Duration) *redis.BoolCmd
+	Incr(key string) *redis.IntCmd
+	SetXX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd
+	LPush(key string, values ...interface{}) *redis.IntCmd
 }

@@ -19,8 +19,8 @@ func NewRedisClusterClientInstance(instance *redis.ClusterClient) experimental.R
 }
 
 func (r RedisClusterClientInstance) WithContext(ctx context.Context) experimental.RedisInstance {
-	newInstance := r.instance.WithContext(ctx)
-	return NewRedisClusterClientInstance(newInstance)
+	copiedInstance := r.instance.WithContext(ctx)
+	return NewRedisClusterClientInstance(copiedInstance)
 }
 
 func (r RedisClusterClientInstance) InstanceName() string {
@@ -205,4 +205,24 @@ func (r RedisClusterClientInstance) WrapProcess(middleware func(old func(cmd red
 
 func (r RedisClusterClientInstance) WrapProcessPipeline(pipe func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error) {
 	r.instance.WrapProcessPipeline(pipe)
+}
+
+func (r RedisClusterClientInstance) HIncrBy(key, field string, incr int64) *redis.IntCmd {
+	return r.instance.HIncrBy(key, field, incr)
+}
+
+func (r RedisClusterClientInstance) Expire(key string, expiration time.Duration) *redis.BoolCmd {
+	return r.instance.Expire(key, expiration)
+}
+
+func (r RedisClusterClientInstance) Incr(key string) *redis.IntCmd {
+	return r.instance.Incr(key)
+}
+
+func (r RedisClusterClientInstance) SetXX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd {
+	return r.instance.SetXX(key, value, expiration)
+}
+
+func (r RedisClusterClientInstance) LPush(key string, values ...interface{}) *redis.IntCmd {
+	return r.instance.LPush(key, values...)
 }

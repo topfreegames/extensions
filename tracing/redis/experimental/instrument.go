@@ -23,29 +23,22 @@
 package redis
 
 import (
-	"context"
+	redisinterfaces "github.com/topfreegames/extensions/v9/redis/interfaces/experimental"
 
 	"github.com/go-redis/redis"
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/v9/tracing"
 )
 
-type InstrumentedRedisClient interface {
-	WrapProcess(middleware func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error)
-	WrapProcessPipeline(pipe func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error)
-	Context() context.Context
-	InstanceName() string
-}
-
 // Instrument adds tracing instrumentation on a Redis client
-func Instrument(client InstrumentedRedisClient) {
+func Instrument(client redisinterfaces.RedisTracer) {
 	middleware := makeMiddleware(client)
 	client.WrapProcess(middleware)
 	middlewarePipe := makeMiddlewarePipe(client)
 	client.WrapProcessPipeline(middlewarePipe)
 }
 
-func makeMiddleware(client InstrumentedRedisClient) func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
+func makeMiddleware(client redisinterfaces.RedisTracer) func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 	return func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
 		return func(cmd redis.Cmder) error {
 			var parent opentracing.SpanContext
@@ -80,7 +73,7 @@ func makeMiddleware(client InstrumentedRedisClient) func(old func(cmd redis.Cmde
 	}
 }
 
-func makeMiddlewarePipe(client InstrumentedRedisClient) func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error {
+func makeMiddlewarePipe(client redisinterfaces.RedisTracer) func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error {
 	return func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error {
 		return func(cmds []redis.Cmder) error {
 			var parent opentracing.SpanContext
