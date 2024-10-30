@@ -44,6 +44,7 @@ func createGrpcSpan(ctx context.Context, operationName string) (opentracing.Span
 	tags := opentracing.Tags{
 		string(ext.Component): "gRPC",
 	}
+	tags = tracing.RunCustomTracingTagsHooks(ctx, tags)
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
 		childSpan := opentracing.StartSpan(operationName, opentracing.ChildOf(span.Context()), tags)

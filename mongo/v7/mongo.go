@@ -20,57 +20,52 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package mongo
+package v7
 
 import (
 	"context"
 	"fmt"
 	"strings"
 
-	"github.com/libi/mgo"
-	"github.com/libi/mgo/bson"
 	"github.com/topfreegames/extensions/v9/mongo/interfaces"
 	tracing "github.com/topfreegames/extensions/v9/tracing/mongo"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// Mongo holds the mongo database and connection
-// Mongo implements MongoDB interface
-type Mongo struct {
-	ctx     context.Context
-	session *mgo.Session
-	db      *mgo.Database
+// Mongo holds the mongo db and connection.
+// Implements MongoDB interface using the mongo-driver package
+type mongoImpl struct {
+	ctx    context.Context
+	client *mongo.Client
+	db     *mongo.Database
 }
 
 // NewMongo return Mongo instance with completed fields
-func NewMongo(session *mgo.Session, db *mgo.Database) *Mongo {
-	return &Mongo{
-		ctx:     nil,
-		session: session,
-		db:      db,
+func newMongo(client *mongo.Client, db *mongo.Database) interfaces.MongoDB {
+	return &mongoImpl{
+		ctx:    nil,
+		client: client,
+		db:     db,
 	}
 }
 
 // WithContext creates a shallow copy that uses the given context
-func (m *Mongo) WithContext(ctx context.Context) interfaces.MongoDB {
-	return &Mongo{
-		ctx:     ctx,
-		session: m.session,
-		db:      m.db,
+func (m *mongoImpl) WithContext(ctx context.Context) interfaces.MongoDB {
+	return &mongoImpl{
+		ctx:    ctx,
+		client: m.client,
 	}
 }
 
-// Run executes run command on database
-func (m *Mongo) Run(cmd interface{}, result interface{}) error {
+// Run executes run command on db
+func (m *mongoImpl) Run(cmd interface{}, result interface{}) error {
 	var err error
 
-	session := m.session.Copy()
-	defer session.Close()
-
-	database := m.db.Name
+	database := m.db.Name()
 	args := formatArgs(cmd)
 
 	tracing.Trace(m.ctx, database, database, "runCommand", args, func() error {
-		err = m.db.With(session).Run(cmd, result)
+		err = m.db.RunCommand(m.ctx, cmd).Decode(result)
 		return err
 	})
 
@@ -79,8 +74,8 @@ func (m *Mongo) Run(cmd interface{}, result interface{}) error {
 
 // C returns the collection from database and a session
 // This session needs to be closed afterward
-func (m *Mongo) C(name string) (interfaces.Collection, interfaces.Session) {
-	session := m.session.Copy()
+func (m *mongoImpl) C(name string) (interfaces.Collection, interfaces.Session) {
+	session, err := m.client.StartSession()
 	c := &Collection{
 		ctx:        m.ctx,
 		collection: m.db.With(session).C(name),
@@ -89,7 +84,7 @@ func (m *Mongo) C(name string) (interfaces.Collection, interfaces.Session) {
 }
 
 // Close closes mongo session
-func (m *Mongo) Close() {
+func (m *mongoImpl) Close() {
 	m.session.Close()
 }
 

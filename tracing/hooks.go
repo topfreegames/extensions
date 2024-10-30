@@ -20,3 +20,18 @@ func RunCustomTracingHooks(ctx context.Context, operationName string, span opent
 		hook(ctx, operationName, span)
 	}
 }
+
+type CustomTracingTagsHookFn func(context.Context, opentracing.Tags) opentracing.Tags
+
+var customTagsHooks []CustomTracingTagsHookFn
+
+func AddCustomTracingTagsHook(hook CustomTracingTagsHookFn) {
+	customTagsHooks = append(customTagsHooks, hook)
+}
+
+func RunCustomTracingTagsHooks(ctx context.Context, tags opentracing.Tags) opentracing.Tags {
+	for _, hook := range customTagsHooks {
+		tags = hook(ctx, tags)
+	}
+	return tags
+}
