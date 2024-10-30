@@ -94,9 +94,9 @@ func (c *Client) Trace(ctx context.Context) interfaces.RedisInstance {
 // Connect to Redis
 func (c *Client) Connect(prefix string) error {
 	if c.clusterMode {
-		url := c.config.GetStringSlice(fmt.Sprintf("%s.url", prefix))
-		port := c.config.GetString(fmt.Sprintf("%s.port"))
-		pass := c.config.GetString(fmt.Sprintf("%s.pass"))
+		url := c.config.GetString(fmt.Sprintf("%s.url", prefix))
+		port := c.config.GetString(fmt.Sprintf("%s.port", prefix))
+		pass := c.config.GetString(fmt.Sprintf("%s.pass", prefix))
 
 		addr := fmt.Sprintf("%s:%s", url, port)
 		options := &redis.ClusterOptions{
