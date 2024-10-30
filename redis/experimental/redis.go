@@ -24,6 +24,7 @@ package redis
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	tredis "github.com/topfreegames/extensions/v9/tracing/redis/experimental"
 	"time"
@@ -101,6 +102,9 @@ func (c *Client) Connect(prefix string) error {
 		options := &redis.ClusterOptions{
 			Addrs:    []string{addr},
 			Password: pass,
+			TLSConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
 		}
 
 		c.instance = instances.NewRedisClusterClientInstance(redis.NewClusterClient(options))
