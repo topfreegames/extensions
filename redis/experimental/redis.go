@@ -93,11 +93,13 @@ func (c *Client) Trace(ctx context.Context) interfaces.RedisInstance {
 // Connect to Redis
 func (c *Client) Connect(prefix string) error {
 	if c.clusterMode {
-		urls := c.config.GetStringSlice(fmt.Sprintf("%s.urls", prefix))
+		url := c.config.GetStringSlice(fmt.Sprintf("%s.url", prefix))
+		port := c.config.GetString(fmt.Sprintf("%s.port"))
 		pass := c.config.GetString(fmt.Sprintf("%s.pass"))
 
+		addr := fmt.Sprintf("%s:%s", url, port)
 		options := &redis.ClusterOptions{
-			Addrs:    urls,
+			Addrs:    []string{addr},
 			Password: pass,
 		}
 
