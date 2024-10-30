@@ -100,9 +100,11 @@ func (c *Client) Connect(prefix string) error {
 
 		addr := fmt.Sprintf("%s:%s", url, port)
 		options := &redis.ClusterOptions{
-			Addrs:     []string{addr},
-			Password:  pass,
-			TLSConfig: &tls.Config{},
+			Addrs:    []string{addr},
+			Password: pass,
+			TLSConfig: &tls.Config{
+				MinVersion: tls.VersionTLS12,
+			},
 		}
 
 		c.instance = instances.NewRedisClusterClientInstance(redis.NewClusterClient(options))
