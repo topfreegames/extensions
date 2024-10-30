@@ -33,7 +33,7 @@ import (
 	tracing "github.com/topfreegames/extensions/v9/tracing/mongo"
 )
 
-//Mongo holds the mongo database and connection
+// Mongo holds the mongo database and connection
 // Mongo implements MongoDB interface
 type Mongo struct {
 	ctx     context.Context
@@ -41,7 +41,7 @@ type Mongo struct {
 	db      *mgo.Database
 }
 
-//NewMongo return Mongo instance with completed fields
+// NewMongo return Mongo instance with completed fields
 func NewMongo(session *mgo.Session, db *mgo.Database) *Mongo {
 	return &Mongo{
 		ctx:     nil,
@@ -50,7 +50,7 @@ func NewMongo(session *mgo.Session, db *mgo.Database) *Mongo {
 	}
 }
 
-//WithContext creates a shallow copy that uses the given context
+// WithContext creates a shallow copy that uses the given context
 func (m *Mongo) WithContext(ctx context.Context) interfaces.MongoDB {
 	return &Mongo{
 		ctx:     ctx,
@@ -77,8 +77,8 @@ func (m *Mongo) Run(cmd interface{}, result interface{}) error {
 	return err
 }
 
-//C returns the collection from databse and a session
-// This session needs to be closed afterwards
+// C returns the collection from database and a session
+// This session needs to be closed afterward
 func (m *Mongo) C(name string) (interfaces.Collection, interfaces.Session) {
 	session := m.session.Copy()
 	c := &Collection{
@@ -88,18 +88,18 @@ func (m *Mongo) C(name string) (interfaces.Collection, interfaces.Session) {
 	return c, session
 }
 
-//Close closes mongo session
+// Close closes mongo session
 func (m *Mongo) Close() {
 	m.session.Close()
 }
 
-//Collection holds a mongo collection and implements Collection interface
+// Collection holds a mongo collection and implements Collection interface
 type Collection struct {
 	ctx        context.Context
 	collection *mgo.Collection
 }
 
-//Find executes a find query on Mongo
+// Find executes a find query on Mongo
 func (c *Collection) Find(query interface{}) interfaces.Query {
 	return &Query{
 		ctx:   c.ctx,
@@ -111,7 +111,7 @@ func (c *Collection) Find(query interface{}) interfaces.Query {
 	}
 }
 
-//FindId is a conveniene method to execute a find by id query on Mongo
+// FindId is a conveniene method to execute a find by id query on Mongo
 func (c *Collection) FindId(id interface{}) interfaces.Query {
 	return &Query{
 		ctx:   c.ctx,
@@ -123,7 +123,7 @@ func (c *Collection) FindId(id interface{}) interfaces.Query {
 	}
 }
 
-//Pipe calls mongo collection Pipe
+// Pipe calls mongo collection Pipe
 func (c *Collection) Pipe(pipeline interface{}) interfaces.Pipe {
 	return &Pipe{
 		ctx:  c.ctx,
@@ -135,7 +135,7 @@ func (c *Collection) Pipe(pipeline interface{}) interfaces.Pipe {
 	}
 }
 
-//Insert calls mongo collection Insert
+// Insert calls mongo collection Insert
 func (c *Collection) Insert(docs ...interface{}) error {
 	var err error
 
@@ -151,7 +151,7 @@ func (c *Collection) Insert(docs ...interface{}) error {
 	return err
 }
 
-//UpsertId calls mongo collection UpsertId
+// UpsertId calls mongo collection UpsertId
 func (c *Collection) UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error) {
 	var result *mgo.ChangeInfo
 	var err error
@@ -168,7 +168,7 @@ func (c *Collection) UpsertId(id interface{}, update interface{}) (*mgo.ChangeIn
 	return result, err
 }
 
-//Upsert calls mongo collection Upsert
+// Upsert calls mongo collection Upsert
 func (c *Collection) Upsert(selector interface{}, update interface{}) (*mgo.ChangeInfo, error) {
 	var result *mgo.ChangeInfo
 	var err error
@@ -185,7 +185,7 @@ func (c *Collection) Upsert(selector interface{}, update interface{}) (*mgo.Chan
 	return result, err
 }
 
-//RemoveId calls mongo collection RemoveId
+// RemoveId calls mongo collection RemoveId
 func (c *Collection) RemoveId(id interface{}) error {
 	var err error
 
@@ -201,7 +201,7 @@ func (c *Collection) RemoveId(id interface{}) error {
 	return err
 }
 
-//Remove calls mongo collection Remove
+// Remove calls mongo collection Remove
 func (c *Collection) Remove(selector interface{}) error {
 	var err error
 
@@ -217,7 +217,7 @@ func (c *Collection) Remove(selector interface{}) error {
 	return err
 }
 
-//RemoveAll calls mongo collection RemoveAll
+// RemoveAll calls mongo collection RemoveAll
 func (c *Collection) RemoveAll(selector interface{}) (*mgo.ChangeInfo, error) {
 	var result *mgo.ChangeInfo
 	var err error
@@ -272,7 +272,7 @@ func (b *Bulk) Run() (*mgo.BulkResult, error) {
 	return result, err
 }
 
-//Query holds a mongo query and implements Query interface
+// Query holds a mongo query and implements Query interface
 type Query struct {
 	ctx   context.Context
 	query *mgo.Query
@@ -293,14 +293,14 @@ func (q *Query) Limit(n int) interfaces.Query {
 	}
 }
 
-//Iter calls query Iter
+// Iter calls query Iter
 func (q *Query) Iter() interfaces.Iter {
 	return &Iter{
 		iter: q.query.Iter(),
 	}
 }
 
-//All calls mongo query All
+// All calls mongo query All
 func (q *Query) All(result interface{}) error {
 	var err error
 
@@ -312,7 +312,7 @@ func (q *Query) All(result interface{}) error {
 	return err
 }
 
-//One calls mongo query One
+// One calls mongo query One
 func (q *Query) One(result interface{}) error {
 	var err error
 
@@ -324,7 +324,7 @@ func (q *Query) One(result interface{}) error {
 	return err
 }
 
-//Pipe holds a mongo pipe and implements Pipe interface
+// Pipe holds a mongo pipe and implements Pipe interface
 type Pipe struct {
 	ctx  context.Context
 	pipe *mgo.Pipe
@@ -334,7 +334,7 @@ type Pipe struct {
 	args     string
 }
 
-//All calls mongo pipe All
+// All calls mongo pipe All
 func (p *Pipe) All(result interface{}) error {
 	var err error
 
@@ -346,7 +346,7 @@ func (p *Pipe) All(result interface{}) error {
 	return err
 }
 
-//Batch calls mongo pipe Batch
+// Batch calls mongo pipe Batch
 func (p *Pipe) Batch(n int) interfaces.Pipe {
 	return &Pipe{
 		ctx:      p.ctx,
@@ -357,17 +357,17 @@ func (p *Pipe) Batch(n int) interfaces.Pipe {
 	}
 }
 
-//Iter wraps mongo Iter
+// Iter wraps mongo Iter
 type Iter struct {
 	iter *mgo.Iter
 }
 
-//Next calls mongo iter next
+// Next calls mongo iter next
 func (i *Iter) Next(result interface{}) bool {
 	return i.iter.Next(result)
 }
 
-//Close calls mongo iter close
+// Close calls mongo iter close
 func (i *Iter) Close() error {
 	return i.iter.Close()
 }

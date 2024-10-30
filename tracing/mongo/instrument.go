@@ -51,7 +51,7 @@ func Trace(ctx context.Context, database, prefix, method, args string, next func
 
 		"span.kind": "client",
 	}
-
+	tags = tracing.RunCustomTracingTagsHooks(ctx, tags)
 	span := opentracing.StartSpan(operationName, reference, tags)
 	tracing.RunCustomTracingHooks(ctx, operationName, span)
 	defer span.Finish()

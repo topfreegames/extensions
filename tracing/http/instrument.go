@@ -49,7 +49,7 @@ func Trace(req *http.Request, next func() error) {
 
 		"span.kind": "client",
 	}
-
+	tags = tracing.RunCustomTracingTagsHooks(ctx, tags)
 	span := opentracing.StartSpan(operationName, reference, tags)
 	tracing.RunCustomTracingHooks(ctx, operationName, span)
 	defer span.Finish()

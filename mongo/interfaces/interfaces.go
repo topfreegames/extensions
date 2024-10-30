@@ -28,7 +28,7 @@ import (
 	"github.com/libi/mgo"
 )
 
-//MongoDB represents the contract for a Mongo DB
+// MongoDB represents the contract for a Mongo DB
 type MongoDB interface {
 	Run(cmd interface{}, result interface{}) error
 	C(name string) (Collection, Session)
@@ -36,7 +36,7 @@ type MongoDB interface {
 	WithContext(ctx context.Context) MongoDB
 }
 
-//Collection represents a mongoDB collection
+// Collection represents a mongoDB collection
 type Collection interface {
 	Find(query interface{}) Query
 	FindId(id interface{}) Query
@@ -50,13 +50,13 @@ type Collection interface {
 	Bulk() Bulk
 }
 
-//Session is the mongoDB session
+// Session is the mongoDB session
 type Session interface {
 	Copy() *mgo.Session
 	Close()
 }
 
-//Query wraps mongo Query
+// Query wraps mongo Query
 type Query interface {
 	Iter() Iter
 	All(result interface{}) error
@@ -64,13 +64,13 @@ type Query interface {
 	Limit(n int) Query
 }
 
-//Pipe wraps mongo Pipe
+// Pipe wraps mongo Pipe
 type Pipe interface {
 	All(result interface{}) error
 	Batch(n int) Pipe
 }
 
-//Iter wraps mongo Iter
+// Iter wraps mongo Iter
 type Iter interface {
 	Next(result interface{}) bool
 	Close() error

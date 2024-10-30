@@ -62,13 +62,14 @@ func makeMiddleware() func(echo.HandlerFunc) echo.HandlerFunc {
 
 				"span.kind": "server",
 			}
-
+			
+			ctx := c.StdContext()
+			tags = tracing.RunCustomTracingTagsHooks(ctx, tags)
 			span := opentracing.StartSpan(operationName, reference, tags)
 			tracing.RunCustomTracingHooks(c.StdContext(), operationName, span)
 			defer span.Finish()
 			defer tracing.LogPanic(span)
 
-			ctx := c.StdContext()
 			ctx = opentracing.ContextWithSpan(ctx, span)
 			c.SetStdContext(ctx)
 

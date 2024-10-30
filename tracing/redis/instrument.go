@@ -97,6 +97,7 @@ func makeMiddlewarePipe(client *redis.Client) func(old func(cmds []redis.Cmder) 
 				"db.type":      "redis",
 				"span.kind":    "client",
 			}
+			tags = tracing.RunCustomTracingTagsHooks(ctx, tags)
 
 			span := opentracing.StartSpan(operationName, reference, tags)
 			tracing.RunCustomTracingHooks(ctx, operationName, span)

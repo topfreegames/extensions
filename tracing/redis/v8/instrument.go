@@ -47,6 +47,7 @@ func (hook redisTracingHook) createSpan(ctx context.Context, operationName strin
 		"db.type":     "redis",
 		"span.kind":   "client",
 	}
+	tags = tracing.RunCustomTracingTagsHooks(ctx, tags)
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
 
