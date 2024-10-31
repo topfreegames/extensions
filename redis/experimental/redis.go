@@ -24,8 +24,6 @@ package redis
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/redis/go-redis/extra/redisotel/v9"
 	"github.com/redis/go-redis/v9"
 )
@@ -43,7 +41,7 @@ type ClientArgs struct {
 	EnableTracing bool
 }
 
-// NewClient creates and returns a new redis client based on the given settings. It only supports redis 7 clients.
+// NewClient creates and returns a new redis client based on the given settings. It only supports redis 7 clients.gps
 func NewClient(args *ClientArgs) (*Client, error) {
 	client := &Client{
 		Args: args,
@@ -58,6 +56,7 @@ func NewClient(args *ClientArgs) (*Client, error) {
 			return nil, err
 		}
 	}
+
 	if args.EnableTracing {
 		if err := redisotel.InstrumentTracing(client.Instance); err != nil {
 			return nil, err
@@ -68,11 +67,6 @@ func NewClient(args *ClientArgs) (*Client, error) {
 		if err := redisotel.InstrumentMetrics(client.Instance); err != nil {
 			return nil, err
 		}
-	}
-
-	err := client.Instance.Ping(context.Background())
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to redis: %s", err)
 	}
 
 	return client, nil
@@ -100,4 +94,17 @@ func (c *Client) ConnectCluster(url string) error {
 	c.Instance = redis.NewClusterClient(opts)
 
 	return nil
+}
+
+// IsConnected determines if the client is connected to redis
+func (c *Client) IsConnected(ctx context.Context) (bool, error) {
+	result := c.Instance.Ping(ctx)
+	if result != nil {
+		res, err := result.Result()
+		if err != nil {
+			return false, err
+		}
+		return res == "PONG", nil
+	}
+	return true, nil
 }
