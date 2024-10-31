@@ -24,165 +24,80 @@ package redis
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
-	tredis "github.com/topfreegames/extensions/v9/tracing/redis/experimental"
-	"time"
 
-	lock "github.com/bsm/redis-lock"
-	"github.com/go-redis/redis"
-	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/v9/redis/experimental/instances"
-	interfaces "github.com/topfreegames/extensions/v9/redis/interfaces/experimental"
+	"github.com/redis/go-redis/extra/redisotel/v9"
+	"github.com/redis/go-redis/v9"
 )
 
 // Client identifies uniquely one redis client with a pool of connections
 type Client struct {
-	instance     interfaces.RedisInstance
-	traceWrapper interfaces.TraceWrapper
-	config       *viper.Viper
-	clusterMode  bool
+	Instance redis.UniversalClient
+	Args     *ClientArgs
 }
 
-// TraceWrapper is the struct for the TraceWrapper
-type TraceWrapper struct{}
-
-// WithContext is a wrapper for returning a client with context
-func (t *TraceWrapper) WithContext(ctx context.Context, c interfaces.RedisInstance) interfaces.RedisInstance {
-	return c.WithContext(ctx)
+type ClientArgs struct {
+	Url           string
+	ClusterMode   bool
+	EnableMetrics bool
+	EnableTracing bool
 }
 
-// NewClient creates and returns a new redis client based on the given settings
-func NewClient(prefix string, config *viper.Viper, clusterMode bool) (*Client, error) {
+// NewClient creates and returns a new redis client based on the given settings. It only supports redis 7 clients.
+func NewClient(args *ClientArgs) (*Client, error) {
 	client := &Client{
-		config:      config,
-		clusterMode: clusterMode,
+		Args: args,
 	}
 
-	err := client.Connect(prefix)
-	if err != nil {
-		return nil, err
+	if args.ClusterMode {
+		if err := client.ConnectCluster(args.Url); err != nil {
+			return nil, err
+		}
+	} else {
+		if err := client.Connect(args.Url); err != nil {
+			return nil, err
+		}
+	}
+	if args.EnableTracing {
+		if err := redisotel.InstrumentTracing(client.Instance); err != nil {
+			return nil, err
+		}
 	}
 
-	timeout := config.GetInt(fmt.Sprintf("%s.connectionTimeout", prefix))
-	err = client.WaitForConnection(timeout)
+	if args.EnableMetrics {
+		if err := redisotel.InstrumentMetrics(client.Instance); err != nil {
+			return nil, err
+		}
+	}
+
+	err := client.Instance.Ping(context.Background())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to connect to redis: %s", err)
 	}
 
 	return client, nil
 }
 
-func (c *Client) Instance() interfaces.RedisInstance {
-	return c.instance
-}
-
-func (c *Client) SetupTraceWrapper(traceWrapper interfaces.TraceWrapper) {
-	c.traceWrapper = traceWrapper
-}
-
-// Trace creates a Redis client that sends traces to tracing
-func (c *Client) Trace(ctx context.Context) interfaces.RedisInstance {
-	if c.traceWrapper != nil {
-		return c.traceWrapper.WithContext(ctx, c.instance)
-	}
-	copiedInstance := c.instance.WithContext(ctx)
-	tredis.Instrument(copiedInstance)
-	return copiedInstance
-}
-
 // Connect to Redis
-func (c *Client) Connect(prefix string) error {
-	if c.clusterMode {
-		url := c.config.GetString(fmt.Sprintf("%s.url", prefix))
-		port := c.config.GetString(fmt.Sprintf("%s.port", prefix))
-		pass := c.config.GetString(fmt.Sprintf("%s.pass", prefix))
-
-		addr := fmt.Sprintf("%s:%s", url, port)
-		options := &redis.ClusterOptions{
-			Addrs:    []string{addr},
-			Password: pass,
-			TLSConfig: &tls.Config{
-				InsecureSkipVerify: true,
-			},
-		}
-
-		c.instance = instances.NewRedisClusterClientInstance(redis.NewClusterClient(options))
-
-		return nil
-	}
-
-	options, err := redis.ParseURL(c.config.GetString(fmt.Sprintf("%s.url", prefix)))
+func (c *Client) Connect(url string) error {
+	opts, err := redis.ParseURL(url)
 	if err != nil {
 		return err
 	}
-	c.instance = instances.NewRedisClientInstance(redis.NewClient(options))
+
+	c.Instance = redis.NewClient(opts)
 
 	return nil
 }
 
-// IsConnected determines if the client is connected to redis
-func (c *Client) IsConnected() bool {
-	result := c.instance.Ping()
-	if result != nil {
-		res, err := result.Result()
-		if err != nil {
-			return false
-		}
-		return res == "PONG"
-	}
-	return true
-}
-
-// EnterCriticalSection locks key using redlock algorithm
-func (c *Client) EnterCriticalSection(instance interfaces.RedisInstance, key string, lockTimeout, retryTimeout, retryInterval time.Duration) (*lock.Lock, error) {
-	lockOptions := &lock.LockOptions{
-		LockTimeout: lockTimeout,
-		WaitTimeout: retryTimeout,
-		WaitRetry:   retryInterval,
-	}
-	return lock.ObtainLock(instance, key, lockOptions)
-}
-
-// LeaveCriticalSection unlocks key
-func (c *Client) LeaveCriticalSection(lock *lock.Lock) error {
-	return lock.Unlock()
-}
-
-// WaitForConnection loops until redis is connected
-func (c *Client) WaitForConnection(timeout int) error {
-	t := time.Duration(timeout) * time.Second
-	timeoutTimer := time.NewTimer(t)
-	defer timeoutTimer.Stop()
-	ticker := time.NewTicker(10 * time.Millisecond)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-timeoutTimer.C:
-			return fmt.Errorf("timed out waiting for Redis to connect")
-		case <-ticker.C:
-			if c.IsConnected() {
-				return nil
-			}
-		}
-	}
-}
-
-// Close the connections to redis
-func (c *Client) Close() error {
-	err := c.instance.Close()
+// ConnectCluster to Redis cluster
+func (c *Client) ConnectCluster(url string) error {
+	opts, err := redis.ParseClusterURL(url)
 	if err != nil {
 		return err
 	}
-	return nil
-}
 
-// Cleanup closes redis connection
-func (c *Client) Cleanup() error {
-	err := c.Close()
-	if err != nil {
-		return err
-	}
+	c.Instance = redis.NewClusterClient(opts)
+
 	return nil
 }
