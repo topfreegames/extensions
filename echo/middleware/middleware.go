@@ -16,8 +16,8 @@ type ResponseTimeMetricsMiddleware struct {
 	AddCustomTags func(echo.Context) []string
 }
 
-//ResponseTimeMetricsMiddleware is a middleware to measure the response time
-//of a route and send it do StatsD
+// ResponseTimeMetricsMiddleware is a middleware to measure the response time
+// of a route and send it do StatsD
 func (responseTimeMiddleware ResponseTimeMetricsMiddleware) Serve(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		startTime := time.Now()
@@ -41,13 +41,13 @@ func (responseTimeMiddleware ResponseTimeMetricsMiddleware) Serve(next echo.Hand
 			tags = append(tags, customizedTags...)
 		}
 
-		responseTimeMiddleware.DDStatsD.Distribution(metricName, float64(timeUsed), tags...)
+		responseTimeMiddleware.DDStatsD.Distribution(metricName, float64(timeUsed.Milliseconds()), tags...)
 
 		return result
 	}
 }
 
-//ResponseTimeMetricsMiddleware returns a new ResponseTimeMetricsMiddleware
+// ResponseTimeMetricsMiddleware returns a new ResponseTimeMetricsMiddleware
 func NewResponseTimeMetricsMiddleware(ddStatsD *middleware.DogStatsD) *ResponseTimeMetricsMiddleware {
 	return &ResponseTimeMetricsMiddleware{
 		DDStatsD: ddStatsD,
