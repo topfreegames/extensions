@@ -113,19 +113,9 @@ func CreateClientArgs(config *viper.Viper, prefix string) *ClientArgs {
 		queryParameters = append(queryParameters, fmt.Sprintf("pool_size=%s", poolsize))
 	}
 
-	readTimeout := config.GetString(fmt.Sprintf("%s.timeout.read", prefix))
+	readTimeout := config.GetString(fmt.Sprintf("%s.timeout", prefix))
 	if readTimeout != "" {
 		queryParameters = append(queryParameters, fmt.Sprintf("read_timeout=%s", readTimeout))
-	}
-
-	writeTimeout := config.GetString(fmt.Sprintf("%s.timeout.write", prefix))
-	if writeTimeout != "" {
-		queryParameters = append(queryParameters, fmt.Sprintf("write_timeout=%s", writeTimeout))
-	}
-
-	dialTimeout := config.GetString(fmt.Sprintf("%s.timeout.dial", prefix))
-	if dialTimeout != "" {
-		queryParameters = append(queryParameters, fmt.Sprintf("dial_timeout=%s", dialTimeout))
 	}
 
 	if len(queryParameters) > 0 {
