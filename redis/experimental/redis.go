@@ -24,8 +24,12 @@ package redis
 
 import (
 	"context"
+	"fmt"
+	"strings"
+
 	"github.com/redis/go-redis/extra/redisotel/v9"
 	"github.com/redis/go-redis/v9"
+	"github.com/spf13/viper"
 )
 
 // Client identifies uniquely one redis client with a pool of connections
@@ -70,6 +74,70 @@ func NewClient(args *ClientArgs) (*Client, error) {
 	}
 
 	return client, nil
+}
+
+// NewClientFromConfig creates and returns a new redis client based on the given settings from predefined env vars. It only supports redis 7 clients.gps
+func NewClientFromConfig(config *viper.Viper, prefix string) (*Client, error) {
+	args := CreateClientArgs(config, prefix)
+
+	return NewClient(args)
+}
+
+func CreateClientArgs(config *viper.Viper, prefix string) *ClientArgs {
+	tls := config.GetBool(fmt.Sprintf("%s.tls", prefix))
+	pass := config.GetString(fmt.Sprintf("%s.pass", prefix))
+	endpoint := config.GetString(fmt.Sprintf("%s.endpoint", prefix))
+	port := config.GetString(fmt.Sprintf("%s.port", prefix))
+	clusterMode := config.GetBool(fmt.Sprintf("%s.clusterMode", prefix))
+	enableMetrics := config.GetBool(fmt.Sprintf("%s.enableMetrics", prefix))
+	enableTracing := config.GetBool(fmt.Sprintf("%s.enableTracing", prefix))
+
+	var baseUrl string
+	if tls {
+		baseUrl = "rediss://"
+	} else {
+		baseUrl = "redis://"
+	}
+
+	url := fmt.Sprintf("%s:%s@%s:%s", baseUrl, pass, endpoint, port)
+
+	// Extra parameters
+	var queryParameters []string
+	maxRedirects := config.GetString(fmt.Sprintf("%s.maxRedirects", prefix))
+	if maxRedirects != "" {
+		queryParameters = append(queryParameters, fmt.Sprintf("max_redirects=%s", maxRedirects))
+	}
+
+	poolsize := config.GetString("poolSize")
+	if poolsize != "" {
+		queryParameters = append(queryParameters, fmt.Sprintf("pool_size=%s", poolsize))
+	}
+
+	readTimeout := config.GetString(fmt.Sprintf("%s.timeout.read", prefix))
+	if readTimeout != "" {
+		queryParameters = append(queryParameters, fmt.Sprintf("read_timeout=%s", readTimeout))
+	}
+
+	writeTimeout := config.GetString(fmt.Sprintf("%s.timeout.write", prefix))
+	if writeTimeout != "" {
+		queryParameters = append(queryParameters, fmt.Sprintf("write_timeout=%s", writeTimeout))
+	}
+
+	dialTimeout := config.GetString(fmt.Sprintf("%s.timeout.dial", prefix))
+	if dialTimeout != "" {
+		queryParameters = append(queryParameters, fmt.Sprintf("dial_timeout=%s", dialTimeout))
+	}
+
+	if len(queryParameters) > 0 {
+		url = fmt.Sprintf("%s?%s", url, strings.Join(queryParameters, "&"))
+	}
+
+	return &ClientArgs{
+		ClusterMode:   clusterMode,
+		Url:           url,
+		EnableMetrics: enableMetrics,
+		EnableTracing: enableTracing,
+	}
 }
 
 // Connect to Redis
