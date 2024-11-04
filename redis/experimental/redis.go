@@ -36,7 +36,6 @@ import (
 // Client identifies uniquely one redis client with a pool of connections
 type Client struct {
 	Instance interfaces.UniversalClient
-	Args     *ClientArgs
 }
 
 type ClientArgs struct {
@@ -48,9 +47,7 @@ type ClientArgs struct {
 
 // NewClient creates and returns a new redis client based on the given settings. It only supports redis 7 clients.gps
 func NewClient(args *ClientArgs) (*Client, error) {
-	client := &Client{
-		Args: args,
-	}
+	client := &Client{}
 
 	if args.ClusterMode {
 		if err := client.ConnectCluster(args.Url); err != nil {
