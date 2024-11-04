@@ -82,22 +82,28 @@ func NewClientFromConfig(config *viper.Viper, prefix string) (*Client, error) {
 }
 
 func CreateClientArgs(config *viper.Viper, prefix string) *ClientArgs {
-	tls := config.GetBool(fmt.Sprintf("%s.tls", prefix))
-	pass := config.GetString(fmt.Sprintf("%s.pass", prefix))
-	endpoint := config.GetString(fmt.Sprintf("%s.endpoint", prefix))
-	port := config.GetString(fmt.Sprintf("%s.port", prefix))
+	url := config.GetString(fmt.Sprintf("%s.url", prefix))
+
+	if url == "" {
+		tls := config.GetBool(fmt.Sprintf("%s.tls", prefix))
+
+		endpoint := config.GetString(fmt.Sprintf("%s.endpoint", prefix))
+		port := config.GetString(fmt.Sprintf("%s.port", prefix))
+		pass := config.GetString(fmt.Sprintf("%s.password", prefix))
+
+		var baseUrl string
+		if tls {
+			baseUrl = "rediss://"
+		} else {
+			baseUrl = "redis://"
+		}
+
+		url = fmt.Sprintf("%s:%s@%s:%s", baseUrl, pass, endpoint, port)
+	}
+
 	clusterMode := config.GetBool(fmt.Sprintf("%s.clusterMode", prefix))
 	enableMetrics := config.GetBool(fmt.Sprintf("%s.enableMetrics", prefix))
 	enableTracing := config.GetBool(fmt.Sprintf("%s.enableTracing", prefix))
-
-	var baseUrl string
-	if tls {
-		baseUrl = "rediss://"
-	} else {
-		baseUrl = "redis://"
-	}
-
-	url := fmt.Sprintf("%s:%s@%s:%s", baseUrl, pass, endpoint, port)
 
 	// Extra parameters
 	var queryParameters []string
