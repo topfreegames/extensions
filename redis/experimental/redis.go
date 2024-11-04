@@ -30,11 +30,12 @@ import (
 	"github.com/redis/go-redis/extra/redisotel/v9"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
+	"github.com/topfreegames/extensions/v9/redis/experimental/interfaces"
 )
 
 // Client identifies uniquely one redis client with a pool of connections
 type Client struct {
-	Instance redis.UniversalClient
+	Instance interfaces.UniversalClient
 	Args     *ClientArgs
 }
 
