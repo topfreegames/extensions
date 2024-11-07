@@ -20,7 +20,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package redis
+package cluster
 
 import (
 	"context"
@@ -30,12 +30,12 @@ import (
 	"github.com/redis/go-redis/extra/redisotel/v9"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
-	"github.com/topfreegames/extensions/v9/redis/experimental/interfaces"
 )
 
 // Client identifies uniquely one redis client with a pool of connections
 type Client struct {
-	Instance interfaces.UniversalClient
+	Instance    redis.UniversalClient
+	ClusterMode bool
 }
 
 type ClientArgs struct {
@@ -45,9 +45,11 @@ type ClientArgs struct {
 	EnableTracing bool
 }
 
-// NewClient creates and returns a new redis client based on the given settings. It only supports redis 7 clients.gps
+// NewClient creates and returns a new redis client based on the given settings. It only supports redis 7 engine and uses go-redis v9.
 func NewClient(args *ClientArgs) (*Client, error) {
-	client := &Client{}
+	client := &Client{
+		ClusterMode: args.ClusterMode,
+	}
 
 	if args.ClusterMode {
 		if err := client.ConnectCluster(args.Url); err != nil {
@@ -74,7 +76,7 @@ func NewClient(args *ClientArgs) (*Client, error) {
 	return client, nil
 }
 
-// NewClientFromConfig creates and returns a new redis client based on the given settings from predefined env vars. It only supports redis 7 clients.gps
+// NewClientFromConfig creates and returns a new redis client based on the given settings from predefined env vars. It only supports redis 7 engine and uses go-redis v9.
 func NewClientFromConfig(config *viper.Viper, prefix string) (*Client, error) {
 	args := CreateClientArgs(config, prefix)
 
