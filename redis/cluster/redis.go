@@ -47,6 +47,10 @@ type ClientArgs struct {
 
 // NewClient creates and returns a new redis client based on the given settings. It only supports redis 7 engine and uses go-redis v9.
 func NewClient(args *ClientArgs) (*Client, error) {
+	if args == nil {
+		return nil, fmt.Errorf("NewClient must have a non-nil args")
+	}
+
 	client := &Client{
 		ClusterMode: args.ClusterMode,
 	}
@@ -78,6 +82,10 @@ func NewClient(args *ClientArgs) (*Client, error) {
 
 // NewClientFromConfig creates and returns a new redis client based on the given settings from predefined env vars. It only supports redis 7 engine and uses go-redis v9.
 func NewClientFromConfig(config *viper.Viper, prefix string) (*Client, error) {
+	if config == nil {
+		return nil, fmt.Errorf("NewClientFromConfig must have a non-nil config")
+	}
+
 	args := CreateClientArgs(config, prefix)
 
 	return NewClient(args)
