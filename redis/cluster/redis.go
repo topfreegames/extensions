@@ -122,9 +122,9 @@ func CreateClientArgs(config *viper.Viper, prefix string) *ClientArgs {
 		queryParameters = append(queryParameters, fmt.Sprintf("max_redirects=%s", maxRedirects))
 	}
 
-	poolsize := config.GetString("poolSize")
-	if poolsize != "" {
-		queryParameters = append(queryParameters, fmt.Sprintf("pool_size=%s", poolsize))
+	poolSize := config.GetString(fmt.Sprintf("%s.poolSize", prefix))
+	if poolSize != "" {
+		queryParameters = append(queryParameters, fmt.Sprintf("pool_size=%s", poolSize))
 	}
 
 	readTimeout := config.GetString(fmt.Sprintf("%s.timeout", prefix))
