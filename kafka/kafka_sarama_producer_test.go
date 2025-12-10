@@ -23,7 +23,7 @@
 package kafka
 
 import (
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 

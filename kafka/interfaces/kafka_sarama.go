@@ -1,6 +1,6 @@
 package interfaces
 
-import "github.com/Shopify/sarama"
+import "github.com/IBM/sarama"
 
 type SyncProducer interface {
 	sarama.SyncProducer
