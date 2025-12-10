@@ -5,7 +5,6 @@ go 1.24.0
 require (
 	github.com/DataDog/datadog-go/v5 v5.8.2
 	github.com/IBM/sarama v1.46.3
-	github.com/alexcesaro/statsd v2.0.0+incompatible
 	github.com/apache/cassandra-gocql-driver/v2 v2.0.0
 	github.com/asaskevich/govalidator v0.0.0-20171111151018-521b25f4b05f
 	github.com/aws/aws-sdk-go-v2 v1.41.0
@@ -31,6 +30,7 @@ require (
 	github.com/redis/go-redis/extra/redisotel/v9 v9.7.0
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/sirupsen/logrus v1.7.0
+	github.com/smira/go-statsd v1.3.4
 	github.com/spf13/viper v1.13.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	go.mongodb.org/mongo-driver/v2 v2.4.1
@@ -128,7 +128,6 @@ require (
 	golang.org/x/text v0.30.0 // indirect
 	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
-	gopkg.in/alexcesaro/statsd.v2 v2.0.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect

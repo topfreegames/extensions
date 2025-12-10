@@ -23,10 +23,11 @@
 package statsd
 
 import (
+	"fmt"
 	"time"
 
-	"github.com/alexcesaro/statsd"
 	"github.com/sirupsen/logrus"
+	"github.com/smira/go-statsd"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/v9/statsd/interfaces"
 )
@@ -73,13 +74,15 @@ func (s *StatsD) configure(client interfaces.StatsDClient) error {
 	})
 
 	if client == nil {
-		var err error
-		client, err = statsd.New(statsd.Address(host), statsd.FlushPeriod(flushPeriod), statsd.Prefix(prefix))
+		// Create smira/go-statsd client
+		smiraClient := statsd.NewClient(host,
+			statsd.MetricPrefix(prefix),
+			statsd.FlushInterval(flushPeriod),
+			statsd.MaxPacketSize(1400), // Safe UDP packet size
+		)
 
-		if err != nil {
-			l.WithError(err).Error("Error configuring statsd client.")
-			return err
-		}
+		// Wrap the smira client to match our interface
+		client = &statsdClientAdapter{client: smiraClient}
 	}
 
 	s.Client = client
@@ -87,17 +90,87 @@ func (s *StatsD) configure(client interfaces.StatsDClient) error {
 	return nil
 }
 
-//Increment increments a metric in StatsD
+// statsdClientAdapter adapts smira/go-statsd to our interface
+type statsdClientAdapter struct {
+	client *statsd.Client
+}
+
+func (a *statsdClientAdapter) Increment(metric string) {
+	a.client.Incr(metric, 1)
+}
+
+func (a *statsdClientAdapter) Count(metric string, delta interface{}) {
+	var value int64
+	switch v := delta.(type) {
+	case int:
+		value = int64(v)
+	case int64:
+		value = v
+	case uint64:
+		value = int64(v)
+	case float64:
+		value = int64(v)
+	default:
+		// Try to convert to int64
+		value = int64(fmt.Sprintf("%v", v)[0] - '0')
+	}
+	a.client.Incr(metric, value)
+}
+
+func (a *statsdClientAdapter) Gauge(metric string, value interface{}) {
+	var gaugeValue int64
+	switch v := value.(type) {
+	case int:
+		gaugeValue = int64(v)
+	case int64:
+		gaugeValue = v
+	case uint64:
+		gaugeValue = int64(v)
+	case float64:
+		gaugeValue = int64(v)
+	default:
+		gaugeValue = 0
+	}
+	a.client.Gauge(metric, gaugeValue)
+}
+
+func (a *statsdClientAdapter) Timing(metric string, value interface{}) {
+	var duration time.Duration
+	switch v := value.(type) {
+	case time.Duration:
+		duration = v
+	case int64:
+		duration = time.Duration(v)
+	case uint64:
+		duration = time.Duration(v)
+	case float64:
+		duration = time.Duration(v)
+	default:
+		duration = 0
+	}
+	a.client.Timing(metric, int64(duration))
+}
+
+func (a *statsdClientAdapter) Flush() {
+	// smira/go-statsd flushes automatically based on FlushInterval
+	// This is a no-op for compatibility
+}
+
+func (a *statsdClientAdapter) Close() {
+	a.client.Close()
+}
+
+// Increment increments a metric in StatsD
 func (s *StatsD) Increment(metric string) {
 	s.Client.Increment(metric)
 }
 
-//Count increments a metric in StatsD by a delta
+// Count increments a metric in StatsD by a delta
 func (s *StatsD) Count(metric string, delta interface{}) {
 	s.Client.Count(metric, delta)
 }
 
-//ReportGoStats reports go stats in statsd
+// ReportGoStats reports go stats in statsd
 func (s *StatsD) ReportGoStats(
 	numGoRoutines int,
 	allocatedAndNotFreed, heapObjects, nextGCBytes, pauseGCNano uint64,
@@ -109,13 +182,13 @@ func (s *StatsD) ReportGoStats(
 	s.Client.Timing("gc_pause_duration_ms", pauseGCNano/1000000)
 }
 
-//Flush calls Flush from dogstatsd
+// Flush calls Flush from statsd client
 func (s *StatsD) Flush() error {
 	s.Client.Flush()
 	return nil
 }
 
-//Cleanup closes statsd connection
+// Cleanup closes statsd connection
 func (s *StatsD) Cleanup() error {
 	s.Client.Close()
 	return nil
