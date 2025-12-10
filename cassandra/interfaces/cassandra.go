@@ -22,7 +22,7 @@
 
 package interfaces
 
-import "github.com/gocql/gocql"
+import gocql "github.com/apache/cassandra-gocql-driver/v2"
 
 // DB represents the contract for a Cassandra DB
 type DB interface {

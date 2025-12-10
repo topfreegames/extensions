@@ -26,7 +26,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gocql/gocql"
+	"github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/v9/cassandra/interfaces"
 )
