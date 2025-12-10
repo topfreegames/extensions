@@ -25,59 +25,35 @@ package interfaces
 import (
 	"context"
 
-	"github.com/libi/mgo"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // MongoDB represents the contract for a Mongo DB
 type MongoDB interface {
-	Run(cmd interface{}, result interface{}) error
-	C(name string) (Collection, Session)
-	Close()
+	RunCommand(ctx context.Context, cmd interface{}) *mongo.SingleResult
+	Collection(name string) Collection
+	Close(ctx context.Context) error
 	WithContext(ctx context.Context) MongoDB
 }
 
 // Collection represents a mongoDB collection
 type Collection interface {
-	Find(query interface{}) Query
-	FindId(id interface{}) Query
-	Pipe(pipeline interface{}) Pipe
-	Insert(docs ...interface{}) error
-	UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error)
-	Upsert(selector interface{}, update interface{}) (*mgo.ChangeInfo, error)
-	RemoveId(id interface{}) error
-	Remove(selector interface{}) error
-	RemoveAll(selector interface{}) (*mgo.ChangeInfo, error)
-	Bulk() Bulk
+	Find(ctx context.Context, filter interface{}, opts ...any) (Cursor, error)
+	FindOne(ctx context.Context, filter interface{}, opts ...any) *mongo.SingleResult
+	Aggregate(ctx context.Context, pipeline interface{}, opts ...any) (Cursor, error)
+	InsertOne(ctx context.Context, document interface{}, opts ...any) (*mongo.InsertOneResult, error)
+	InsertMany(ctx context.Context, documents []interface{}, opts ...any) (*mongo.InsertManyResult, error)
+	UpdateByID(ctx context.Context, id interface{}, update interface{}, opts ...any) (*mongo.UpdateResult, error)
+	UpdateOne(ctx context.Context, filter interface{}, update interface{}, opts ...any) (*mongo.UpdateResult, error)
+	DeleteOne(ctx context.Context, filter interface{}, opts ...any) (*mongo.DeleteResult, error)
+	DeleteMany(ctx context.Context, filter interface{}, opts ...any) (*mongo.DeleteResult, error)
+	BulkWrite(ctx context.Context, models []mongo.WriteModel, opts ...any) (*mongo.BulkWriteResult, error)
 }
 
-// Session is the mongoDB session
-type Session interface {
-	Copy() *mgo.Session
-	Close()
-}
-
-// Query wraps mongo Query
-type Query interface {
-	Iter() Iter
-	All(result interface{}) error
-	One(result interface{}) error
-	Limit(n int) Query
-}
-
-// Pipe wraps mongo Pipe
-type Pipe interface {
-	All(result interface{}) error
-	Batch(n int) Pipe
-}
-
-// Iter wraps mongo Iter
-type Iter interface {
-	Next(result interface{}) bool
-	Close() error
-}
-
-// Bulk contains methods to be executed at one at server
-type Bulk interface {
-	Upsert(pairs ...interface{})
-	Run() (*mgo.BulkResult, error)
+// Cursor wraps mongo Cursor
+type Cursor interface {
+	Next(ctx context.Context) bool
+	Decode(val interface{}) error
+	All(ctx context.Context, results interface{}) error
+	Close(ctx context.Context) error
 }

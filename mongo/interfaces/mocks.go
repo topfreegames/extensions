@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	mgo "github.com/libi/mgo"
+	mongo "go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // MockMongoDB is a mock of MongoDB interface.
@@ -35,45 +35,46 @@ func (m *MockMongoDB) EXPECT() *MockMongoDBMockRecorder {
 	return m.recorder
 }
 
-// C mocks base method.
-func (m *MockMongoDB) C(name string) (Collection, Session) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "C", name)
-	ret0, _ := ret[0].(Collection)
-	ret1, _ := ret[1].(Session)
-	return ret0, ret1
-}
-
-// C indicates an expected call of C.
-func (mr *MockMongoDBMockRecorder) C(name interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "C", reflect.TypeOf((*MockMongoDB)(nil).C), name)
-}
-
 // Close mocks base method.
-func (m *MockMongoDB) Close() {
+func (m *MockMongoDB) Close(ctx context.Context) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Close")
-}
-
-// Close indicates an expected call of Close.
-func (mr *MockMongoDBMockRecorder) Close() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockMongoDB)(nil).Close))
-}
-
-// Run mocks base method.
-func (m *MockMongoDB) Run(cmd, result interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Run", cmd, result)
+	ret := m.ctrl.Call(m, "Close", ctx)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Run indicates an expected call of Run.
-func (mr *MockMongoDBMockRecorder) Run(cmd, result interface{}) *gomock.Call {
+// Close indicates an expected call of Close.
+func (mr *MockMongoDBMockRecorder) Close(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Run", reflect.TypeOf((*MockMongoDB)(nil).Run), cmd, result)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockMongoDB)(nil).Close), ctx)
+}
+
+// Collection mocks base method.
+func (m *MockMongoDB) Collection(name string) Collection {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Collection", name)
+	ret0, _ := ret[0].(Collection)
+	return ret0
+}
+
+// Collection indicates an expected call of Collection.
+func (mr *MockMongoDBMockRecorder) Collection(name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Collection", reflect.TypeOf((*MockMongoDB)(nil).Collection), name)
+}
+
+// RunCommand mocks base method.
+func (m *MockMongoDB) RunCommand(ctx context.Context, cmd interface{}) *mongo.SingleResult {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RunCommand", ctx, cmd)
+	ret0, _ := ret[0].(*mongo.SingleResult)
+	return ret0
+}
+
+// RunCommand indicates an expected call of RunCommand.
+func (mr *MockMongoDBMockRecorder) RunCommand(ctx, cmd interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RunCommand", reflect.TypeOf((*MockMongoDB)(nil).RunCommand), ctx, cmd)
 }
 
 // WithContext mocks base method.
@@ -113,433 +114,280 @@ func (m *MockCollection) EXPECT() *MockCollectionMockRecorder {
 	return m.recorder
 }
 
-// Bulk mocks base method.
-func (m *MockCollection) Bulk() Bulk {
+// Aggregate mocks base method.
+func (m *MockCollection) Aggregate(ctx context.Context, pipeline interface{}, opts ...any) (Cursor, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Bulk")
-	ret0, _ := ret[0].(Bulk)
-	return ret0
+	varargs := []interface{}{ctx, pipeline}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Aggregate", varargs...)
+	ret0, _ := ret[0].(Cursor)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// Bulk indicates an expected call of Bulk.
-func (mr *MockCollectionMockRecorder) Bulk() *gomock.Call {
+// Aggregate indicates an expected call of Aggregate.
+func (mr *MockCollectionMockRecorder) Aggregate(ctx, pipeline interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Bulk", reflect.TypeOf((*MockCollection)(nil).Bulk))
+	varargs := append([]interface{}{ctx, pipeline}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Aggregate", reflect.TypeOf((*MockCollection)(nil).Aggregate), varargs...)
+}
+
+// BulkWrite mocks base method.
+func (m *MockCollection) BulkWrite(ctx context.Context, models []mongo.WriteModel, opts ...any) (*mongo.BulkWriteResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, models}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BulkWrite", varargs...)
+	ret0, _ := ret[0].(*mongo.BulkWriteResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BulkWrite indicates an expected call of BulkWrite.
+func (mr *MockCollectionMockRecorder) BulkWrite(ctx, models interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, models}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BulkWrite", reflect.TypeOf((*MockCollection)(nil).BulkWrite), varargs...)
+}
+
+// DeleteMany mocks base method.
+func (m *MockCollection) DeleteMany(ctx context.Context, filter interface{}, opts ...any) (*mongo.DeleteResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteMany", varargs...)
+	ret0, _ := ret[0].(*mongo.DeleteResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteMany indicates an expected call of DeleteMany.
+func (mr *MockCollectionMockRecorder) DeleteMany(ctx, filter interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMany", reflect.TypeOf((*MockCollection)(nil).DeleteMany), varargs...)
+}
+
+// DeleteOne mocks base method.
+func (m *MockCollection) DeleteOne(ctx context.Context, filter interface{}, opts ...any) (*mongo.DeleteResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteOne", varargs...)
+	ret0, _ := ret[0].(*mongo.DeleteResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteOne indicates an expected call of DeleteOne.
+func (mr *MockCollectionMockRecorder) DeleteOne(ctx, filter interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOne", reflect.TypeOf((*MockCollection)(nil).DeleteOne), varargs...)
 }
 
 // Find mocks base method.
-func (m *MockCollection) Find(query interface{}) Query {
+func (m *MockCollection) Find(ctx context.Context, filter interface{}, opts ...any) (Cursor, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", query)
-	ret0, _ := ret[0].(Query)
-	return ret0
+	varargs := []interface{}{ctx, filter}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Find", varargs...)
+	ret0, _ := ret[0].(Cursor)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Find indicates an expected call of Find.
-func (mr *MockCollectionMockRecorder) Find(query interface{}) *gomock.Call {
+func (mr *MockCollectionMockRecorder) Find(ctx, filter interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockCollection)(nil).Find), query)
+	varargs := append([]interface{}{ctx, filter}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockCollection)(nil).Find), varargs...)
 }
 
-// FindId mocks base method.
-func (m *MockCollection) FindId(id interface{}) Query {
+// FindOne mocks base method.
+func (m *MockCollection) FindOne(ctx context.Context, filter interface{}, opts ...any) *mongo.SingleResult {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindId", id)
-	ret0, _ := ret[0].(Query)
-	return ret0
-}
-
-// FindId indicates an expected call of FindId.
-func (mr *MockCollectionMockRecorder) FindId(id interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindId", reflect.TypeOf((*MockCollection)(nil).FindId), id)
-}
-
-// Insert mocks base method.
-func (m *MockCollection) Insert(docs ...interface{}) error {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{}
-	for _, a := range docs {
+	varargs := []interface{}{ctx, filter}
+	for _, a := range opts {
 		varargs = append(varargs, a)
 	}
-	ret := m.ctrl.Call(m, "Insert", varargs...)
-	ret0, _ := ret[0].(error)
+	ret := m.ctrl.Call(m, "FindOne", varargs...)
+	ret0, _ := ret[0].(*mongo.SingleResult)
 	return ret0
 }
 
-// Insert indicates an expected call of Insert.
-func (mr *MockCollectionMockRecorder) Insert(docs ...interface{}) *gomock.Call {
+// FindOne indicates an expected call of FindOne.
+func (mr *MockCollectionMockRecorder) FindOne(ctx, filter interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockCollection)(nil).Insert), docs...)
+	varargs := append([]interface{}{ctx, filter}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockCollection)(nil).FindOne), varargs...)
 }
 
-// Pipe mocks base method.
-func (m *MockCollection) Pipe(pipeline interface{}) Pipe {
+// InsertMany mocks base method.
+func (m *MockCollection) InsertMany(ctx context.Context, documents []interface{}, opts ...any) (*mongo.InsertManyResult, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Pipe", pipeline)
-	ret0, _ := ret[0].(Pipe)
-	return ret0
-}
-
-// Pipe indicates an expected call of Pipe.
-func (mr *MockCollectionMockRecorder) Pipe(pipeline interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Pipe", reflect.TypeOf((*MockCollection)(nil).Pipe), pipeline)
-}
-
-// Remove mocks base method.
-func (m *MockCollection) Remove(selector interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Remove", selector)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Remove indicates an expected call of Remove.
-func (mr *MockCollectionMockRecorder) Remove(selector interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockCollection)(nil).Remove), selector)
-}
-
-// RemoveAll mocks base method.
-func (m *MockCollection) RemoveAll(selector interface{}) (*mgo.ChangeInfo, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveAll", selector)
-	ret0, _ := ret[0].(*mgo.ChangeInfo)
+	varargs := []interface{}{ctx, documents}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "InsertMany", varargs...)
+	ret0, _ := ret[0].(*mongo.InsertManyResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// RemoveAll indicates an expected call of RemoveAll.
-func (mr *MockCollectionMockRecorder) RemoveAll(selector interface{}) *gomock.Call {
+// InsertMany indicates an expected call of InsertMany.
+func (mr *MockCollectionMockRecorder) InsertMany(ctx, documents interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveAll", reflect.TypeOf((*MockCollection)(nil).RemoveAll), selector)
+	varargs := append([]interface{}{ctx, documents}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertMany", reflect.TypeOf((*MockCollection)(nil).InsertMany), varargs...)
 }
 
-// RemoveId mocks base method.
-func (m *MockCollection) RemoveId(id interface{}) error {
+// InsertOne mocks base method.
+func (m *MockCollection) InsertOne(ctx context.Context, document interface{}, opts ...any) (*mongo.InsertOneResult, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveId", id)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// RemoveId indicates an expected call of RemoveId.
-func (mr *MockCollectionMockRecorder) RemoveId(id interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveId", reflect.TypeOf((*MockCollection)(nil).RemoveId), id)
-}
-
-// Upsert mocks base method.
-func (m *MockCollection) Upsert(selector, update interface{}) (*mgo.ChangeInfo, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Upsert", selector, update)
-	ret0, _ := ret[0].(*mgo.ChangeInfo)
+	varargs := []interface{}{ctx, document}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "InsertOne", varargs...)
+	ret0, _ := ret[0].(*mongo.InsertOneResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Upsert indicates an expected call of Upsert.
-func (mr *MockCollectionMockRecorder) Upsert(selector, update interface{}) *gomock.Call {
+// InsertOne indicates an expected call of InsertOne.
+func (mr *MockCollectionMockRecorder) InsertOne(ctx, document interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upsert", reflect.TypeOf((*MockCollection)(nil).Upsert), selector, update)
+	varargs := append([]interface{}{ctx, document}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertOne", reflect.TypeOf((*MockCollection)(nil).InsertOne), varargs...)
 }
 
-// UpsertId mocks base method.
-func (m *MockCollection) UpsertId(id, update interface{}) (*mgo.ChangeInfo, error) {
+// UpdateByID mocks base method.
+func (m *MockCollection) UpdateByID(ctx context.Context, id, update interface{}, opts ...any) (*mongo.UpdateResult, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpsertId", id, update)
-	ret0, _ := ret[0].(*mgo.ChangeInfo)
+	varargs := []interface{}{ctx, id, update}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateByID", varargs...)
+	ret0, _ := ret[0].(*mongo.UpdateResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// UpsertId indicates an expected call of UpsertId.
-func (mr *MockCollectionMockRecorder) UpsertId(id, update interface{}) *gomock.Call {
+// UpdateByID indicates an expected call of UpdateByID.
+func (mr *MockCollectionMockRecorder) UpdateByID(ctx, id, update interface{}, opts ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertId", reflect.TypeOf((*MockCollection)(nil).UpsertId), id, update)
+	varargs := append([]interface{}{ctx, id, update}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateByID", reflect.TypeOf((*MockCollection)(nil).UpdateByID), varargs...)
 }
 
-// MockSession is a mock of Session interface.
-type MockSession struct {
+// UpdateOne mocks base method.
+func (m *MockCollection) UpdateOne(ctx context.Context, filter, update interface{}, opts ...any) (*mongo.UpdateResult, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, filter, update}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateOne", varargs...)
+	ret0, _ := ret[0].(*mongo.UpdateResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateOne indicates an expected call of UpdateOne.
+func (mr *MockCollectionMockRecorder) UpdateOne(ctx, filter, update interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, filter, update}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOne", reflect.TypeOf((*MockCollection)(nil).UpdateOne), varargs...)
+}
+
+// MockCursor is a mock of Cursor interface.
+type MockCursor struct {
 	ctrl     *gomock.Controller
-	recorder *MockSessionMockRecorder
+	recorder *MockCursorMockRecorder
 }
 
-// MockSessionMockRecorder is the mock recorder for MockSession.
-type MockSessionMockRecorder struct {
-	mock *MockSession
+// MockCursorMockRecorder is the mock recorder for MockCursor.
+type MockCursorMockRecorder struct {
+	mock *MockCursor
 }
 
-// NewMockSession creates a new mock instance.
-func NewMockSession(ctrl *gomock.Controller) *MockSession {
-	mock := &MockSession{ctrl: ctrl}
-	mock.recorder = &MockSessionMockRecorder{mock}
+// NewMockCursor creates a new mock instance.
+func NewMockCursor(ctrl *gomock.Controller) *MockCursor {
+	mock := &MockCursor{ctrl: ctrl}
+	mock.recorder = &MockCursorMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockSession) EXPECT() *MockSessionMockRecorder {
-	return m.recorder
-}
-
-// Close mocks base method.
-func (m *MockSession) Close() {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Close")
-}
-
-// Close indicates an expected call of Close.
-func (mr *MockSessionMockRecorder) Close() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockSession)(nil).Close))
-}
-
-// Copy mocks base method.
-func (m *MockSession) Copy() *mgo.Session {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Copy")
-	ret0, _ := ret[0].(*mgo.Session)
-	return ret0
-}
-
-// Copy indicates an expected call of Copy.
-func (mr *MockSessionMockRecorder) Copy() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Copy", reflect.TypeOf((*MockSession)(nil).Copy))
-}
-
-// MockQuery is a mock of Query interface.
-type MockQuery struct {
-	ctrl     *gomock.Controller
-	recorder *MockQueryMockRecorder
-}
-
-// MockQueryMockRecorder is the mock recorder for MockQuery.
-type MockQueryMockRecorder struct {
-	mock *MockQuery
-}
-
-// NewMockQuery creates a new mock instance.
-func NewMockQuery(ctrl *gomock.Controller) *MockQuery {
-	mock := &MockQuery{ctrl: ctrl}
-	mock.recorder = &MockQueryMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockQuery) EXPECT() *MockQueryMockRecorder {
+func (m *MockCursor) EXPECT() *MockCursorMockRecorder {
 	return m.recorder
 }
 
 // All mocks base method.
-func (m *MockQuery) All(result interface{}) error {
+func (m *MockCursor) All(ctx context.Context, results interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "All", result)
+	ret := m.ctrl.Call(m, "All", ctx, results)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // All indicates an expected call of All.
-func (mr *MockQueryMockRecorder) All(result interface{}) *gomock.Call {
+func (mr *MockCursorMockRecorder) All(ctx, results interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockQuery)(nil).All), result)
-}
-
-// Iter mocks base method.
-func (m *MockQuery) Iter() Iter {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Iter")
-	ret0, _ := ret[0].(Iter)
-	return ret0
-}
-
-// Iter indicates an expected call of Iter.
-func (mr *MockQueryMockRecorder) Iter() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Iter", reflect.TypeOf((*MockQuery)(nil).Iter))
-}
-
-// Limit mocks base method.
-func (m *MockQuery) Limit(n int) Query {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Limit", n)
-	ret0, _ := ret[0].(Query)
-	return ret0
-}
-
-// Limit indicates an expected call of Limit.
-func (mr *MockQueryMockRecorder) Limit(n interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Limit", reflect.TypeOf((*MockQuery)(nil).Limit), n)
-}
-
-// One mocks base method.
-func (m *MockQuery) One(result interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "One", result)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// One indicates an expected call of One.
-func (mr *MockQueryMockRecorder) One(result interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "One", reflect.TypeOf((*MockQuery)(nil).One), result)
-}
-
-// MockPipe is a mock of Pipe interface.
-type MockPipe struct {
-	ctrl     *gomock.Controller
-	recorder *MockPipeMockRecorder
-}
-
-// MockPipeMockRecorder is the mock recorder for MockPipe.
-type MockPipeMockRecorder struct {
-	mock *MockPipe
-}
-
-// NewMockPipe creates a new mock instance.
-func NewMockPipe(ctrl *gomock.Controller) *MockPipe {
-	mock := &MockPipe{ctrl: ctrl}
-	mock.recorder = &MockPipeMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockPipe) EXPECT() *MockPipeMockRecorder {
-	return m.recorder
-}
-
-// All mocks base method.
-func (m *MockPipe) All(result interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "All", result)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// All indicates an expected call of All.
-func (mr *MockPipeMockRecorder) All(result interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockPipe)(nil).All), result)
-}
-
-// Batch mocks base method.
-func (m *MockPipe) Batch(n int) Pipe {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Batch", n)
-	ret0, _ := ret[0].(Pipe)
-	return ret0
-}
-
-// Batch indicates an expected call of Batch.
-func (mr *MockPipeMockRecorder) Batch(n interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Batch", reflect.TypeOf((*MockPipe)(nil).Batch), n)
-}
-
-// MockIter is a mock of Iter interface.
-type MockIter struct {
-	ctrl     *gomock.Controller
-	recorder *MockIterMockRecorder
-}
-
-// MockIterMockRecorder is the mock recorder for MockIter.
-type MockIterMockRecorder struct {
-	mock *MockIter
-}
-
-// NewMockIter creates a new mock instance.
-func NewMockIter(ctrl *gomock.Controller) *MockIter {
-	mock := &MockIter{ctrl: ctrl}
-	mock.recorder = &MockIterMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockIter) EXPECT() *MockIterMockRecorder {
-	return m.recorder
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockCursor)(nil).All), ctx, results)
 }
 
 // Close mocks base method.
-func (m *MockIter) Close() error {
+func (m *MockCursor) Close(ctx context.Context) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Close")
+	ret := m.ctrl.Call(m, "Close", ctx)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Close indicates an expected call of Close.
-func (mr *MockIterMockRecorder) Close() *gomock.Call {
+func (mr *MockCursorMockRecorder) Close(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockIter)(nil).Close))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockCursor)(nil).Close), ctx)
+}
+
+// Decode mocks base method.
+func (m *MockCursor) Decode(val interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Decode", val)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Decode indicates an expected call of Decode.
+func (mr *MockCursorMockRecorder) Decode(val interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Decode", reflect.TypeOf((*MockCursor)(nil).Decode), val)
 }
 
 // Next mocks base method.
-func (m *MockIter) Next(result interface{}) bool {
+func (m *MockCursor) Next(ctx context.Context) bool {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Next", result)
+	ret := m.ctrl.Call(m, "Next", ctx)
 	ret0, _ := ret[0].(bool)
 	return ret0
 }
 
 // Next indicates an expected call of Next.
-func (mr *MockIterMockRecorder) Next(result interface{}) *gomock.Call {
+func (mr *MockCursorMockRecorder) Next(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Next", reflect.TypeOf((*MockIter)(nil).Next), result)
-}
-
-// MockBulk is a mock of Bulk interface.
-type MockBulk struct {
-	ctrl     *gomock.Controller
-	recorder *MockBulkMockRecorder
-}
-
-// MockBulkMockRecorder is the mock recorder for MockBulk.
-type MockBulkMockRecorder struct {
-	mock *MockBulk
-}
-
-// NewMockBulk creates a new mock instance.
-func NewMockBulk(ctrl *gomock.Controller) *MockBulk {
-	mock := &MockBulk{ctrl: ctrl}
-	mock.recorder = &MockBulkMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockBulk) EXPECT() *MockBulkMockRecorder {
-	return m.recorder
-}
-
-// Run mocks base method.
-func (m *MockBulk) Run() (*mgo.BulkResult, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Run")
-	ret0, _ := ret[0].(*mgo.BulkResult)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Run indicates an expected call of Run.
-func (mr *MockBulkMockRecorder) Run() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Run", reflect.TypeOf((*MockBulk)(nil).Run))
-}
-
-// Upsert mocks base method.
-func (m *MockBulk) Upsert(pairs ...interface{}) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{}
-	for _, a := range pairs {
-		varargs = append(varargs, a)
-	}
-	m.ctrl.Call(m, "Upsert", varargs...)
-}
-
-// Upsert indicates an expected call of Upsert.
-func (mr *MockBulkMockRecorder) Upsert(pairs ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upsert", reflect.TypeOf((*MockBulk)(nil).Upsert), pairs...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Next", reflect.TypeOf((*MockCursor)(nil).Next), ctx)
 }

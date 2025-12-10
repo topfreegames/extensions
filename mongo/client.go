@@ -23,20 +23,24 @@
 package mongo
 
 import (
+	"context"
 	"fmt"
+	"time"
 
-	"github.com/libi/mgo"
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+
 	"github.com/topfreegames/extensions/v9/mongo/interfaces"
 )
 
-// Client is the struct that connects to PostgreSQL
+// Client is the struct that connects to MongoDB
 type Client struct {
 	Config  *viper.Viper
 	MongoDB interfaces.MongoDB
 }
 
-//NewClient connects to Mongo server and return its client
+// NewClient connects to Mongo server and returns its client
 func NewClient(prefix string, config *viper.Viper, mongoOrNil ...interfaces.MongoDB) (*Client, error) {
 	client := &Client{
 		Config: config,
@@ -52,11 +56,11 @@ func NewClient(prefix string, config *viper.Viper, mongoOrNil ...interfaces.Mong
 	return client, nil
 }
 
-func makeKey(prefix, sufix string) string {
-	return fmt.Sprintf("%s.%s", prefix, sufix)
+func makeKey(prefix, suffix string) string {
+	return fmt.Sprintf("%s.%s", prefix, suffix)
 }
 
-//Connect connects to mongo database and saves on Client
+// Connect connects to mongo database and saves on Client
 func (c *Client) Connect(prefix string, db interfaces.MongoDB) error {
 	url := c.Config.GetString(makeKey(prefix, "url"))
 	user := c.Config.GetString(makeKey(prefix, "user"))
@@ -67,32 +71,58 @@ func (c *Client) Connect(prefix string, db interfaces.MongoDB) error {
 	if db != nil {
 		c.MongoDB = db
 	} else {
-		var session *mgo.Session
-		var err error
-
+		ctx := context.Background()
 		if timeout > 0 {
-			session, err = mgo.DialWithTimeout(url, timeout)
-		} else {
-			session, err = mgo.Dial(url)
+			var cancel context.CancelFunc
+			ctx, cancel = context.WithTimeout(ctx, timeout)
+			defer cancel()
 		}
 
+		// Build connection options
+		clientOpts := options.Client().ApplyURI(url)
+
+		// Set authentication if provided
+		if user != "" && pass != "" {
+			clientOpts.SetAuth(options.Credential{
+				Username: user,
+				Password: pass,
+			})
+		}
+
+		// Set timeout
+		if timeout > 0 {
+			clientOpts.SetServerSelectionTimeout(timeout)
+			clientOpts.SetConnectTimeout(timeout)
+		}
+
+		// Connect to MongoDB
+		client, err := mongo.Connect(clientOpts)
 		if err != nil {
 			return err
 		}
-		mongoDB := session.DB(database)
-		if user != "" && pass != "" {
-			err = mongoDB.Login(user, pass)
-			if err != nil {
-				return err
-			}
+
+		// Ping the database to verify connection
+		pingCtx := context.Background()
+		if timeout > 0 {
+			var cancel context.CancelFunc
+			pingCtx, cancel = context.WithTimeout(pingCtx, timeout)
+			defer cancel()
 		}
-		c.MongoDB = NewMongo(session, mongoDB)
+
+		err = client.Ping(pingCtx, nil)
+		if err != nil {
+			return err
+		}
+
+		c.MongoDB = NewMongo(client, client.Database(database))
 	}
 
 	return nil
 }
 
-//Close closes the session and the connection with database
-func (c *Client) Close() {
-	c.MongoDB.Close()
+// Close closes the connection with database
+func (c *Client) Close() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	return c.MongoDB.Close(ctx)
 }

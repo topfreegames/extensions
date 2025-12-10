@@ -23,9 +23,11 @@
 package mongo_test
 
 import (
+	"context"
+
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/viper"
-	"gopkg.in/mgo.v2/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 
 	. "github.com/topfreegames/extensions/v9/mongo"
 	"github.com/topfreegames/extensions/v9/mongo/interfaces"
@@ -63,11 +65,11 @@ var _ = Describe("Mongo", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			It("Should call dial with timeout if timeout is specified", func() {
-				config.Set("extensions.mongo.url", "localhost:80")
+			It("Should return error if connection fails", func() {
+				config.Set("extensions.mongo.url", "mongodb://invalid-host:27017")
+				config.Set("extensions.mongo.connectionTimeout", "100ms")
 				client, err := NewClient("extensions.mongo", config)
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal("no reachable servers"))
 				Expect(client).To(BeNil())
 			})
 		})
@@ -77,39 +79,38 @@ var _ = Describe("Mongo", func() {
 				client, err := NewClient("extensions.mongo", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
-				mockDb.EXPECT().Close()
-				client.Close()
+				mockDb.EXPECT().Close(gomock.Any()).Return(nil)
+				err = client.Close()
+				Expect(err).NotTo(HaveOccurred())
 			})
 		})
 
-		Describe("Run", func() {
-			It("Should execute command with run", func() {
+		Describe("Operations", func() {
+			It("Should execute insert with InsertOne", func() {
 				collectionName := "coll"
+				ctx := context.Background()
 
 				client, err := NewClient("extensions.mongo", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
-				mockDb.EXPECT().Close()
-				mockDb.EXPECT().C(collectionName).Return(mockColl, nil)
-				mockColl.EXPECT().Insert(gomock.Any())
+				mockDb.EXPECT().Collection(collectionName).Return(mockColl)
+				mockColl.EXPECT().InsertOne(ctx, bson.M{"test": "data"}).Return(nil, nil)
 
-				c, _ := client.MongoDB.C(collectionName)
-				err = c.Insert(bson.M{})
+				c := client.MongoDB.Collection(collectionName)
+				_, err = c.InsertOne(ctx, bson.M{"test": "data"})
 				Expect(err).NotTo(HaveOccurred())
-				client.Close()
 			})
 
-			It("Should execute Run command", func() {
+			It("Should execute RunCommand", func() {
+				ctx := context.Background()
 				client, err := NewClient("extensions.mongo", config, mockDb)
 				Expect(err).NotTo(HaveOccurred())
 
-				mockDb.EXPECT().Run(gomock.Any(), gomock.Any())
+				mockDb.EXPECT().RunCommand(ctx, bson.D{{Key: "create", Value: "mycollection"}}).Return(nil)
 
-				var result string
-				err = client.MongoDB.Run(bson.D{
-					{"create", "mycollection"},
-				}, &result)
-				Expect(err).NotTo(HaveOccurred())
+				client.MongoDB.RunCommand(ctx, bson.D{
+					{Key: "create", Value: "mycollection"},
+				})
 			})
 		})
 	})
