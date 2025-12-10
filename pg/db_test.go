@@ -30,8 +30,8 @@ import (
 
 	"github.com/go-pg/pg/v10"
 	"github.com/go-pg/pg/v10/orm"
-	"github.com/golang/mock/gomock"
-	. "github.com/onsi/ginkgo"
+	"go.uber.org/mock/gomock"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/topfreegames/extensions/v9/pg/mocks"
 )

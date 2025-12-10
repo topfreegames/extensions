@@ -13,7 +13,7 @@ import (
 	"github.com/topfreegames/extensions/v9/dogstatsd"
 	"github.com/topfreegames/extensions/v9/dogstatsd/mocks"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 )
 
 var _ = Describe("DogStatsD", func() {

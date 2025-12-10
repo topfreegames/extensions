@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	v2 "github.com/apache/cassandra-gocql-driver/v2"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockDB is a mock of DB interface.

@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 	time "time"
 
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 	redis "github.com/redis/go-redis/v9"
 )
 
@@ -36,6 +36,48 @@ func (m *MockPipeliner) EXPECT() *MockPipelinerMockRecorder {
 	return m.recorder
 }
 
+// ACLCat mocks base method.
+func (m *MockPipeliner) ACLCat(arg0 context.Context) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ACLCat", arg0)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// ACLCat indicates an expected call of ACLCat.
+func (mr *MockPipelinerMockRecorder) ACLCat(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLCat", reflect.TypeOf((*MockPipeliner)(nil).ACLCat), arg0)
+}
+
+// ACLCatArgs mocks base method.
+func (m *MockPipeliner) ACLCatArgs(arg0 context.Context, arg1 *redis.ACLCatArgs) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ACLCatArgs", arg0, arg1)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// ACLCatArgs indicates an expected call of ACLCatArgs.
+func (mr *MockPipelinerMockRecorder) ACLCatArgs(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLCatArgs", reflect.TypeOf((*MockPipeliner)(nil).ACLCatArgs), arg0, arg1)
+}
+
+// ACLDelUser mocks base method.
+func (m *MockPipeliner) ACLDelUser(arg0 context.Context, arg1 string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ACLDelUser", arg0, arg1)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// ACLDelUser indicates an expected call of ACLDelUser.
+func (mr *MockPipelinerMockRecorder) ACLDelUser(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLDelUser", reflect.TypeOf((*MockPipeliner)(nil).ACLDelUser), arg0, arg1)
+}
+
 // ACLDryRun mocks base method.
 func (m *MockPipeliner) ACLDryRun(arg0 context.Context, arg1 string, arg2 ...interface{}) *redis.StringCmd {
 	m.ctrl.T.Helper()
@@ -53,6 +95,34 @@ func (mr *MockPipelinerMockRecorder) ACLDryRun(arg0, arg1 interface{}, arg2 ...i
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLDryRun", reflect.TypeOf((*MockPipeliner)(nil).ACLDryRun), varargs...)
+}
+
+// ACLGenPass mocks base method.
+func (m *MockPipeliner) ACLGenPass(arg0 context.Context, arg1 int) *redis.StringCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ACLGenPass", arg0, arg1)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+// ACLGenPass indicates an expected call of ACLGenPass.
+func (mr *MockPipelinerMockRecorder) ACLGenPass(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLGenPass", reflect.TypeOf((*MockPipeliner)(nil).ACLGenPass), arg0, arg1)
+}
+
+// ACLList mocks base method.
+func (m *MockPipeliner) ACLList(arg0 context.Context) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ACLList", arg0)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// ACLList indicates an expected call of ACLList.
+func (mr *MockPipelinerMockRecorder) ACLList(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLList", reflect.TypeOf((*MockPipeliner)(nil).ACLList), arg0)
 }
 
 // ACLLog mocks base method.
@@ -81,6 +151,53 @@ func (m *MockPipeliner) ACLLogReset(arg0 context.Context) *redis.StatusCmd {
 func (mr *MockPipelinerMockRecorder) ACLLogReset(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLLogReset", reflect.TypeOf((*MockPipeliner)(nil).ACLLogReset), arg0)
+}
+
+// ACLSetUser mocks base method.
+func (m *MockPipeliner) ACLSetUser(arg0 context.Context, arg1 string, arg2 ...string) *redis.StatusCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ACLSetUser", varargs...)
+	ret0, _ := ret[0].(*redis.StatusCmd)
+	return ret0
+}
+
+// ACLSetUser indicates an expected call of ACLSetUser.
+func (mr *MockPipelinerMockRecorder) ACLSetUser(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLSetUser", reflect.TypeOf((*MockPipeliner)(nil).ACLSetUser), varargs...)
+}
+
+// ACLUsers mocks base method.
+func (m *MockPipeliner) ACLUsers(arg0 context.Context) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ACLUsers", arg0)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// ACLUsers indicates an expected call of ACLUsers.
+func (mr *MockPipelinerMockRecorder) ACLUsers(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLUsers", reflect.TypeOf((*MockPipeliner)(nil).ACLUsers), arg0)
+}
+
+// ACLWhoAmI mocks base method.
+func (m *MockPipeliner) ACLWhoAmI(arg0 context.Context) *redis.StringCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ACLWhoAmI", arg0)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+// ACLWhoAmI indicates an expected call of ACLWhoAmI.
+func (mr *MockPipelinerMockRecorder) ACLWhoAmI(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ACLWhoAmI", reflect.TypeOf((*MockPipeliner)(nil).ACLWhoAmI), arg0)
 }
 
 // Append mocks base method.
@@ -548,6 +665,25 @@ func (mr *MockPipelinerMockRecorder) BZPopMin(arg0, arg1 interface{}, arg2 ...in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BZPopMin", reflect.TypeOf((*MockPipeliner)(nil).BZPopMin), varargs...)
 }
 
+// BatchProcess mocks base method.
+func (m *MockPipeliner) BatchProcess(arg0 context.Context, arg1 ...redis.Cmder) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BatchProcess", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// BatchProcess indicates an expected call of BatchProcess.
+func (mr *MockPipelinerMockRecorder) BatchProcess(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchProcess", reflect.TypeOf((*MockPipeliner)(nil).BatchProcess), varargs...)
+}
+
 // BgRewriteAOF mocks base method.
 func (m *MockPipeliner) BgRewriteAOF(arg0 context.Context) *redis.StatusCmd {
 	m.ctrl.T.Helper()
@@ -647,6 +783,63 @@ func (mr *MockPipelinerMockRecorder) BitOpAnd(arg0, arg1 interface{}, arg2 ...in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BitOpAnd", reflect.TypeOf((*MockPipeliner)(nil).BitOpAnd), varargs...)
 }
 
+// BitOpAndOr mocks base method.
+func (m *MockPipeliner) BitOpAndOr(arg0 context.Context, arg1 string, arg2 ...string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BitOpAndOr", varargs...)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// BitOpAndOr indicates an expected call of BitOpAndOr.
+func (mr *MockPipelinerMockRecorder) BitOpAndOr(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BitOpAndOr", reflect.TypeOf((*MockPipeliner)(nil).BitOpAndOr), varargs...)
+}
+
+// BitOpDiff mocks base method.
+func (m *MockPipeliner) BitOpDiff(arg0 context.Context, arg1 string, arg2 ...string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BitOpDiff", varargs...)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// BitOpDiff indicates an expected call of BitOpDiff.
+func (mr *MockPipelinerMockRecorder) BitOpDiff(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BitOpDiff", reflect.TypeOf((*MockPipeliner)(nil).BitOpDiff), varargs...)
+}
+
+// BitOpDiff1 mocks base method.
+func (m *MockPipeliner) BitOpDiff1(arg0 context.Context, arg1 string, arg2 ...string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BitOpDiff1", varargs...)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// BitOpDiff1 indicates an expected call of BitOpDiff1.
+func (mr *MockPipelinerMockRecorder) BitOpDiff1(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BitOpDiff1", reflect.TypeOf((*MockPipeliner)(nil).BitOpDiff1), varargs...)
+}
+
 // BitOpNot mocks base method.
 func (m *MockPipeliner) BitOpNot(arg0 context.Context, arg1, arg2 string) *redis.IntCmd {
 	m.ctrl.T.Helper()
@@ -659,6 +852,25 @@ func (m *MockPipeliner) BitOpNot(arg0 context.Context, arg1, arg2 string) *redis
 func (mr *MockPipelinerMockRecorder) BitOpNot(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BitOpNot", reflect.TypeOf((*MockPipeliner)(nil).BitOpNot), arg0, arg1, arg2)
+}
+
+// BitOpOne mocks base method.
+func (m *MockPipeliner) BitOpOne(arg0 context.Context, arg1 string, arg2 ...string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BitOpOne", varargs...)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// BitOpOne indicates an expected call of BitOpOne.
+func (mr *MockPipelinerMockRecorder) BitOpOne(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BitOpOne", reflect.TypeOf((*MockPipeliner)(nil).BitOpOne), varargs...)
 }
 
 // BitOpOr mocks base method.
@@ -1173,6 +1385,20 @@ func (mr *MockPipelinerMockRecorder) ClientList(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClientList", reflect.TypeOf((*MockPipeliner)(nil).ClientList), arg0)
 }
 
+// ClientMaintNotifications mocks base method.
+func (m *MockPipeliner) ClientMaintNotifications(arg0 context.Context, arg1 bool, arg2 string) *redis.StatusCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ClientMaintNotifications", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.StatusCmd)
+	return ret0
+}
+
+// ClientMaintNotifications indicates an expected call of ClientMaintNotifications.
+func (mr *MockPipelinerMockRecorder) ClientMaintNotifications(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClientMaintNotifications", reflect.TypeOf((*MockPipeliner)(nil).ClientMaintNotifications), arg0, arg1, arg2)
+}
+
 // ClientPause mocks base method.
 func (m *MockPipeliner) ClientPause(arg0 context.Context, arg1 time.Duration) *redis.BoolCmd {
 	m.ctrl.T.Helper()
@@ -1449,6 +1675,20 @@ func (mr *MockPipelinerMockRecorder) ClusterMeet(arg0, arg1, arg2 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClusterMeet", reflect.TypeOf((*MockPipeliner)(nil).ClusterMeet), arg0, arg1, arg2)
 }
 
+// ClusterMyID mocks base method.
+func (m *MockPipeliner) ClusterMyID(arg0 context.Context) *redis.StringCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ClusterMyID", arg0)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+// ClusterMyID indicates an expected call of ClusterMyID.
+func (mr *MockPipelinerMockRecorder) ClusterMyID(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClusterMyID", reflect.TypeOf((*MockPipeliner)(nil).ClusterMyID), arg0)
+}
+
 // ClusterMyShardID mocks base method.
 func (m *MockPipeliner) ClusterMyShardID(arg0 context.Context) *redis.StringCmd {
 	m.ctrl.T.Helper()
@@ -1573,6 +1813,20 @@ func (m *MockPipeliner) ClusterSlots(arg0 context.Context) *redis.ClusterSlotsCm
 func (mr *MockPipelinerMockRecorder) ClusterSlots(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClusterSlots", reflect.TypeOf((*MockPipeliner)(nil).ClusterSlots), arg0)
+}
+
+// Cmds mocks base method.
+func (m *MockPipeliner) Cmds() []redis.Cmder {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Cmds")
+	ret0, _ := ret[0].([]redis.Cmder)
+	return ret0
+}
+
+// Cmds indicates an expected call of Cmds.
+func (mr *MockPipelinerMockRecorder) Cmds() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Cmds", reflect.TypeOf((*MockPipeliner)(nil).Cmds))
 }
 
 // Command mocks base method.
@@ -1784,6 +2038,34 @@ func (mr *MockPipelinerMockRecorder) Del(arg0 interface{}, arg1 ...interface{}) 
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Del", reflect.TypeOf((*MockPipeliner)(nil).Del), varargs...)
+}
+
+// DelExArgs mocks base method.
+func (m *MockPipeliner) DelExArgs(arg0 context.Context, arg1 string, arg2 redis.DelExArgs) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DelExArgs", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// DelExArgs indicates an expected call of DelExArgs.
+func (mr *MockPipelinerMockRecorder) DelExArgs(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelExArgs", reflect.TypeOf((*MockPipeliner)(nil).DelExArgs), arg0, arg1, arg2)
+}
+
+// Digest mocks base method.
+func (m *MockPipeliner) Digest(arg0 context.Context, arg1 string) *redis.DigestCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Digest", arg0, arg1)
+	ret0, _ := ret[0].(*redis.DigestCmd)
+	return ret0
+}
+
+// Digest indicates an expected call of Digest.
+func (mr *MockPipelinerMockRecorder) Digest(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Digest", reflect.TypeOf((*MockPipeliner)(nil).Digest), arg0, arg1)
 }
 
 // Discard mocks base method.
@@ -2375,6 +2657,34 @@ func (m *MockPipeliner) FTExplainWithArgs(arg0 context.Context, arg1, arg2 strin
 func (mr *MockPipelinerMockRecorder) FTExplainWithArgs(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FTExplainWithArgs", reflect.TypeOf((*MockPipeliner)(nil).FTExplainWithArgs), arg0, arg1, arg2, arg3)
+}
+
+// FTHybrid mocks base method.
+func (m *MockPipeliner) FTHybrid(arg0 context.Context, arg1, arg2, arg3 string, arg4 redis.Vector) *redis.FTHybridCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FTHybrid", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.FTHybridCmd)
+	return ret0
+}
+
+// FTHybrid indicates an expected call of FTHybrid.
+func (mr *MockPipelinerMockRecorder) FTHybrid(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FTHybrid", reflect.TypeOf((*MockPipeliner)(nil).FTHybrid), arg0, arg1, arg2, arg3, arg4)
+}
+
+// FTHybridWithArgs mocks base method.
+func (m *MockPipeliner) FTHybridWithArgs(arg0 context.Context, arg1 string, arg2 *redis.FTHybridOptions) *redis.FTHybridCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FTHybridWithArgs", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.FTHybridCmd)
+	return ret0
+}
+
+// FTHybridWithArgs indicates an expected call of FTHybridWithArgs.
+func (mr *MockPipelinerMockRecorder) FTHybridWithArgs(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FTHybridWithArgs", reflect.TypeOf((*MockPipeliner)(nil).FTHybridWithArgs), arg0, arg1, arg2)
 }
 
 // FTInfo mocks base method.
@@ -3122,6 +3432,63 @@ func (mr *MockPipelinerMockRecorder) HGetAll(arg0, arg1 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGetAll", reflect.TypeOf((*MockPipeliner)(nil).HGetAll), arg0, arg1)
 }
 
+// HGetDel mocks base method.
+func (m *MockPipeliner) HGetDel(arg0 context.Context, arg1 string, arg2 ...string) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HGetDel", varargs...)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// HGetDel indicates an expected call of HGetDel.
+func (mr *MockPipelinerMockRecorder) HGetDel(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGetDel", reflect.TypeOf((*MockPipeliner)(nil).HGetDel), varargs...)
+}
+
+// HGetEX mocks base method.
+func (m *MockPipeliner) HGetEX(arg0 context.Context, arg1 string, arg2 ...string) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HGetEX", varargs...)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// HGetEX indicates an expected call of HGetEX.
+func (mr *MockPipelinerMockRecorder) HGetEX(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGetEX", reflect.TypeOf((*MockPipeliner)(nil).HGetEX), varargs...)
+}
+
+// HGetEXWithArgs mocks base method.
+func (m *MockPipeliner) HGetEXWithArgs(arg0 context.Context, arg1 string, arg2 *redis.HGetEXOptions, arg3 ...string) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HGetEXWithArgs", varargs...)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// HGetEXWithArgs indicates an expected call of HGetEXWithArgs.
+func (mr *MockPipelinerMockRecorder) HGetEXWithArgs(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGetEXWithArgs", reflect.TypeOf((*MockPipeliner)(nil).HGetEXWithArgs), varargs...)
+}
+
 // HIncrBy mocks base method.
 func (m *MockPipeliner) HIncrBy(arg0 context.Context, arg1, arg2 string, arg3 int64) *redis.IntCmd {
 	m.ctrl.T.Helper()
@@ -3424,6 +3791,44 @@ func (mr *MockPipelinerMockRecorder) HSet(arg0, arg1 interface{}, arg2 ...interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSet", reflect.TypeOf((*MockPipeliner)(nil).HSet), varargs...)
 }
 
+// HSetEX mocks base method.
+func (m *MockPipeliner) HSetEX(arg0 context.Context, arg1 string, arg2 ...string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HSetEX", varargs...)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// HSetEX indicates an expected call of HSetEX.
+func (mr *MockPipelinerMockRecorder) HSetEX(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSetEX", reflect.TypeOf((*MockPipeliner)(nil).HSetEX), varargs...)
+}
+
+// HSetEXWithArgs mocks base method.
+func (m *MockPipeliner) HSetEXWithArgs(arg0 context.Context, arg1 string, arg2 *redis.HSetEXOptions, arg3 ...string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HSetEXWithArgs", varargs...)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// HSetEXWithArgs indicates an expected call of HSetEXWithArgs.
+func (mr *MockPipelinerMockRecorder) HSetEXWithArgs(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSetEXWithArgs", reflect.TypeOf((*MockPipeliner)(nil).HSetEXWithArgs), varargs...)
+}
+
 // HSetNX mocks base method.
 func (m *MockPipeliner) HSetNX(arg0 context.Context, arg1, arg2 string, arg3 interface{}) *redis.BoolCmd {
 	m.ctrl.T.Helper()
@@ -3436,6 +3841,20 @@ func (m *MockPipeliner) HSetNX(arg0 context.Context, arg1, arg2 string, arg3 int
 func (mr *MockPipelinerMockRecorder) HSetNX(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSetNX", reflect.TypeOf((*MockPipeliner)(nil).HSetNX), arg0, arg1, arg2, arg3)
+}
+
+// HStrLen mocks base method.
+func (m *MockPipeliner) HStrLen(arg0 context.Context, arg1, arg2 string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HStrLen", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// HStrLen indicates an expected call of HStrLen.
+func (mr *MockPipelinerMockRecorder) HStrLen(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HStrLen", reflect.TypeOf((*MockPipeliner)(nil).HStrLen), arg0, arg1, arg2)
 }
 
 // HTTL mocks base method.
@@ -4259,6 +4678,39 @@ func (mr *MockPipelinerMockRecorder) LastSave(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LastSave", reflect.TypeOf((*MockPipeliner)(nil).LastSave), arg0)
 }
 
+// Latency mocks base method.
+func (m *MockPipeliner) Latency(arg0 context.Context) *redis.LatencyCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Latency", arg0)
+	ret0, _ := ret[0].(*redis.LatencyCmd)
+	return ret0
+}
+
+// Latency indicates an expected call of Latency.
+func (mr *MockPipelinerMockRecorder) Latency(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latency", reflect.TypeOf((*MockPipeliner)(nil).Latency), arg0)
+}
+
+// LatencyReset mocks base method.
+func (m *MockPipeliner) LatencyReset(arg0 context.Context, arg1 ...interface{}) *redis.StatusCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "LatencyReset", varargs...)
+	ret0, _ := ret[0].(*redis.StatusCmd)
+	return ret0
+}
+
+// LatencyReset indicates an expected call of LatencyReset.
+func (mr *MockPipelinerMockRecorder) LatencyReset(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LatencyReset", reflect.TypeOf((*MockPipeliner)(nil).LatencyReset), varargs...)
+}
+
 // Len mocks base method.
 func (m *MockPipeliner) Len() int {
 	m.ctrl.T.Helper()
@@ -4309,6 +4761,25 @@ func (mr *MockPipelinerMockRecorder) MSet(arg0 interface{}, arg1 ...interface{})
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MSet", reflect.TypeOf((*MockPipeliner)(nil).MSet), varargs...)
+}
+
+// MSetEX mocks base method.
+func (m *MockPipeliner) MSetEX(arg0 context.Context, arg1 redis.MSetEXArgs, arg2 ...interface{}) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "MSetEX", varargs...)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// MSetEX indicates an expected call of MSetEX.
+func (mr *MockPipelinerMockRecorder) MSetEX(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MSetEX", reflect.TypeOf((*MockPipeliner)(nil).MSetEX), varargs...)
 }
 
 // MSetNX mocks base method.
@@ -5434,6 +5905,118 @@ func (mr *MockPipelinerMockRecorder) SetEx(arg0, arg1, arg2, arg3 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetEx", reflect.TypeOf((*MockPipeliner)(nil).SetEx), arg0, arg1, arg2, arg3)
 }
 
+// SetIFDEQ mocks base method.
+func (m *MockPipeliner) SetIFDEQ(arg0 context.Context, arg1 string, arg2 interface{}, arg3 uint64, arg4 time.Duration) *redis.StatusCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetIFDEQ", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.StatusCmd)
+	return ret0
+}
+
+// SetIFDEQ indicates an expected call of SetIFDEQ.
+func (mr *MockPipelinerMockRecorder) SetIFDEQ(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIFDEQ", reflect.TypeOf((*MockPipeliner)(nil).SetIFDEQ), arg0, arg1, arg2, arg3, arg4)
+}
+
+// SetIFDEQGet mocks base method.
+func (m *MockPipeliner) SetIFDEQGet(arg0 context.Context, arg1 string, arg2 interface{}, arg3 uint64, arg4 time.Duration) *redis.StringCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetIFDEQGet", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+// SetIFDEQGet indicates an expected call of SetIFDEQGet.
+func (mr *MockPipelinerMockRecorder) SetIFDEQGet(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIFDEQGet", reflect.TypeOf((*MockPipeliner)(nil).SetIFDEQGet), arg0, arg1, arg2, arg3, arg4)
+}
+
+// SetIFDNE mocks base method.
+func (m *MockPipeliner) SetIFDNE(arg0 context.Context, arg1 string, arg2 interface{}, arg3 uint64, arg4 time.Duration) *redis.StatusCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetIFDNE", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.StatusCmd)
+	return ret0
+}
+
+// SetIFDNE indicates an expected call of SetIFDNE.
+func (mr *MockPipelinerMockRecorder) SetIFDNE(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIFDNE", reflect.TypeOf((*MockPipeliner)(nil).SetIFDNE), arg0, arg1, arg2, arg3, arg4)
+}
+
+// SetIFDNEGet mocks base method.
+func (m *MockPipeliner) SetIFDNEGet(arg0 context.Context, arg1 string, arg2 interface{}, arg3 uint64, arg4 time.Duration) *redis.StringCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetIFDNEGet", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+// SetIFDNEGet indicates an expected call of SetIFDNEGet.
+func (mr *MockPipelinerMockRecorder) SetIFDNEGet(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIFDNEGet", reflect.TypeOf((*MockPipeliner)(nil).SetIFDNEGet), arg0, arg1, arg2, arg3, arg4)
+}
+
+// SetIFEQ mocks base method.
+func (m *MockPipeliner) SetIFEQ(arg0 context.Context, arg1 string, arg2, arg3 interface{}, arg4 time.Duration) *redis.StatusCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetIFEQ", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.StatusCmd)
+	return ret0
+}
+
+// SetIFEQ indicates an expected call of SetIFEQ.
+func (mr *MockPipelinerMockRecorder) SetIFEQ(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIFEQ", reflect.TypeOf((*MockPipeliner)(nil).SetIFEQ), arg0, arg1, arg2, arg3, arg4)
+}
+
+// SetIFEQGet mocks base method.
+func (m *MockPipeliner) SetIFEQGet(arg0 context.Context, arg1 string, arg2, arg3 interface{}, arg4 time.Duration) *redis.StringCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetIFEQGet", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+// SetIFEQGet indicates an expected call of SetIFEQGet.
+func (mr *MockPipelinerMockRecorder) SetIFEQGet(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIFEQGet", reflect.TypeOf((*MockPipeliner)(nil).SetIFEQGet), arg0, arg1, arg2, arg3, arg4)
+}
+
+// SetIFNE mocks base method.
+func (m *MockPipeliner) SetIFNE(arg0 context.Context, arg1 string, arg2, arg3 interface{}, arg4 time.Duration) *redis.StatusCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetIFNE", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.StatusCmd)
+	return ret0
+}
+
+// SetIFNE indicates an expected call of SetIFNE.
+func (mr *MockPipelinerMockRecorder) SetIFNE(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIFNE", reflect.TypeOf((*MockPipeliner)(nil).SetIFNE), arg0, arg1, arg2, arg3, arg4)
+}
+
+// SetIFNEGet mocks base method.
+func (m *MockPipeliner) SetIFNEGet(arg0 context.Context, arg1 string, arg2, arg3 interface{}, arg4 time.Duration) *redis.StringCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetIFNEGet", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+// SetIFNEGet indicates an expected call of SetIFNEGet.
+func (mr *MockPipelinerMockRecorder) SetIFNEGet(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIFNEGet", reflect.TypeOf((*MockPipeliner)(nil).SetIFNEGet), arg0, arg1, arg2, arg3, arg4)
+}
+
 // SetNX mocks base method.
 func (m *MockPipeliner) SetNX(arg0 context.Context, arg1 string, arg2 interface{}, arg3 time.Duration) *redis.BoolCmd {
 	m.ctrl.T.Helper()
@@ -5544,6 +6127,34 @@ func (m *MockPipeliner) SlowLogGet(arg0 context.Context, arg1 int64) *redis.Slow
 func (mr *MockPipelinerMockRecorder) SlowLogGet(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SlowLogGet", reflect.TypeOf((*MockPipeliner)(nil).SlowLogGet), arg0, arg1)
+}
+
+// SlowLogLen mocks base method.
+func (m *MockPipeliner) SlowLogLen(arg0 context.Context) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SlowLogLen", arg0)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// SlowLogLen indicates an expected call of SlowLogLen.
+func (mr *MockPipelinerMockRecorder) SlowLogLen(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SlowLogLen", reflect.TypeOf((*MockPipeliner)(nil).SlowLogLen), arg0)
+}
+
+// SlowLogReset mocks base method.
+func (m *MockPipeliner) SlowLogReset(arg0 context.Context) *redis.StatusCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SlowLogReset", arg0)
+	ret0, _ := ret[0].(*redis.StatusCmd)
+	return ret0
+}
+
+// SlowLogReset indicates an expected call of SlowLogReset.
+func (mr *MockPipelinerMockRecorder) SlowLogReset(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SlowLogReset", reflect.TypeOf((*MockPipeliner)(nil).SlowLogReset), arg0)
 }
 
 // Sort mocks base method.
@@ -5878,132 +6489,6 @@ func (m *MockPipeliner) TDigestTrimmedMean(arg0 context.Context, arg1 string, ar
 func (mr *MockPipelinerMockRecorder) TDigestTrimmedMean(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TDigestTrimmedMean", reflect.TypeOf((*MockPipeliner)(nil).TDigestTrimmedMean), arg0, arg1, arg2, arg3)
-}
-
-// TFCall mocks base method.
-func (m *MockPipeliner) TFCall(arg0 context.Context, arg1, arg2 string, arg3 int) *redis.Cmd {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TFCall", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(*redis.Cmd)
-	return ret0
-}
-
-// TFCall indicates an expected call of TFCall.
-func (mr *MockPipelinerMockRecorder) TFCall(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TFCall", reflect.TypeOf((*MockPipeliner)(nil).TFCall), arg0, arg1, arg2, arg3)
-}
-
-// TFCallASYNC mocks base method.
-func (m *MockPipeliner) TFCallASYNC(arg0 context.Context, arg1, arg2 string, arg3 int) *redis.Cmd {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TFCallASYNC", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].(*redis.Cmd)
-	return ret0
-}
-
-// TFCallASYNC indicates an expected call of TFCallASYNC.
-func (mr *MockPipelinerMockRecorder) TFCallASYNC(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TFCallASYNC", reflect.TypeOf((*MockPipeliner)(nil).TFCallASYNC), arg0, arg1, arg2, arg3)
-}
-
-// TFCallASYNCArgs mocks base method.
-func (m *MockPipeliner) TFCallASYNCArgs(arg0 context.Context, arg1, arg2 string, arg3 int, arg4 *redis.TFCallOptions) *redis.Cmd {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TFCallASYNCArgs", arg0, arg1, arg2, arg3, arg4)
-	ret0, _ := ret[0].(*redis.Cmd)
-	return ret0
-}
-
-// TFCallASYNCArgs indicates an expected call of TFCallASYNCArgs.
-func (mr *MockPipelinerMockRecorder) TFCallASYNCArgs(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TFCallASYNCArgs", reflect.TypeOf((*MockPipeliner)(nil).TFCallASYNCArgs), arg0, arg1, arg2, arg3, arg4)
-}
-
-// TFCallArgs mocks base method.
-func (m *MockPipeliner) TFCallArgs(arg0 context.Context, arg1, arg2 string, arg3 int, arg4 *redis.TFCallOptions) *redis.Cmd {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TFCallArgs", arg0, arg1, arg2, arg3, arg4)
-	ret0, _ := ret[0].(*redis.Cmd)
-	return ret0
-}
-
-// TFCallArgs indicates an expected call of TFCallArgs.
-func (mr *MockPipelinerMockRecorder) TFCallArgs(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TFCallArgs", reflect.TypeOf((*MockPipeliner)(nil).TFCallArgs), arg0, arg1, arg2, arg3, arg4)
-}
-
-// TFunctionDelete mocks base method.
-func (m *MockPipeliner) TFunctionDelete(arg0 context.Context, arg1 string) *redis.StatusCmd {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TFunctionDelete", arg0, arg1)
-	ret0, _ := ret[0].(*redis.StatusCmd)
-	return ret0
-}
-
-// TFunctionDelete indicates an expected call of TFunctionDelete.
-func (mr *MockPipelinerMockRecorder) TFunctionDelete(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TFunctionDelete", reflect.TypeOf((*MockPipeliner)(nil).TFunctionDelete), arg0, arg1)
-}
-
-// TFunctionList mocks base method.
-func (m *MockPipeliner) TFunctionList(arg0 context.Context) *redis.MapStringInterfaceSliceCmd {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TFunctionList", arg0)
-	ret0, _ := ret[0].(*redis.MapStringInterfaceSliceCmd)
-	return ret0
-}
-
-// TFunctionList indicates an expected call of TFunctionList.
-func (mr *MockPipelinerMockRecorder) TFunctionList(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TFunctionList", reflect.TypeOf((*MockPipeliner)(nil).TFunctionList), arg0)
-}
-
-// TFunctionListArgs mocks base method.
-func (m *MockPipeliner) TFunctionListArgs(arg0 context.Context, arg1 *redis.TFunctionListOptions) *redis.MapStringInterfaceSliceCmd {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TFunctionListArgs", arg0, arg1)
-	ret0, _ := ret[0].(*redis.MapStringInterfaceSliceCmd)
-	return ret0
-}
-
-// TFunctionListArgs indicates an expected call of TFunctionListArgs.
-func (mr *MockPipelinerMockRecorder) TFunctionListArgs(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TFunctionListArgs", reflect.TypeOf((*MockPipeliner)(nil).TFunctionListArgs), arg0, arg1)
-}
-
-// TFunctionLoad mocks base method.
-func (m *MockPipeliner) TFunctionLoad(arg0 context.Context, arg1 string) *redis.StatusCmd {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TFunctionLoad", arg0, arg1)
-	ret0, _ := ret[0].(*redis.StatusCmd)
-	return ret0
-}
-
-// TFunctionLoad indicates an expected call of TFunctionLoad.
-func (mr *MockPipelinerMockRecorder) TFunctionLoad(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TFunctionLoad", reflect.TypeOf((*MockPipeliner)(nil).TFunctionLoad), arg0, arg1)
-}
-
-// TFunctionLoadArgs mocks base method.
-func (m *MockPipeliner) TFunctionLoadArgs(arg0 context.Context, arg1 string, arg2 *redis.TFunctionLoadOptions) *redis.StatusCmd {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TFunctionLoadArgs", arg0, arg1, arg2)
-	ret0, _ := ret[0].(*redis.StatusCmd)
-	return ret0
-}
-
-// TFunctionLoadArgs indicates an expected call of TFunctionLoadArgs.
-func (mr *MockPipelinerMockRecorder) TFunctionLoadArgs(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TFunctionLoadArgs", reflect.TypeOf((*MockPipeliner)(nil).TFunctionLoadArgs), arg0, arg1, arg2)
 }
 
 // TSAdd mocks base method.
@@ -6667,6 +7152,272 @@ func (mr *MockPipelinerMockRecorder) Unlink(arg0 interface{}, arg1 ...interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Unlink", reflect.TypeOf((*MockPipeliner)(nil).Unlink), varargs...)
 }
 
+// VAdd mocks base method.
+func (m *MockPipeliner) VAdd(arg0 context.Context, arg1, arg2 string, arg3 redis.Vector) *redis.BoolCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VAdd", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(*redis.BoolCmd)
+	return ret0
+}
+
+// VAdd indicates an expected call of VAdd.
+func (mr *MockPipelinerMockRecorder) VAdd(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VAdd", reflect.TypeOf((*MockPipeliner)(nil).VAdd), arg0, arg1, arg2, arg3)
+}
+
+// VAddWithArgs mocks base method.
+func (m *MockPipeliner) VAddWithArgs(arg0 context.Context, arg1, arg2 string, arg3 redis.Vector, arg4 *redis.VAddArgs) *redis.BoolCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VAddWithArgs", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.BoolCmd)
+	return ret0
+}
+
+// VAddWithArgs indicates an expected call of VAddWithArgs.
+func (mr *MockPipelinerMockRecorder) VAddWithArgs(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VAddWithArgs", reflect.TypeOf((*MockPipeliner)(nil).VAddWithArgs), arg0, arg1, arg2, arg3, arg4)
+}
+
+// VCard mocks base method.
+func (m *MockPipeliner) VCard(arg0 context.Context, arg1 string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VCard", arg0, arg1)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// VCard indicates an expected call of VCard.
+func (mr *MockPipelinerMockRecorder) VCard(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VCard", reflect.TypeOf((*MockPipeliner)(nil).VCard), arg0, arg1)
+}
+
+// VClearAttributes mocks base method.
+func (m *MockPipeliner) VClearAttributes(arg0 context.Context, arg1, arg2 string) *redis.BoolCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VClearAttributes", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.BoolCmd)
+	return ret0
+}
+
+// VClearAttributes indicates an expected call of VClearAttributes.
+func (mr *MockPipelinerMockRecorder) VClearAttributes(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VClearAttributes", reflect.TypeOf((*MockPipeliner)(nil).VClearAttributes), arg0, arg1, arg2)
+}
+
+// VDim mocks base method.
+func (m *MockPipeliner) VDim(arg0 context.Context, arg1 string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VDim", arg0, arg1)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// VDim indicates an expected call of VDim.
+func (mr *MockPipelinerMockRecorder) VDim(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VDim", reflect.TypeOf((*MockPipeliner)(nil).VDim), arg0, arg1)
+}
+
+// VEmb mocks base method.
+func (m *MockPipeliner) VEmb(arg0 context.Context, arg1, arg2 string, arg3 bool) *redis.SliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VEmb", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(*redis.SliceCmd)
+	return ret0
+}
+
+// VEmb indicates an expected call of VEmb.
+func (mr *MockPipelinerMockRecorder) VEmb(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VEmb", reflect.TypeOf((*MockPipeliner)(nil).VEmb), arg0, arg1, arg2, arg3)
+}
+
+// VGetAttr mocks base method.
+func (m *MockPipeliner) VGetAttr(arg0 context.Context, arg1, arg2 string) *redis.StringCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VGetAttr", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+// VGetAttr indicates an expected call of VGetAttr.
+func (mr *MockPipelinerMockRecorder) VGetAttr(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VGetAttr", reflect.TypeOf((*MockPipeliner)(nil).VGetAttr), arg0, arg1, arg2)
+}
+
+// VInfo mocks base method.
+func (m *MockPipeliner) VInfo(arg0 context.Context, arg1 string) *redis.MapStringInterfaceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VInfo", arg0, arg1)
+	ret0, _ := ret[0].(*redis.MapStringInterfaceCmd)
+	return ret0
+}
+
+// VInfo indicates an expected call of VInfo.
+func (mr *MockPipelinerMockRecorder) VInfo(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VInfo", reflect.TypeOf((*MockPipeliner)(nil).VInfo), arg0, arg1)
+}
+
+// VLinks mocks base method.
+func (m *MockPipeliner) VLinks(arg0 context.Context, arg1, arg2 string) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VLinks", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// VLinks indicates an expected call of VLinks.
+func (mr *MockPipelinerMockRecorder) VLinks(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VLinks", reflect.TypeOf((*MockPipeliner)(nil).VLinks), arg0, arg1, arg2)
+}
+
+// VLinksWithScores mocks base method.
+func (m *MockPipeliner) VLinksWithScores(arg0 context.Context, arg1, arg2 string) *redis.VectorScoreSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VLinksWithScores", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.VectorScoreSliceCmd)
+	return ret0
+}
+
+// VLinksWithScores indicates an expected call of VLinksWithScores.
+func (mr *MockPipelinerMockRecorder) VLinksWithScores(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VLinksWithScores", reflect.TypeOf((*MockPipeliner)(nil).VLinksWithScores), arg0, arg1, arg2)
+}
+
+// VRandMember mocks base method.
+func (m *MockPipeliner) VRandMember(arg0 context.Context, arg1 string) *redis.StringCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VRandMember", arg0, arg1)
+	ret0, _ := ret[0].(*redis.StringCmd)
+	return ret0
+}
+
+// VRandMember indicates an expected call of VRandMember.
+func (mr *MockPipelinerMockRecorder) VRandMember(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VRandMember", reflect.TypeOf((*MockPipeliner)(nil).VRandMember), arg0, arg1)
+}
+
+// VRandMemberCount mocks base method.
+func (m *MockPipeliner) VRandMemberCount(arg0 context.Context, arg1 string, arg2 int) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VRandMemberCount", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// VRandMemberCount indicates an expected call of VRandMemberCount.
+func (mr *MockPipelinerMockRecorder) VRandMemberCount(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VRandMemberCount", reflect.TypeOf((*MockPipeliner)(nil).VRandMemberCount), arg0, arg1, arg2)
+}
+
+// VRange mocks base method.
+func (m *MockPipeliner) VRange(arg0 context.Context, arg1, arg2, arg3 string, arg4 int64) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VRange", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// VRange indicates an expected call of VRange.
+func (mr *MockPipelinerMockRecorder) VRange(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VRange", reflect.TypeOf((*MockPipeliner)(nil).VRange), arg0, arg1, arg2, arg3, arg4)
+}
+
+// VRem mocks base method.
+func (m *MockPipeliner) VRem(arg0 context.Context, arg1, arg2 string) *redis.BoolCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VRem", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.BoolCmd)
+	return ret0
+}
+
+// VRem indicates an expected call of VRem.
+func (mr *MockPipelinerMockRecorder) VRem(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VRem", reflect.TypeOf((*MockPipeliner)(nil).VRem), arg0, arg1, arg2)
+}
+
+// VSetAttr mocks base method.
+func (m *MockPipeliner) VSetAttr(arg0 context.Context, arg1, arg2 string, arg3 interface{}) *redis.BoolCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VSetAttr", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(*redis.BoolCmd)
+	return ret0
+}
+
+// VSetAttr indicates an expected call of VSetAttr.
+func (mr *MockPipelinerMockRecorder) VSetAttr(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VSetAttr", reflect.TypeOf((*MockPipeliner)(nil).VSetAttr), arg0, arg1, arg2, arg3)
+}
+
+// VSim mocks base method.
+func (m *MockPipeliner) VSim(arg0 context.Context, arg1 string, arg2 redis.Vector) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VSim", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// VSim indicates an expected call of VSim.
+func (mr *MockPipelinerMockRecorder) VSim(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VSim", reflect.TypeOf((*MockPipeliner)(nil).VSim), arg0, arg1, arg2)
+}
+
+// VSimWithArgs mocks base method.
+func (m *MockPipeliner) VSimWithArgs(arg0 context.Context, arg1 string, arg2 redis.Vector, arg3 *redis.VSimArgs) *redis.StringSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VSimWithArgs", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(*redis.StringSliceCmd)
+	return ret0
+}
+
+// VSimWithArgs indicates an expected call of VSimWithArgs.
+func (mr *MockPipelinerMockRecorder) VSimWithArgs(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VSimWithArgs", reflect.TypeOf((*MockPipeliner)(nil).VSimWithArgs), arg0, arg1, arg2, arg3)
+}
+
+// VSimWithArgsWithScores mocks base method.
+func (m *MockPipeliner) VSimWithArgsWithScores(arg0 context.Context, arg1 string, arg2 redis.Vector, arg3 *redis.VSimArgs) *redis.VectorScoreSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VSimWithArgsWithScores", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(*redis.VectorScoreSliceCmd)
+	return ret0
+}
+
+// VSimWithArgsWithScores indicates an expected call of VSimWithArgsWithScores.
+func (mr *MockPipelinerMockRecorder) VSimWithArgsWithScores(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VSimWithArgsWithScores", reflect.TypeOf((*MockPipeliner)(nil).VSimWithArgsWithScores), arg0, arg1, arg2, arg3)
+}
+
+// VSimWithScores mocks base method.
+func (m *MockPipeliner) VSimWithScores(arg0 context.Context, arg1 string, arg2 redis.Vector) *redis.VectorScoreSliceCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VSimWithScores", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*redis.VectorScoreSliceCmd)
+	return ret0
+}
+
+// VSimWithScores indicates an expected call of VSimWithScores.
+func (mr *MockPipelinerMockRecorder) VSimWithScores(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VSimWithScores", reflect.TypeOf((*MockPipeliner)(nil).VSimWithScores), arg0, arg1, arg2)
+}
+
 // XAck mocks base method.
 func (m *MockPipeliner) XAck(arg0 context.Context, arg1, arg2 string, arg3 ...string) *redis.IntCmd {
 	m.ctrl.T.Helper()
@@ -6684,6 +7435,25 @@ func (mr *MockPipelinerMockRecorder) XAck(arg0, arg1, arg2 interface{}, arg3 ...
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XAck", reflect.TypeOf((*MockPipeliner)(nil).XAck), varargs...)
+}
+
+// XAckDel mocks base method.
+func (m *MockPipeliner) XAckDel(arg0 context.Context, arg1, arg2, arg3 string, arg4 ...string) *redis.SliceCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2, arg3}
+	for _, a := range arg4 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "XAckDel", varargs...)
+	ret0, _ := ret[0].(*redis.SliceCmd)
+	return ret0
+}
+
+// XAckDel indicates an expected call of XAckDel.
+func (mr *MockPipelinerMockRecorder) XAckDel(arg0, arg1, arg2, arg3 interface{}, arg4 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2, arg3}, arg4...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XAckDel", reflect.TypeOf((*MockPipeliner)(nil).XAckDel), varargs...)
 }
 
 // XAdd mocks base method.
@@ -6773,6 +7543,25 @@ func (mr *MockPipelinerMockRecorder) XDel(arg0, arg1 interface{}, arg2 ...interf
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XDel", reflect.TypeOf((*MockPipeliner)(nil).XDel), varargs...)
+}
+
+// XDelEx mocks base method.
+func (m *MockPipeliner) XDelEx(arg0 context.Context, arg1, arg2 string, arg3 ...string) *redis.SliceCmd {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "XDelEx", varargs...)
+	ret0, _ := ret[0].(*redis.SliceCmd)
+	return ret0
+}
+
+// XDelEx indicates an expected call of XDelEx.
+func (mr *MockPipelinerMockRecorder) XDelEx(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XDelEx", reflect.TypeOf((*MockPipeliner)(nil).XDelEx), varargs...)
 }
 
 // XGroupCreate mocks base method.
@@ -7088,6 +7877,34 @@ func (mr *MockPipelinerMockRecorder) XTrimMaxLenApprox(arg0, arg1, arg2, arg3 in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XTrimMaxLenApprox", reflect.TypeOf((*MockPipeliner)(nil).XTrimMaxLenApprox), arg0, arg1, arg2, arg3)
 }
 
+// XTrimMaxLenApproxMode mocks base method.
+func (m *MockPipeliner) XTrimMaxLenApproxMode(arg0 context.Context, arg1 string, arg2, arg3 int64, arg4 string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "XTrimMaxLenApproxMode", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// XTrimMaxLenApproxMode indicates an expected call of XTrimMaxLenApproxMode.
+func (mr *MockPipelinerMockRecorder) XTrimMaxLenApproxMode(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XTrimMaxLenApproxMode", reflect.TypeOf((*MockPipeliner)(nil).XTrimMaxLenApproxMode), arg0, arg1, arg2, arg3, arg4)
+}
+
+// XTrimMaxLenMode mocks base method.
+func (m *MockPipeliner) XTrimMaxLenMode(arg0 context.Context, arg1 string, arg2 int64, arg3 string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "XTrimMaxLenMode", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// XTrimMaxLenMode indicates an expected call of XTrimMaxLenMode.
+func (mr *MockPipelinerMockRecorder) XTrimMaxLenMode(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XTrimMaxLenMode", reflect.TypeOf((*MockPipeliner)(nil).XTrimMaxLenMode), arg0, arg1, arg2, arg3)
+}
+
 // XTrimMinID mocks base method.
 func (m *MockPipeliner) XTrimMinID(arg0 context.Context, arg1, arg2 string) *redis.IntCmd {
 	m.ctrl.T.Helper()
@@ -7114,6 +7931,34 @@ func (m *MockPipeliner) XTrimMinIDApprox(arg0 context.Context, arg1, arg2 string
 func (mr *MockPipelinerMockRecorder) XTrimMinIDApprox(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XTrimMinIDApprox", reflect.TypeOf((*MockPipeliner)(nil).XTrimMinIDApprox), arg0, arg1, arg2, arg3)
+}
+
+// XTrimMinIDApproxMode mocks base method.
+func (m *MockPipeliner) XTrimMinIDApproxMode(arg0 context.Context, arg1, arg2 string, arg3 int64, arg4 string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "XTrimMinIDApproxMode", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// XTrimMinIDApproxMode indicates an expected call of XTrimMinIDApproxMode.
+func (mr *MockPipelinerMockRecorder) XTrimMinIDApproxMode(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XTrimMinIDApproxMode", reflect.TypeOf((*MockPipeliner)(nil).XTrimMinIDApproxMode), arg0, arg1, arg2, arg3, arg4)
+}
+
+// XTrimMinIDMode mocks base method.
+func (m *MockPipeliner) XTrimMinIDMode(arg0 context.Context, arg1, arg2, arg3 string) *redis.IntCmd {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "XTrimMinIDMode", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(*redis.IntCmd)
+	return ret0
+}
+
+// XTrimMinIDMode indicates an expected call of XTrimMinIDMode.
+func (mr *MockPipelinerMockRecorder) XTrimMinIDMode(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "XTrimMinIDMode", reflect.TypeOf((*MockPipeliner)(nil).XTrimMinIDMode), arg0, arg1, arg2, arg3)
 }
 
 // ZAdd mocks base method.

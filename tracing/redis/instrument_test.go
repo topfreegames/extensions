@@ -27,7 +27,7 @@ import (
 	"testing"
 
 	"github.com/redis/go-redis/v9"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 

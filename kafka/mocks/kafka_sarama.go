@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	sarama "github.com/IBM/sarama"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockSyncProducer is a mock of SyncProducer interface.

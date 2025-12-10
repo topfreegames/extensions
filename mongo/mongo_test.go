@@ -25,14 +25,14 @@ package mongo_test
 import (
 	"context"
 
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/v2/bson"
 
 	. "github.com/topfreegames/extensions/v9/mongo"
 	"github.com/topfreegames/extensions/v9/mongo/interfaces"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
