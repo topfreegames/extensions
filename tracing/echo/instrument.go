@@ -24,10 +24,8 @@ package echo
 
 import (
 	"fmt"
-	"net/http"
 
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine"
+	"github.com/labstack/echo/v4"
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/v9/tracing"
 )
@@ -46,32 +44,32 @@ func makeMiddleware() func(echo.HandlerFunc) echo.HandlerFunc {
 			request := c.Request()
 			route := c.Path()
 
-			method := request.Method()
-			url := request.URL()
+			method := request.Method
+			url := request.URL
 
-			header := getCarrier(request)
+			header := opentracing.HTTPHeadersCarrier(request.Header)
 			parent, _ := tracer.Extract(opentracing.HTTPHeaders, header)
 
 			operationName := fmt.Sprintf("HTTP %s %s", method, route)
 			reference := opentracing.ChildOf(parent)
 			tags := opentracing.Tags{
 				"http.method":   method,
-				"http.host":     request.Host(),
-				"http.pathname": url.Path(),
-				"http.query":    url.QueryString(),
+				"http.host":     request.Host,
+				"http.pathname": url.Path,
+				"http.query":    url.RawQuery,
 
 				"span.kind": "server",
 			}
-			
-			ctx := c.StdContext()
+
+			ctx := c.Request().Context()
 			tags = tracing.RunCustomTracingTagsHooks(ctx, tags)
 			span := opentracing.StartSpan(operationName, reference, tags)
-			tracing.RunCustomTracingHooks(c.StdContext(), operationName, span)
+			tracing.RunCustomTracingHooks(c.Request().Context(), operationName, span)
 			defer span.Finish()
 			defer tracing.LogPanic(span)
 
 			ctx = opentracing.ContextWithSpan(ctx, span)
-			c.SetStdContext(ctx)
+			c.SetRequest(c.Request().WithContext(ctx))
 
 			err := next(c)
 			if err != nil {
@@ -80,23 +78,11 @@ func makeMiddleware() func(echo.HandlerFunc) echo.HandlerFunc {
 			}
 
 			response := c.Response()
-			statusCode := response.Status()
+			statusCode := response.Status
 
 			span.SetTag("http.status_code", statusCode)
 
 			return err
 		}
 	}
-}
-
-func getCarrier(request engine.Request) opentracing.HTTPHeadersCarrier {
-	original := request.Header()
-	copy := make(http.Header)
-
-	for _, key := range original.Keys() {
-		value := original.Get(key)
-		copy.Set(key, value)
-	}
-
-	return opentracing.HTTPHeadersCarrier(copy)
 }

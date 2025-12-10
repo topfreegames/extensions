@@ -33,4 +33,4 @@ start-deps:
 	@echo "Dependencies started successfully."
 
 stop-deps:
-	@env MY_IP=${MY_IP} docker-compose --project-name extensions down
+	@env MY_IP=${MY_IP} docker compose --project-name extensions down

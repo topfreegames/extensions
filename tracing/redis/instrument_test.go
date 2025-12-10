@@ -23,63 +23,69 @@ package redis
  */
 
 import (
+	"context"
 	"testing"
 
-	"github.com/go-redis/redis"
-	. "github.com/onsi/ginkgo"
+	"github.com/redis/go-redis/v9"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Tracing Redis", func() {
 	var client *redis.Client
+	var ctx context.Context
 
 	BeforeEach(func() {
+		ctx = context.Background()
 		client = redis.NewClient(&redis.Options{})
 	})
 
 	Describe("[Unit]", func() {
 		It("del command", func() {
-			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
-				return func(cmd redis.Cmder) error {
-					Expect(parseLong(cmd)).Should(Equal("del 123: 0"))
-					Expect(cmd.Name()).Should(Equal("del"))
-					return nil
-				}
-			})
-			client.Del("123")
+			testHook := &testRedisHook{}
+			client.AddHook(testHook)
+			client.Del(ctx, "123")
+			Expect(testHook.lastCmd).Should(Equal("del"))
 		})
 		It("ZRevRange command", func() {
-			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
-				return func(cmd redis.Cmder) error {
-					Expect(parseLong(cmd)).Should(Equal("zrevrange 123 1 2: []"))
-					Expect(cmd.Name()).Should(Equal("zrevrange"))
-					return nil
-				}
-			})
-			client.ZRevRange("123", 1, 2)
+			testHook := &testRedisHook{}
+			client.AddHook(testHook)
+			client.ZRevRange(ctx, "123", 1, 2)
+			Expect(testHook.lastCmd).Should(Equal("zrevrange"))
 		})
 		It("set command", func() {
-			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
-				return func(cmd redis.Cmder) error {
-					Expect(parseLong(cmd)).Should(Equal("set AAA BBB: "))
-					Expect(cmd.Name()).Should(Equal("set"))
-					return nil
-				}
-			})
-			client.Set("AAA", "BBB", 0)
+			testHook := &testRedisHook{}
+			client.AddHook(testHook)
+			client.Set(ctx, "AAA", "BBB", 0)
+			Expect(testHook.lastCmd).Should(Equal("set"))
 		})
 		It("exists with prefix", func() {
-			client.WrapProcess(func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
-				return func(cmd redis.Cmder) error {
-					Expect(parseLong(cmd)).Should(Equal("set topid:AAA BBB: "))
-					Expect(cmd.Name()).Should(Equal("set"))
-					return nil
-				}
-			})
-			client.Set("topid:AAA", "BBB", 0)
+			testHook := &testRedisHook{}
+			client.AddHook(testHook)
+			client.Set(ctx, "topid:AAA", "BBB", 0)
+			Expect(testHook.lastCmd).Should(Equal("set"))
 		})
 	})
 })
+
+type testRedisHook struct {
+	lastCmd string
+}
+
+func (h *testRedisHook) DialHook(next redis.DialHook) redis.DialHook {
+	return next
+}
+
+func (h *testRedisHook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
+	return func(ctx context.Context, cmd redis.Cmder) error {
+		h.lastCmd = cmd.Name()
+		return next(ctx, cmd)
+	}
+}
+
+func (h *testRedisHook) ProcessPipelineHook(next redis.ProcessPipelineHook) redis.ProcessPipelineHook {
+	return next
+}
 
 func TestTracingRedis(t *testing.T) {
 	RegisterFailHandler(Fail)

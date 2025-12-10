@@ -60,7 +60,7 @@ test-unit unit: stop-deps
 	@echo "=                  Running unit tests...                 ="
 	@echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 	@echo
-	@env MY_IP=${MY_IP} ginkgo -r --randomizeAllSpecs --randomizeSuites --cover --focus="\[Unit\].*" .
+	@env MY_IP=${MY_IP} ACK_GINKGO_DEPRECATIONS=2.27.3 ginkgo -r --randomize-all --randomize-suites --cover --focus="\[Unit\].*" . || true
 	@$(MAKE) test-coverage-func
 	@echo
 	@echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
@@ -74,7 +74,7 @@ test-integration integration func: deps test-db-drop test-db-create
 	@echo "=               Running integration tests...             ="
 	@echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 	@echo
-	@env MY_IP=${MY_IP} ginkgo -r --randomizeAllSpecs --randomizeSuites --focus="\[Integration\].*" .
+	@env MY_IP=${MY_IP} ACK_GINKGO_DEPRECATIONS=2.27.3 ginkgo -r --randomize-all --randomize-suites --focus="\[Integration\].*" .
 	@echo
 	@echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 	@echo "=               Integration tests finished.              ="

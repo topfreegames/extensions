@@ -27,8 +27,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/libi/mgo"
-	"github.com/libi/mgo/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+
 	"github.com/topfreegames/extensions/v9/mongo/interfaces"
 	tracing "github.com/topfreegames/extensions/v9/tracing/mongo"
 )
@@ -36,340 +37,309 @@ import (
 // Mongo holds the mongo database and connection
 // Mongo implements MongoDB interface
 type Mongo struct {
-	ctx     context.Context
-	session *mgo.Session
-	db      *mgo.Database
+	ctx    context.Context
+	client *mongo.Client
+	db     *mongo.Database
 }
 
 // NewMongo return Mongo instance with completed fields
-func NewMongo(session *mgo.Session, db *mgo.Database) *Mongo {
+func NewMongo(client *mongo.Client, db *mongo.Database) *Mongo {
 	return &Mongo{
-		ctx:     nil,
-		session: session,
-		db:      db,
+		ctx:    context.Background(),
+		client: client,
+		db:     db,
 	}
 }
 
 // WithContext creates a shallow copy that uses the given context
 func (m *Mongo) WithContext(ctx context.Context) interfaces.MongoDB {
 	return &Mongo{
-		ctx:     ctx,
-		session: m.session,
-		db:      m.db,
+		ctx:    ctx,
+		client: m.client,
+		db:     m.db,
 	}
 }
 
-// Run executes run command on database
-func (m *Mongo) Run(cmd interface{}, result interface{}) error {
-	var err error
+// RunCommand executes a command on the database
+func (m *Mongo) RunCommand(ctx context.Context, cmd interface{}) *mongo.SingleResult {
+	if ctx == nil {
+		ctx = m.ctx
+	}
 
-	session := m.session.Copy()
-	defer session.Close()
-
-	database := m.db.Name
+	database := m.db.Name()
 	args := formatArgs(cmd)
 
-	tracing.Trace(m.ctx, database, database, "runCommand", args, func() error {
-		err = m.db.With(session).Run(cmd, result)
-		return err
+	var result *mongo.SingleResult
+	tracing.Trace(ctx, database, database, "runCommand", args, func() error {
+		result = m.db.RunCommand(ctx, cmd)
+		return result.Err()
 	})
 
-	return err
+	return result
 }
 
-// C returns the collection from database and a session
-// This session needs to be closed afterward
-func (m *Mongo) C(name string) (interfaces.Collection, interfaces.Session) {
-	session := m.session.Copy()
-	c := &Collection{
+// Collection returns a wrapped collection
+func (m *Mongo) Collection(name string) interfaces.Collection {
+	return &Collection{
 		ctx:        m.ctx,
-		collection: m.db.With(session).C(name),
+		collection: m.db.Collection(name),
 	}
-	return c, session
 }
 
-// Close closes mongo session
-func (m *Mongo) Close() {
-	m.session.Close()
+// Close closes mongo client connection
+func (m *Mongo) Close(ctx context.Context) error {
+	if ctx == nil {
+		ctx = m.ctx
+	}
+	return m.client.Disconnect(ctx)
 }
 
 // Collection holds a mongo collection and implements Collection interface
 type Collection struct {
 	ctx        context.Context
-	collection *mgo.Collection
+	collection *mongo.Collection
 }
 
 // Find executes a find query on Mongo
-func (c *Collection) Find(query interface{}) interfaces.Query {
-	return &Query{
-		ctx:   c.ctx,
-		query: c.collection.Find(query),
-
-		database: c.collection.Database.Name,
-		prefix:   c.collection.FullName,
-		args:     formatArgs(query),
+func (c *Collection) Find(ctx context.Context, filter interface{}, opts ...any) (interfaces.Cursor, error) {
+	if ctx == nil {
+		ctx = c.ctx
 	}
-}
 
-// FindId is a conveniene method to execute a find by id query on Mongo
-func (c *Collection) FindId(id interface{}) interfaces.Query {
-	return &Query{
-		ctx:   c.ctx,
-		query: c.collection.FindId(id),
-
-		database: c.collection.Database.Name,
-		prefix:   c.collection.FullName,
-		args:     formatArgs(bson.D{{Name: "_id", Value: id}}),
-	}
-}
-
-// Pipe calls mongo collection Pipe
-func (c *Collection) Pipe(pipeline interface{}) interfaces.Pipe {
-	return &Pipe{
-		ctx:  c.ctx,
-		pipe: c.collection.Pipe(pipeline),
-
-		database: c.collection.Database.Name,
-		prefix:   c.collection.FullName,
-		args:     formatArgs(pipeline),
-	}
-}
-
-// Insert calls mongo collection Insert
-func (c *Collection) Insert(docs ...interface{}) error {
+	var cursor *mongo.Cursor
 	var err error
 
-	database := c.collection.Database.Name
-	collection := c.collection.FullName
-	args := formatArgs(docs)
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
+	args := formatArgs(filter)
 
-	tracing.Trace(c.ctx, database, collection, "insert", args, func() error {
-		err = c.collection.Insert(docs...)
+	tracing.Trace(ctx, database, collectionName, "find", args, func() error {
+		cursor, err = c.collection.Find(ctx, filter)
 		return err
 	})
 
-	return err
+	if err != nil {
+		return nil, err
+	}
+
+	return &Cursor{cursor: cursor}, nil
 }
 
-// UpsertId calls mongo collection UpsertId
-func (c *Collection) UpsertId(id interface{}, update interface{}) (*mgo.ChangeInfo, error) {
-	var result *mgo.ChangeInfo
+// FindOne executes a findOne query on Mongo
+func (c *Collection) FindOne(ctx context.Context, filter interface{}, opts ...any) *mongo.SingleResult {
+	if ctx == nil {
+		ctx = c.ctx
+	}
+
+	var result *mongo.SingleResult
+
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
+	args := formatArgs(filter)
+
+	tracing.Trace(ctx, database, collectionName, "findOne", args, func() error {
+		result = c.collection.FindOne(ctx, filter)
+		return result.Err()
+	})
+
+	return result
+}
+
+// Aggregate executes an aggregation pipeline
+func (c *Collection) Aggregate(ctx context.Context, pipeline interface{}, opts ...any) (interfaces.Cursor, error) {
+	if ctx == nil {
+		ctx = c.ctx
+	}
+
+	var cursor *mongo.Cursor
 	var err error
 
-	database := c.collection.Database.Name
-	collection := c.collection.FullName
-	args := formatArgs(bson.D{{Name: "_id", Value: id}}, update)
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
+	args := formatArgs(pipeline)
 
-	tracing.Trace(c.ctx, database, collection, "updateOne", args, func() error {
-		result, err = c.collection.UpsertId(id, update)
+	tracing.Trace(ctx, database, collectionName, "aggregate", args, func() error {
+		cursor, err = c.collection.Aggregate(ctx, pipeline)
+		return err
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &Cursor{cursor: cursor}, nil
+}
+
+// InsertOne inserts a single document
+func (c *Collection) InsertOne(ctx context.Context, document interface{}, opts ...any) (*mongo.InsertOneResult, error) {
+	if ctx == nil {
+		ctx = c.ctx
+	}
+
+	var result *mongo.InsertOneResult
+	var err error
+
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
+	args := formatArgs(document)
+
+	tracing.Trace(ctx, database, collectionName, "insertOne", args, func() error {
+		result, err = c.collection.InsertOne(ctx, document)
 		return err
 	})
 
 	return result, err
 }
 
-// Upsert calls mongo collection Upsert
-func (c *Collection) Upsert(selector interface{}, update interface{}) (*mgo.ChangeInfo, error) {
-	var result *mgo.ChangeInfo
-	var err error
-
-	database := c.collection.Database.Name
-	collection := c.collection.FullName
-	args := formatArgs(selector, update)
-
-	tracing.Trace(c.ctx, database, collection, "updateOne", args, func() error {
-		result, err = c.collection.Upsert(selector, update)
-		return err
-	})
-
-	return result, err
-}
-
-// RemoveId calls mongo collection RemoveId
-func (c *Collection) RemoveId(id interface{}) error {
-	var err error
-
-	database := c.collection.Database.Name
-	collection := c.collection.FullName
-	args := formatArgs(bson.D{{Name: "_id", Value: id}})
-
-	tracing.Trace(c.ctx, database, collection, "remove", args, func() error {
-		err = c.collection.RemoveId(id)
-		return err
-	})
-
-	return err
-}
-
-// Remove calls mongo collection Remove
-func (c *Collection) Remove(selector interface{}) error {
-	var err error
-
-	database := c.collection.Database.Name
-	collection := c.collection.FullName
-	args := formatArgs(selector)
-
-	tracing.Trace(c.ctx, database, collection, "remove", args, func() error {
-		err = c.collection.Remove(selector)
-		return err
-	})
-
-	return err
-}
-
-// RemoveAll calls mongo collection RemoveAll
-func (c *Collection) RemoveAll(selector interface{}) (*mgo.ChangeInfo, error) {
-	var result *mgo.ChangeInfo
-	var err error
-
-	database := c.collection.Database.Name
-	collection := c.collection.FullName
-	args := formatArgs(selector)
-
-	tracing.Trace(c.ctx, database, collection, "remove", args, func() error {
-		result, err = c.collection.RemoveAll(selector)
-		return err
-	})
-
-	return result, err
-}
-
-// Bulk returns a mongo bulk
-func (c *Collection) Bulk() interfaces.Bulk {
-	return &Bulk{
-		ctx:        c.ctx,
-		bulk:       c.collection.Bulk(),
-		collection: c.collection,
+// InsertMany inserts multiple documents
+func (c *Collection) InsertMany(ctx context.Context, documents []interface{}, opts ...any) (*mongo.InsertManyResult, error) {
+	if ctx == nil {
+		ctx = c.ctx
 	}
-}
 
-// Bulk holds a monog bulk and implements Bulk interface
-type Bulk struct {
-	ctx        context.Context
-	bulk       *mgo.Bulk
-	collection *mgo.Collection
-}
-
-// Upsert calls bulk upsert
-func (b *Bulk) Upsert(pairs ...interface{}) {
-	b.bulk.Upsert(pairs...)
-}
-
-// Run executes a bulk run
-func (b *Bulk) Run() (*mgo.BulkResult, error) {
-	var result *mgo.BulkResult
+	var result *mongo.InsertManyResult
 	var err error
 
-	database := b.collection.Database.Name
-	collection := b.collection.FullName
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
+	args := formatArgs(documents)
+
+	tracing.Trace(ctx, database, collectionName, "insertMany", args, func() error {
+		result, err = c.collection.InsertMany(ctx, documents)
+		return err
+	})
+
+	return result, err
+}
+
+// UpdateByID updates a document by ID
+func (c *Collection) UpdateByID(ctx context.Context, id interface{}, update interface{}, opts ...any) (*mongo.UpdateResult, error) {
+	if ctx == nil {
+		ctx = c.ctx
+	}
+
+	var result *mongo.UpdateResult
+	var err error
+
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
+	args := formatArgs(bson.D{{Key: "_id", Value: id}}, update)
+
+	tracing.Trace(ctx, database, collectionName, "updateOne", args, func() error {
+		result, err = c.collection.UpdateByID(ctx, id, update)
+		return err
+	})
+
+	return result, err
+}
+
+// UpdateOne updates a single document
+func (c *Collection) UpdateOne(ctx context.Context, filter interface{}, update interface{}, opts ...any) (*mongo.UpdateResult, error) {
+	if ctx == nil {
+		ctx = c.ctx
+	}
+
+	var result *mongo.UpdateResult
+	var err error
+
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
+	args := formatArgs(filter, update)
+
+	tracing.Trace(ctx, database, collectionName, "updateOne", args, func() error {
+		result, err = c.collection.UpdateOne(ctx, filter, update)
+		return err
+	})
+
+	return result, err
+}
+
+// DeleteOne deletes a single document by ID
+func (c *Collection) DeleteOne(ctx context.Context, filter interface{}, opts ...any) (*mongo.DeleteResult, error) {
+	if ctx == nil {
+		ctx = c.ctx
+	}
+
+	var result *mongo.DeleteResult
+	var err error
+
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
+	args := formatArgs(filter)
+
+	tracing.Trace(ctx, database, collectionName, "deleteOne", args, func() error {
+		result, err = c.collection.DeleteOne(ctx, filter)
+		return err
+	})
+
+	return result, err
+}
+
+// DeleteMany deletes multiple documents
+func (c *Collection) DeleteMany(ctx context.Context, filter interface{}, opts ...any) (*mongo.DeleteResult, error) {
+	if ctx == nil {
+		ctx = c.ctx
+	}
+
+	var result *mongo.DeleteResult
+	var err error
+
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
+	args := formatArgs(filter)
+
+	tracing.Trace(ctx, database, collectionName, "deleteMany", args, func() error {
+		result, err = c.collection.DeleteMany(ctx, filter)
+		return err
+	})
+
+	return result, err
+}
+
+// BulkWrite executes multiple write operations
+func (c *Collection) BulkWrite(ctx context.Context, models []mongo.WriteModel, opts ...any) (*mongo.BulkWriteResult, error) {
+	if ctx == nil {
+		ctx = c.ctx
+	}
+
+	var result *mongo.BulkWriteResult
+	var err error
+
+	database := c.collection.Database().Name()
+	collectionName := c.collection.Name()
 	args := ""
 
-	tracing.Trace(b.ctx, database, collection, "bulkRun", args, func() error {
-		result, err = b.bulk.Run()
+	tracing.Trace(ctx, database, collectionName, "bulkWrite", args, func() error {
+		result, err = c.collection.BulkWrite(ctx, models)
 		return err
 	})
 
 	return result, err
 }
 
-// Query holds a mongo query and implements Query interface
-type Query struct {
-	ctx   context.Context
-	query *mgo.Query
-
-	database string
-	prefix   string
-	args     string
+// Cursor wraps mongo Cursor
+type Cursor struct {
+	cursor *mongo.Cursor
 }
 
-// Limit calls query Limit
-func (q *Query) Limit(n int) interfaces.Query {
-	return &Query{
-		ctx:      q.ctx,
-		query:    q.query.Limit(n),
-		database: q.database,
-		prefix:   q.prefix,
-		args:     q.args,
-	}
+// Next advances the cursor to the next document
+func (c *Cursor) Next(ctx context.Context) bool {
+	return c.cursor.Next(ctx)
 }
 
-// Iter calls query Iter
-func (q *Query) Iter() interfaces.Iter {
-	return &Iter{
-		iter: q.query.Iter(),
-	}
+// Decode decodes the current document into val
+func (c *Cursor) Decode(val interface{}) error {
+	return c.cursor.Decode(val)
 }
 
-// All calls mongo query All
-func (q *Query) All(result interface{}) error {
-	var err error
-
-	tracing.Trace(q.ctx, q.database, q.prefix, "find", q.args, func() error {
-		err = q.query.All(result)
-		return err
-	})
-
-	return err
+// All retrieves all documents from the cursor
+func (c *Cursor) All(ctx context.Context, results interface{}) error {
+	return c.cursor.All(ctx, results)
 }
 
-// One calls mongo query One
-func (q *Query) One(result interface{}) error {
-	var err error
-
-	tracing.Trace(q.ctx, q.database, q.prefix, "findOne", q.args, func() error {
-		err = q.query.One(result)
-		return err
-	})
-
-	return err
-}
-
-// Pipe holds a mongo pipe and implements Pipe interface
-type Pipe struct {
-	ctx  context.Context
-	pipe *mgo.Pipe
-
-	database string
-	prefix   string
-	args     string
-}
-
-// All calls mongo pipe All
-func (p *Pipe) All(result interface{}) error {
-	var err error
-
-	tracing.Trace(p.ctx, p.database, p.prefix, "aggregate", p.args, func() error {
-		err = p.pipe.All(result)
-		return err
-	})
-
-	return err
-}
-
-// Batch calls mongo pipe Batch
-func (p *Pipe) Batch(n int) interfaces.Pipe {
-	return &Pipe{
-		ctx:      p.ctx,
-		pipe:     p.pipe.Batch(n),
-		database: p.database,
-		prefix:   p.prefix,
-		args:     p.args,
-	}
-}
-
-// Iter wraps mongo Iter
-type Iter struct {
-	iter *mgo.Iter
-}
-
-// Next calls mongo iter next
-func (i *Iter) Next(result interface{}) bool {
-	return i.iter.Next(result)
-}
-
-// Close calls mongo iter close
-func (i *Iter) Close() error {
-	return i.iter.Close()
+// Close closes the cursor
+func (c *Cursor) Close(ctx context.Context) error {
+	return c.cursor.Close(ctx)
 }
 
 func formatArgs(args ...interface{}) string {

@@ -23,11 +23,11 @@
 package kafka
 
 import (
-	"github.com/Shopify/sarama"
-	. "github.com/onsi/ginkgo"
+	"github.com/IBM/sarama"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spf13/viper"

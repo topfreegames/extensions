@@ -24,7 +24,7 @@ package elastic
 
 import (
 	"github.com/topfreegames/extensions/v9/http"
-	"gopkg.in/olivere/elastic.v5"
+	"github.com/olivere/elastic/v7"
 )
 
 func NewClient(options ...elastic.ClientOptionFunc) (*elastic.Client, error) {

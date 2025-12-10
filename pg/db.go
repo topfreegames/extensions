@@ -27,8 +27,8 @@ import (
 	"errors"
 	"io"
 
-	pg "github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	"github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10/orm"
 	"github.com/topfreegames/extensions/v9/pg/interfaces"
 	tracing "github.com/topfreegames/extensions/v9/tracing/pg"
 )
@@ -45,22 +45,22 @@ func (db *DB) Select(model interface{}) error {
 }
 
 // Insert calls inner db insert
-func (db *DB) Insert(model ...interface{}) error {
+func (db *DB) Insert(model ...interface{}) (orm.Result, error) {
 	return db.inner.Insert(model...)
 }
 
 // Update calls inner db update
-func (db *DB) Update(model interface{}) error {
+func (db *DB) Update(model interface{}) (orm.Result, error) {
 	return db.inner.Update(model)
 }
 
 // Delete calls inner db delete
-func (db *DB) Delete(model interface{}) error {
+func (db *DB) Delete(model interface{}) (orm.Result, error) {
 	return db.inner.Delete(model)
 }
 
 // ForceDelete calls inner db force delete
-func (db *DB) ForceDelete(model interface{}) error {
+func (db *DB) ForceDelete(model interface{}) (orm.Result, error) {
 	return db.inner.ForceDelete(model)
 }
 
@@ -103,7 +103,67 @@ func (db *DB) Context() context.Context {
 // Model calls inner db model and assigns to the returned query the current db
 // This ensures calls to Model return DB structs instead of pg.DB
 func (db *DB) Model(model ...interface{}) *orm.Query {
-	return db.inner.Model(model...).DB(db)
+	return db.inner.Model(model...)
+}
+
+// ExecContext wraps the inner db ExecContext call in a tracing trace
+func (db *DB) ExecContext(ctx context.Context, query interface{}, params ...interface{}) (orm.Result, error) {
+	var res orm.Result
+	var err error
+	tracing.Trace(ctx, query, func() error {
+		if db.tx != nil {
+			res, err = db.tx.ExecContext(ctx, query, params...)
+		} else {
+			res, err = db.inner.ExecContext(ctx, query, params...)
+		}
+		return err
+	})
+	return res, err
+}
+
+// ExecOneContext wraps the inner db ExecOneContext call in a tracing trace
+func (db *DB) ExecOneContext(ctx context.Context, query interface{}, params ...interface{}) (orm.Result, error) {
+	var res orm.Result
+	var err error
+	tracing.Trace(ctx, query, func() error {
+		if db.tx != nil {
+			res, err = db.tx.ExecOneContext(ctx, query, params...)
+		} else {
+			res, err = db.inner.ExecOneContext(ctx, query, params...)
+		}
+		return err
+	})
+	return res, err
+}
+
+// QueryContext wraps the inner db QueryContext call in a tracing trace
+func (db *DB) QueryContext(ctx context.Context, model, query interface{}, params ...interface{}) (orm.Result, error) {
+	var res orm.Result
+	var err error
+	tracing.Trace(ctx, query, func() error {
+		if db.tx != nil {
+			res, err = db.tx.QueryContext(ctx, model, query, params...)
+		} else {
+			res, err = db.inner.QueryContext(ctx, model, query, params...)
+		}
+		return err
+	})
+	return res, err
+}
+
+// QueryOneContext wraps the inner db QueryOneContext call in a tracing trace
+func (db *DB) QueryOneContext(ctx context.Context, model, query interface{}, params ...interface{}) (orm.Result, error) {
+	var res orm.Result
+	var err error
+	tracing.Trace(ctx, query, func() error {
+		if db.tx != nil {
+			res, err = db.tx.QueryOneContext(ctx, model, query, params...)
+		} else {
+			res, err = db.inner.QueryOneContext(ctx, model, query, params...)
+		}
+		return err
+	})
+	return res, err
 }
 
 // Exec wraps the inner db or tx Exec call in a tracing trace
@@ -223,8 +283,9 @@ func WithContext(ctx context.Context, db interfaces.DB) interfaces.DB {
 		return db
 	}
 
+	pgDB := db.WithContext(ctx)
 	return &DB{
-		inner: db.WithContext(ctx),
+		inner: &pgDBWrapper{db: pgDB},
 	}
 }
 
@@ -251,4 +312,93 @@ func Commit(db interfaces.DB) error {
 		return v.Commit()
 	}
 	return errors.New("db does not implement commit")
+}
+
+// pgDBWrapper wraps pg.DB to implement interfaces.DB
+type pgDBWrapper struct {
+	db *pg.DB
+}
+
+func (w *pgDBWrapper) Select(model interface{}) error {
+	return w.db.Model(model).Select()
+}
+
+func (w *pgDBWrapper) Insert(model ...interface{}) (orm.Result, error) {
+	return w.db.Model(model...).Insert()
+}
+
+func (w *pgDBWrapper) Update(model interface{}) (orm.Result, error) {
+	return w.db.Model(model).Update()
+}
+
+func (w *pgDBWrapper) Delete(model interface{}) (orm.Result, error) {
+	return w.db.Model(model).Delete()
+}
+
+func (w *pgDBWrapper) ForceDelete(model interface{}) (orm.Result, error) {
+	return w.db.Model(model).ForceDelete()
+}
+
+func (w *pgDBWrapper) CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.CopyFrom(r, query, params...)
+}
+
+func (w *pgDBWrapper) CopyTo(w2 io.Writer, query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.CopyTo(w2, query, params...)
+}
+
+func (w *pgDBWrapper) FormatQuery(b []byte, query string, params ...interface{}) []byte {
+	return w.db.Formatter().FormatQuery(b, query, params...)
+}
+
+func (w *pgDBWrapper) Close() error {
+	return w.db.Close()
+}
+
+func (w *pgDBWrapper) Begin() (*pg.Tx, error) {
+	return w.db.Begin()
+}
+
+func (w *pgDBWrapper) WithContext(ctx context.Context) *pg.DB {
+	return w.db.WithContext(ctx)
+}
+
+func (w *pgDBWrapper) Context() context.Context {
+	return w.db.Context()
+}
+
+func (w *pgDBWrapper) Exec(query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.Exec(query, params...)
+}
+
+func (w *pgDBWrapper) ExecOne(query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.ExecOne(query, params...)
+}
+
+func (w *pgDBWrapper) Query(model, query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.Query(model, query, params...)
+}
+
+func (w *pgDBWrapper) QueryOne(model, query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.QueryOne(model, query, params...)
+}
+
+func (w *pgDBWrapper) ExecContext(ctx context.Context, query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.ExecContext(ctx, query, params...)
+}
+
+func (w *pgDBWrapper) ExecOneContext(ctx context.Context, query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.ExecOneContext(ctx, query, params...)
+}
+
+func (w *pgDBWrapper) QueryContext(ctx context.Context, model, query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.QueryContext(ctx, model, query, params...)
+}
+
+func (w *pgDBWrapper) QueryOneContext(ctx context.Context, model, query interface{}, params ...interface{}) (orm.Result, error) {
+	return w.db.QueryOneContext(ctx, model, query, params...)
+}
+
+func (w *pgDBWrapper) Model(model ...interface{}) *orm.Query {
+	return w.db.Model(model...)
 }

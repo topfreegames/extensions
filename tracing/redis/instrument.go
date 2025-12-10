@@ -1,5 +1,7 @@
+package redis
+
 /*
- * Copyright (c) 2018 TFG Co <backend@tfgco.com>
+ * Copyright (c) 2021 TFG Co <backend@tfgco.com>
  * Author: TFG Co <backend@tfgco.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,102 +22,91 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package redis
-
 import (
-	"github.com/go-redis/redis"
+	"context"
+	"fmt"
+	"strings"
+
+	"github.com/redis/go-redis/v9"
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/v9/tracing"
 )
 
+type redisTracingHook struct {
+	client *redis.Client
+}
+
 // Instrument adds tracing instrumentation on a Redis client
 func Instrument(client *redis.Client) {
-	middleware := makeMiddleware(client)
-	client.WrapProcess(middleware)
-	middlewarePipe := makeMiddlewarePipe(client)
-	client.WrapProcessPipeline(middlewarePipe)
+	client.AddHook(redisTracingHook{client: client})
 }
 
-func makeMiddleware(client *redis.Client) func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
-	return func(old func(cmd redis.Cmder) error) func(cmd redis.Cmder) error {
-		return func(cmd redis.Cmder) error {
-			var parent opentracing.SpanContext
+func (hook redisTracingHook) createSpan(ctx context.Context, operationName string) (opentracing.Span, context.Context) {
+	tags := opentracing.Tags{
+		"db.instance": hook.client.Options().DB,
+		"db.type":     "redis",
+		"span.kind":   "client",
+	}
+	tags = tracing.RunCustomTracingTagsHooks(ctx, tags)
+	span := opentracing.SpanFromContext(ctx)
+	if span != nil {
 
-			ctx := client.Context()
-			if span := opentracing.SpanFromContext(ctx); span != nil {
-				parent = span.Context()
-			}
+		childSpan := opentracing.StartSpan(operationName, opentracing.ChildOf(span.Context()), tags)
+		tracing.RunCustomTracingHooks(ctx, operationName, childSpan)
+		return childSpan, opentracing.ContextWithSpan(ctx, childSpan)
+	}
 
-			operationName := "redis " + cmd.Name()
-			reference := opentracing.ChildOf(parent)
-			tags := opentracing.Tags{
-				"db.instance":  client.Options().DB,
-				"db.statement": parseLong(cmd),
-				"db.type":      "redis",
-				"span.kind":    "client",
-			}
+	return opentracing.StartSpanFromContext(ctx, operationName, tags)
+}
 
-			span := opentracing.StartSpan(operationName, reference, tags)
-			tracing.RunCustomTracingHooks(ctx, operationName, span)
-			defer span.Finish()
-			defer tracing.LogPanic(span)
+func (hook redisTracingHook) DialHook(next redis.DialHook) redis.DialHook {
+	return next
+}
 
-			err := old(cmd)
-			if err != nil {
-				message := err.Error()
-				tracing.LogError(span, message)
-			}
+func (hook redisTracingHook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
+	return func(ctx context.Context, cmd redis.Cmder) error {
+		operationName := "redis " + cmd.Name()
+		span, ctxWithSpan := hook.createSpan(ctx, operationName)
+		span.SetTag("db.statement", cmd.String())
+		defer span.Finish()
 
-			return err
+		err := next(ctxWithSpan, cmd)
+		if err != nil {
+			tracing.LogError(span, err.Error())
 		}
+		return err
 	}
 }
 
-func makeMiddlewarePipe(client *redis.Client) func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error {
-	return func(old func(cmds []redis.Cmder) error) func(cmds []redis.Cmder) error {
-		return func(cmds []redis.Cmder) error {
-			var parent opentracing.SpanContext
+func (hook redisTracingHook) ProcessPipelineHook(next redis.ProcessPipelineHook) redis.ProcessPipelineHook {
+	return func(ctx context.Context, cmds []redis.Cmder) error {
+		operationName := "redis pipe"
+		span, ctxWithSpan := hook.createSpan(ctx, operationName)
+		span.SetTag("db.statement", cmdersString(cmds))
+		defer span.Finish()
 
-			ctx := client.Context()
-			if span := opentracing.SpanFromContext(ctx); span != nil {
-				parent = span.Context()
-			}
-
-			operationName := "redis pipe"
-			statement := ""
-			for idx, cmd := range cmds {
-				if idx > 0 {
-					statement = statement + "\n" + parseLong(cmd)
-				} else {
-					statement = parseLong(cmd)
-				}
-			}
-			reference := opentracing.ChildOf(parent)
-			tags := opentracing.Tags{
-				"db.instance":  client.Options().DB,
-				"db.statement": statement,
-				"db.type":      "redis",
-				"span.kind":    "client",
-			}
-			tags = tracing.RunCustomTracingTagsHooks(ctx, tags)
-
-			span := opentracing.StartSpan(operationName, reference, tags)
-			tracing.RunCustomTracingHooks(ctx, operationName, span)
-			defer span.Finish()
-			defer tracing.LogPanic(span)
-
-			err := old(cmds)
-			if err != nil {
-				message := err.Error()
-				tracing.LogError(span, message)
-			}
-
-			return err
+		err := next(ctxWithSpan, cmds)
+		errorIndex, cmdErr := cmdersError(cmds)
+		if cmdErr != nil {
+			tracing.LogError(span, fmt.Errorf("pipeline error %v: %w", errorIndex, cmdErr).Error())
 		}
+		return err
 	}
 }
 
-func parseLong(cmd redis.Cmder) string {
-	str := cmd.String()
-	return str
+func cmdersString(cmds []redis.Cmder) string {
+	strs := make([]string, 0, len(cmds))
+	for _, cmd := range cmds {
+		strs = append(strs, cmd.String())
+	}
+	return strings.Join(strs, "\n")
+}
+
+func cmdersError(cmds []redis.Cmder) (int, error) {
+	for index, cmd := range cmds {
+		if cmd.Err() != nil {
+			return index, cmd.Err()
+		}
+	}
+	return 0, nil
 }

@@ -25,8 +25,8 @@ package pg
 import (
 	"errors"
 
-	"github.com/golang/mock/gomock"
-	. "github.com/onsi/ginkgo"
+	"go.uber.org/mock/gomock"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/v9/pg/mocks"

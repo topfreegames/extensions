@@ -28,10 +28,10 @@ import (
 	"errors"
 	"strings"
 
-	pg "github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
-	"github.com/golang/mock/gomock"
-	. "github.com/onsi/ginkgo"
+	"github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10/orm"
+	"go.uber.org/mock/gomock"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/topfreegames/extensions/v9/pg/mocks"
 )
@@ -63,32 +63,32 @@ var _ = Describe("PG Extension - DB", func() {
 		})
 
 		Describe("Insert", func() {
-			It("Should call inner db insert", func() {
-				db := &DB{inner: mockDb}
-				expected1, expected2 := "expected1", "expected2"
-				mockDb.EXPECT().Insert(expected1, expected2)
-				err := db.Insert(expected1, expected2)
-				Expect(err).NotTo(HaveOccurred())
-			})
+		It("Should call inner db insert", func() {
+			db := &DB{inner: mockDb}
+			expected1, expected2 := "expected1", "expected2"
+			mockDb.EXPECT().Insert(expected1, expected2).Return(nil, nil)
+			_, err := db.Insert(expected1, expected2)
+			Expect(err).NotTo(HaveOccurred())
+		})
 		})
 		Describe("Update", func() {
-			It("Should call inner db update", func() {
-				db := &DB{inner: mockDb}
-				expected := "expected"
-				mockDb.EXPECT().Update(expected)
-				err := db.Update(expected)
-				Expect(err).NotTo(HaveOccurred())
-			})
+		It("Should call inner db update", func() {
+			db := &DB{inner: mockDb}
+			expected := "expected"
+			mockDb.EXPECT().Update(expected).Return(nil, nil)
+			_, err := db.Update(expected)
+			Expect(err).NotTo(HaveOccurred())
+		})
 		})
 
 		Describe("Delete", func() {
-			It("Should call inner db delete", func() {
-				db := &DB{inner: mockDb}
-				expected := "expected"
-				mockDb.EXPECT().Delete(expected)
-				err := db.Delete(expected)
-				Expect(err).NotTo(HaveOccurred())
-			})
+		It("Should call inner db delete", func() {
+			db := &DB{inner: mockDb}
+			expected := "expected"
+			mockDb.EXPECT().Delete(expected).Return(nil, nil)
+			_, err := db.Delete(expected)
+			Expect(err).NotTo(HaveOccurred())
+		})
 		})
 
 		Describe("Model", func() {
@@ -326,7 +326,7 @@ var _ = Describe("PG Extension - DB", func() {
 				ctx := context.Background()
 				mockDb.EXPECT().WithContext(ctx).Return(expected)
 				res := WithContext(ctx, mockDb)
-				Expect(res).To(Equal(&DB{inner: expected}))
+				Expect(res).To(Equal(&DB{inner: &pgDBWrapper{db: expected}}))
 			})
 		})
 
@@ -354,13 +354,13 @@ var _ = Describe("PG Extension - DB", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			It("Should fail if does not implement rollback", func() {
-				db := &pg.DB{}
+		It("Should fail if does not implement rollback", func() {
+			db := &pgDBWrapper{db: &pg.DB{}}
 
-				expectedError := errors.New("db does not implement rollback")
-				err := Rollback(db)
-				Expect(err).To(Equal(expectedError))
-			})
+			expectedError := errors.New("db does not implement rollback")
+			err := Rollback(db)
+			Expect(err).To(Equal(expectedError))
+		})
 		})
 
 		Describe("DB Commit", func() {
@@ -374,13 +374,13 @@ var _ = Describe("PG Extension - DB", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			It("Should fail if does not implement commit", func() {
-				db := &pg.DB{}
+		It("Should fail if does not implement commit", func() {
+			db := &pgDBWrapper{db: &pg.DB{}}
 
-				expectedError := errors.New("db does not implement commit")
-				err := Commit(db)
-				Expect(err).To(Equal(expectedError))
-			})
+			expectedError := errors.New("db does not implement commit")
+			err := Commit(db)
+			Expect(err).To(Equal(expectedError))
+		})
 		})
 	})
 })

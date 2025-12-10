@@ -28,7 +28,7 @@ import (
 	"fmt"
 	"time"
 
-	pg "github.com/go-pg/pg"
+	"github.com/go-pg/pg/v10"
 
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/v9/pg/interfaces"
@@ -184,7 +184,8 @@ func (c *Client) Connect(prefix string, db interfaces.DB) error {
 	}
 
 	if db == nil {
-		c.DB = &DB{inner: pg.Connect(c.Options)}
+		pgDB := pg.Connect(c.Options)
+		c.DB = &DB{inner: &pgDBWrapper{db: pgDB}}
 	} else {
 		c.DB = &DB{inner: db}
 	}

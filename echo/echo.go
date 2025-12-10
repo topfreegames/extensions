@@ -23,7 +23,7 @@
 package echo
 
 import (
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	techo "github.com/topfreegames/extensions/v9/tracing/echo"
 )
 

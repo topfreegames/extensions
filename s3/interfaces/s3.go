@@ -23,14 +23,16 @@
 package interfaces
 
 import (
-	"github.com/aws/aws-sdk-go/service/s3"
+	"context"
 	"net/http"
+
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 // S3 is the minimum interface a S3Client must implement
 type S3 interface {
-	DeleteObject(key string) error
-	PutObjectRequest(key, acl string) (string, http.Header, error)
-	PutObject(key string, body *[]byte) error
-	PutObjectInput(params *s3.PutObjectInput, body *[]byte) error
+	DeleteObject(ctx context.Context, key string) error
+	PutObjectRequest(ctx context.Context, key, acl string) (string, http.Header, error)
+	PutObject(ctx context.Context, key string, body *[]byte) error
+	PutObjectInput(ctx context.Context, params *s3.PutObjectInput, body *[]byte) error
 }

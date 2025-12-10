@@ -23,8 +23,10 @@ setup:
 	@/bin/bash -c '[ "`uname -s`" == "Darwin" ] && [ "`which brew`" != "" ] && [ ! -d "/usr/local/Cellar/librdkafka" ] && echo "librdkafka was not found. Installing with brew..." && brew install librdkafka; exit 0'
 	# Ensuring librdkafka is installed in Debian and Ubuntu
 	@/bin/bash -c '[ "`uname -s`" == "Linux" ] && [ "`which apt-get`" != "" ] && echo "Ensuring librdkafka is installed..." && ./debian-install-librdkafka.sh; exit 0'
-	@go get -u github.com/onsi/ginkgo/ginkgo
-	@go get github.com/gordonklaus/ineffassign
+	@echo "Installing development tools..."
+	@go install github.com/onsi/ginkgo/v2/ginkgo@latest
+	@go install go.uber.org/mock/mockgen@latest
+	@go install github.com/gordonklaus/ineffassign@latest
 	@go mod tidy
 
 mocks: mongo-mocks dog-mocks pg-mocks redis-mocks

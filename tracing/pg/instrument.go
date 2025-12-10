@@ -26,7 +26,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/go-pg/pg/orm"
+	"github.com/go-pg/pg/v10/orm"
 	"github.com/opentracing/opentracing-go"
 	"github.com/topfreegames/extensions/v9/tracing"
 )
@@ -47,7 +47,8 @@ func Trace(ctx context.Context, query interface{}, next func() error) {
 	if val, ok := query.(string); ok {
 		statement = val
 	} else if val, ok := query.(orm.QueryAppender); ok {
-		if statementBytes, err := val.AppendQuery(nil); err == nil {
+		// In v10, AppendQuery requires a QueryFormatter and byte slice
+		if statementBytes, err := val.AppendQuery(orm.NewFormatter(), nil); err == nil {
 			statement = string(statementBytes)
 		}
 	}

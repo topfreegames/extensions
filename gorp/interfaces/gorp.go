@@ -25,7 +25,7 @@ package interfaces
 import (
 	"database/sql/driver"
 
-	"github.com/go-gorp/gorp"
+	"github.com/go-gorp/gorp/v3"
 )
 
 // Database represents a gorp database connection

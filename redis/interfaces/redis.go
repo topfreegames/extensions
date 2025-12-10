@@ -26,7 +26,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/redis/go-redis/v9"
 )
 
 // TraceWrapper represents the contract for a redis trace wrapper
@@ -34,50 +34,48 @@ type TraceWrapper interface {
 	WithContext(ctx context.Context, c RedisClient) RedisClient
 }
 
-//RedisClient represents the contract for a redis client
+// RedisClient represents the contract for a redis client
 type RedisClient interface {
-	BLPop(timeout time.Duration, keys ...string) *redis.StringSliceCmd
+	BLPop(ctx context.Context, timeout time.Duration, keys ...string) *redis.StringSliceCmd
 	Close() error
-	Context() context.Context
-	Del(keys ...string) *redis.IntCmd
-	Eval(script string, keys []string, args ...interface{}) *redis.Cmd
-	EvalSha(sha1 string, keys []string, args ...interface{}) *redis.Cmd
-	Exists(keys ...string) *redis.IntCmd
-	Get(key string) *redis.StringCmd
-	HDel(key string, fields ...string) *redis.IntCmd
-	HGet(key, field string) *redis.StringCmd
-	HGetAll(string) *redis.StringStringMapCmd
-	HMGet(string, ...string) *redis.SliceCmd
-	HMSet(string, map[string]interface{}) *redis.StatusCmd
-	HSet(key, field string, value interface{}) *redis.BoolCmd
-	MGet(keys ...string) *redis.SliceCmd
-	LRange(key string, start, stop int64) *redis.StringSliceCmd
-	Ping() *redis.StatusCmd
-	RPopLPush(source string, destination string) *redis.StringCmd
-	RPush(key string, values ...interface{}) *redis.IntCmd
-	SAdd(key string, members ...interface{}) *redis.IntCmd
-	SCard(key string) *redis.IntCmd
-	SIsMember(key string, member interface{}) *redis.BoolCmd
-	SMembers(key string) *redis.StringSliceCmd
-	SPopN(key string, count int64) *redis.StringSliceCmd
-	SRem(key string, members ...interface{}) *redis.IntCmd
-	ScriptExists(scripts ...string) *redis.BoolSliceCmd
-	ScriptLoad(script string) *redis.StringCmd
-	Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd
-	SetNX(key string, value interface{}, expiration time.Duration) *redis.BoolCmd
-	TTL(key string) *redis.DurationCmd
+	Del(ctx context.Context, keys ...string) *redis.IntCmd
+	Eval(ctx context.Context, script string, keys []string, args ...interface{}) *redis.Cmd
+	EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{}) *redis.Cmd
+	Exists(ctx context.Context, keys ...string) *redis.IntCmd
+	Get(ctx context.Context, key string) *redis.StringCmd
+	HDel(ctx context.Context, key string, fields ...string) *redis.IntCmd
+	HGet(ctx context.Context, key, field string) *redis.StringCmd
+	HGetAll(ctx context.Context, key string) *redis.MapStringStringCmd
+	HMGet(ctx context.Context, key string, fields ...string) *redis.SliceCmd
+	HMSet(ctx context.Context, key string, values ...interface{}) *redis.BoolCmd
+	HSet(ctx context.Context, key string, values ...interface{}) *redis.IntCmd
+	MGet(ctx context.Context, keys ...string) *redis.SliceCmd
+	LRange(ctx context.Context, key string, start, stop int64) *redis.StringSliceCmd
+	Ping(ctx context.Context) *redis.StatusCmd
+	RPopLPush(ctx context.Context, source string, destination string) *redis.StringCmd
+	RPush(ctx context.Context, key string, values ...interface{}) *redis.IntCmd
+	SAdd(ctx context.Context, key string, members ...interface{}) *redis.IntCmd
+	SCard(ctx context.Context, key string) *redis.IntCmd
+	SIsMember(ctx context.Context, key string, member interface{}) *redis.BoolCmd
+	SMembers(ctx context.Context, key string) *redis.StringSliceCmd
+	SPopN(ctx context.Context, key string, count int64) *redis.StringSliceCmd
+	SRem(ctx context.Context, key string, members ...interface{}) *redis.IntCmd
+	ScriptExists(ctx context.Context, scripts ...string) *redis.BoolSliceCmd
+	ScriptLoad(ctx context.Context, script string) *redis.StringCmd
+	Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd
+	SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.BoolCmd
+	TTL(ctx context.Context, key string) *redis.DurationCmd
 	TxPipeline() redis.Pipeliner
-	WithContext(context.Context) *redis.Client
-	ZAdd(key string, members ...redis.Z) *redis.IntCmd
-	ZCard(key string) *redis.IntCmd
-	ZRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
-	ZRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd
-	ZRangeWithScores(key string, start, stop int64) *redis.ZSliceCmd
-	ZRank(key, member string) *redis.IntCmd
-	ZRem(key string, members ...interface{}) *redis.IntCmd
-	ZRevRangeByScore(key string, opt redis.ZRangeBy) *redis.StringSliceCmd
-	ZRevRangeByScoreWithScores(key string, opt redis.ZRangeBy) *redis.ZSliceCmd
-	ZRevRangeWithScores(key string, start, stop int64) *redis.ZSliceCmd
-	ZRevRank(key, member string) *redis.IntCmd
-	ZScore(key, member string) *redis.FloatCmd
+	ZAdd(ctx context.Context, key string, members ...redis.Z) *redis.IntCmd
+	ZCard(ctx context.Context, key string) *redis.IntCmd
+	ZRangeByScore(ctx context.Context, key string, opt *redis.ZRangeBy) *redis.StringSliceCmd
+	ZRangeByScoreWithScores(ctx context.Context, key string, opt *redis.ZRangeBy) *redis.ZSliceCmd
+	ZRangeWithScores(ctx context.Context, key string, start, stop int64) *redis.ZSliceCmd
+	ZRank(ctx context.Context, key, member string) *redis.IntCmd
+	ZRem(ctx context.Context, key string, members ...interface{}) *redis.IntCmd
+	ZRevRangeByScore(ctx context.Context, key string, opt *redis.ZRangeBy) *redis.StringSliceCmd
+	ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *redis.ZRangeBy) *redis.ZSliceCmd
+	ZRevRangeWithScores(ctx context.Context, key string, start, stop int64) *redis.ZSliceCmd
+	ZRevRank(ctx context.Context, key, member string) *redis.IntCmd
+	ZScore(ctx context.Context, key, member string) *redis.FloatCmd
 }

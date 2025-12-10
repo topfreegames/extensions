@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/topfreegames/extensions/v9/middleware"
 )
 
@@ -23,9 +23,9 @@ func (responseTimeMiddleware ResponseTimeMetricsMiddleware) Serve(next echo.Hand
 		startTime := time.Now()
 		gameID := c.Param("gameID")
 		result := next(c)
-		status := c.Response().Status()
+		status := c.Response().Status
 		route := c.Path()
-		method := c.Request().Method()
+		method := c.Request().Method
 		timeUsed := time.Since(startTime)
 
 		tags := []string{

@@ -29,7 +29,7 @@ import (
 	"reflect"
 	"regexp"
 
-	"github.com/go-gorp/gorp"
+	"github.com/go-gorp/gorp/v3"
 	"github.com/topfreegames/extensions/v9/gorp/interfaces"
 	tgorp "github.com/topfreegames/extensions/v9/tracing/gorp"
 )
