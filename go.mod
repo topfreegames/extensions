@@ -1,6 +1,6 @@
 module github.com/topfreegames/extensions/v9
 
-go 1.17
+go 1.20
 
 require (
 	github.com/DataDog/datadog-go/v5 v5.1.1
@@ -8,14 +8,12 @@ require (
 	github.com/alexcesaro/statsd v2.0.0+incompatible
 	github.com/asaskevich/govalidator v0.0.0-20171111151018-521b25f4b05f
 	github.com/aws/aws-sdk-go v1.13.32
-	github.com/bsm/redis-lock v6.0.0+incompatible
+	github.com/bsm/redislock v0.9.4
 	github.com/confluentinc/confluent-kafka-go v0.11.0
 	github.com/eclipse/paho.mqtt.golang v1.1.0
 	github.com/getsentry/raven-go v0.0.0-20170918144728-1452f6376ddb
 	github.com/go-gorp/gorp v2.2.0+incompatible
 	github.com/go-pg/pg v6.15.1+incompatible
-	github.com/go-redis/redis v6.13.2+incompatible
-	github.com/go-redis/redis/v8 v8.11.4
 	github.com/gocql/gocql v0.0.0-20180224092422-2e9f2912ba58
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.1.2
@@ -24,8 +22,10 @@ require (
 	github.com/labstack/echo v2.2.0+incompatible
 	github.com/libi/mgo v0.0.0-20220929064522-e4a63beaa353
 	github.com/onsi/ginkgo v1.16.5
-	github.com/onsi/gomega v1.16.0
+	github.com/onsi/gomega v1.18.1
 	github.com/opentracing/opentracing-go v1.2.0
+	github.com/redis/go-redis/extra/redisotel/v9 v9.7.0
+	github.com/redis/go-redis/v9 v9.7.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.13.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
@@ -91,8 +91,6 @@ require (
 	github.com/poy/onpar v1.0.1 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.7.0 // indirect
-	github.com/redis/go-redis/extra/redisotel/v9 v9.7.0 // indirect
-	github.com/redis/go-redis/v9 v9.7.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect

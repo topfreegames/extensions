@@ -23,10 +23,11 @@
 package redis
 
 import (
+	"context"
 	"fmt"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/redis/go-redis/v9"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -54,7 +55,7 @@ var _ = Describe("Redis Extension", func() {
 	Describe("[Unit]", func() {
 		Describe("Connect", func() {
 			It("Should use config to load connection details", func() {
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(client.Options).NotTo(BeNil())
@@ -63,33 +64,37 @@ var _ = Describe("Redis Extension", func() {
 
 		Describe("IsConnected", func() {
 			It("should verify that db is connected", func() {
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				Expect(client.IsConnected()).To(BeTrue())
 			})
 
 			It("should not be connected if something other than 'PONG' returned", func() {
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
-				mockClient.EXPECT().Ping().Return(redis.NewStatusResult("OK", nil))
+				cmd := redis.NewStatusCmd(context.Background())
+				cmd.SetVal("OK")
+				mockClient.EXPECT().Ping(gomock.Any()).Return(cmd)
 				Expect(client.IsConnected()).To(BeFalse())
 			})
 
 			It("should not be connected if redis error", func() {
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
-				mockClient.EXPECT().Ping().Return(redis.NewStatusResult("PONG", fmt.Errorf("redis error")))
+				cmd := redis.NewStatusCmd(context.Background())
+				cmd.SetErr(fmt.Errorf("redis error"))
+				mockClient.EXPECT().Ping(gomock.Any()).Return(cmd)
 				Expect(client.IsConnected()).To(BeFalse())
 			})
 		})
 
 		Describe("Close", func() {
 			It("should close if no errors", func() {
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
 				mockClient.EXPECT().Close()
@@ -98,7 +103,7 @@ var _ = Describe("Redis Extension", func() {
 			})
 
 			It("should not close if errors", func() {
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
 				mockClient.EXPECT().Close().Return(fmt.Errorf("redis error"))
@@ -109,11 +114,11 @@ var _ = Describe("Redis Extension", func() {
 
 		Describe("WaitForConnection", func() {
 			It("should wait for connection", func() {
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
 
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				err = client.WaitForConnection(1)
 				Expect(err).NotTo(HaveOccurred())
 			})
@@ -121,7 +126,7 @@ var _ = Describe("Redis Extension", func() {
 
 		Describe("Cleanup", func() {
 			It("should close connection", func() {
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
 				mockClient.EXPECT().Close()
@@ -132,11 +137,11 @@ var _ = Describe("Redis Extension", func() {
 
 		Describe("EnterCriticalSection", func() {
 			It("should lock in redis", func() {
-				mockClient.EXPECT().Ping()
+				mockClient.EXPECT().Ping(gomock.Any())
 				client, err := NewClient("extensions.redis", config, mockClient)
 				Expect(err).NotTo(HaveOccurred())
 				t := 10 * time.Millisecond
-				mockClient.EXPECT().SetNX("mock", gomock.Any(), 10*time.Millisecond).Return(&redis.BoolCmd{})
+				mockClient.EXPECT().SetNX(gomock.Any(), "mock", gomock.Any(), 10*time.Millisecond).Return(redis.NewBoolCmd(context.Background()))
 				client.EnterCriticalSection(mockClient, "mock", t, t, t)
 				mockClient.EXPECT().Close()
 				err = client.Cleanup()
@@ -169,9 +174,9 @@ var _ = Describe("Redis Extension", func() {
 				lock, err := client.EnterCriticalSection(client.Client, "lock", t, t, t)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(lock).NotTo(BeNil())
-				Expect(lock.IsLocked()).To(Equal(true))
 				lock2, err := client.EnterCriticalSection(client.Client, "lock", t, 0, 0)
 				Expect(lock2).To(BeNil())
+				Expect(err).To(HaveOccurred())
 			})
 
 			It("should get a lock, unlock and get it again", func() {
@@ -185,13 +190,11 @@ var _ = Describe("Redis Extension", func() {
 				lock, err := client.EnterCriticalSection(client.Client, "lock2", t, t, t)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(lock).NotTo(BeNil())
-				Expect(lock.IsLocked()).To(Equal(true))
 				err = client.LeaveCriticalSection(lock)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(lock.IsLocked()).To(Equal(false))
 				lock2, err := client.EnterCriticalSection(client.Client, "lock2", t, 0, 0)
+				Expect(err).NotTo(HaveOccurred())
 				Expect(lock2).NotTo(BeNil())
-				Expect(lock2.IsLocked()).To(Equal(true))
 			})
 		})
 	})

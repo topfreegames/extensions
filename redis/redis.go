@@ -27,8 +27,8 @@ import (
 	"fmt"
 	"time"
 
-	lock "github.com/bsm/redis-lock"
-	"github.com/go-redis/redis"
+	"github.com/bsm/redislock"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"github.com/topfreegames/extensions/v9/redis/interfaces"
 	tredis "github.com/topfreegames/extensions/v9/tracing/redis"
@@ -53,7 +53,8 @@ type TraceWrapper struct{}
 
 // WithContext is a wrapper for returning a client with context
 func (t *TraceWrapper) WithContext(ctx context.Context, c interfaces.RedisClient) interfaces.RedisClient {
-	return c.WithContext(ctx)
+	// In v9, context is passed per-command, so just return the same client
+	return c
 }
 
 // NewClientFromConfig creates a Client with a ClientConfig.
@@ -100,9 +101,11 @@ func (c *Client) Trace(ctx context.Context) interfaces.RedisClient {
 	if c.TraceWrapper != nil {
 		return c.TraceWrapper.WithContext(ctx, c.Client)
 	}
-	copy := c.Client.WithContext(ctx)
-	tredis.Instrument(copy)
-	return copy
+	// In v9, instrumentation is added once to the client, context is passed per-command
+	if redisClient, ok := c.Client.(*redis.Client); ok {
+		tredis.Instrument(redisClient)
+	}
+	return c.Client
 }
 
 // Connect to Redis
@@ -124,7 +127,8 @@ func (c *Client) Connect(prefix string, client interfaces.RedisClient) error {
 
 // IsConnected determines if the client is connected to redis
 func (c *Client) IsConnected() bool {
-	result := c.Client.Ping()
+	ctx := context.Background()
+	result := c.Client.Ping(ctx)
 	if result != nil {
 		res, err := result.Result()
 		if err != nil {
@@ -136,18 +140,29 @@ func (c *Client) IsConnected() bool {
 }
 
 // EnterCriticalSection locks key using redlock algorithm
-func (c *Client) EnterCriticalSection(client interfaces.RedisClient, key string, lockTimeout, retryTimeout, retryInterval time.Duration) (*lock.Lock, error) {
-	lockOptions := &lock.LockOptions{
-		LockTimeout: lockTimeout,
-		WaitTimeout: retryTimeout,
-		WaitRetry:   retryInterval,
+func (c *Client) EnterCriticalSection(client interfaces.RedisClient, key string, lockTimeout, retryTimeout, retryInterval time.Duration) (*redislock.Lock, error) {
+	ctx := context.Background()
+
+	// Cast to *redis.Client for redislock compatibility
+	redisClient, ok := client.(*redis.Client)
+	if !ok {
+		return nil, fmt.Errorf("client must be *redis.Client for lock operations")
 	}
-	return lock.ObtainLock(client, key, lockOptions)
+
+	locker := redislock.New(redisClient)
+
+	// Create options
+	opts := &redislock.Options{
+		RetryStrategy: redislock.LimitRetry(redislock.LinearBackoff(retryInterval), int(retryTimeout/retryInterval)),
+	}
+
+	return locker.Obtain(ctx, key, lockTimeout, opts)
 }
 
 // LeaveCriticalSection unlocks key
-func (c *Client) LeaveCriticalSection(lock *lock.Lock) error {
-	return lock.Unlock()
+func (c *Client) LeaveCriticalSection(lock *redislock.Lock) error {
+	ctx := context.Background()
+	return lock.Release(ctx)
 }
 
 // WaitForConnection loops until redis is connected
