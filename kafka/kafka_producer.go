@@ -133,7 +133,7 @@ func (q *Producer) SendAsync(message []byte, topic string) {
 	m := &kafka.Message{
 		TopicPartition: kafka.TopicPartition{
 			Topic:     &topic,
-			Partition: kafka.PartitionAny,
+			Partition: int32(kafka.PartitionAny),
 		},
 		Value: message,
 	}

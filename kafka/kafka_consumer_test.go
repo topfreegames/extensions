@@ -375,7 +375,7 @@ var _ = Describe("Kafka Extension", func() {
 					&kafka.Message{
 						TopicPartition: kafka.TopicPartition{
 							Topic:     &client.Topics[0],
-							Partition: kafka.PartitionAny,
+							Partition: int32(kafka.PartitionAny),
 						},
 						Value: []byte("Hello Go!")},
 					nil,
