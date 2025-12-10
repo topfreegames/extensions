@@ -9,8 +9,8 @@ import (
 	io "io"
 	reflect "reflect"
 
-	pg "github.com/go-pg/pg"
-	orm "github.com/go-pg/pg/orm"
+	pg "github.com/go-pg/pg/v10"
+	orm "github.com/go-pg/pg/v10/orm"
 	gomock "github.com/golang/mock/gomock"
 	interfaces "github.com/topfreegames/extensions/v9/pg/interfaces"
 )
@@ -58,6 +58,26 @@ func (mr *MockQueryableMockRecorder) Exec(arg0 interface{}, arg1 ...interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockQueryable)(nil).Exec), varargs...)
 }
 
+// ExecContext mocks base method.
+func (m *MockQueryable) ExecContext(arg0 context.Context, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExecContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExecContext indicates an expected call of ExecContext.
+func (mr *MockQueryableMockRecorder) ExecContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecContext", reflect.TypeOf((*MockQueryable)(nil).ExecContext), varargs...)
+}
+
 // ExecOne mocks base method.
 func (m *MockQueryable) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
@@ -76,6 +96,26 @@ func (mr *MockQueryableMockRecorder) ExecOne(arg0 interface{}, arg1 ...interface
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOne", reflect.TypeOf((*MockQueryable)(nil).ExecOne), varargs...)
+}
+
+// ExecOneContext mocks base method.
+func (m *MockQueryable) ExecOneContext(arg0 context.Context, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExecOneContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExecOneContext indicates an expected call of ExecOneContext.
+func (mr *MockQueryableMockRecorder) ExecOneContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOneContext", reflect.TypeOf((*MockQueryable)(nil).ExecOneContext), varargs...)
 }
 
 // Model mocks base method.
@@ -116,6 +156,26 @@ func (mr *MockQueryableMockRecorder) Query(arg0, arg1 interface{}, arg2 ...inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockQueryable)(nil).Query), varargs...)
 }
 
+// QueryContext mocks base method.
+func (m *MockQueryable) QueryContext(arg0 context.Context, arg1, arg2 interface{}, arg3 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryContext indicates an expected call of QueryContext.
+func (mr *MockQueryableMockRecorder) QueryContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryContext", reflect.TypeOf((*MockQueryable)(nil).QueryContext), varargs...)
+}
+
 // QueryOne mocks base method.
 func (m *MockQueryable) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
@@ -134,6 +194,26 @@ func (mr *MockQueryableMockRecorder) QueryOne(arg0, arg1 interface{}, arg2 ...in
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOne", reflect.TypeOf((*MockQueryable)(nil).QueryOne), varargs...)
+}
+
+// QueryOneContext mocks base method.
+func (m *MockQueryable) QueryOneContext(arg0 context.Context, arg1, arg2 interface{}, arg3 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryOneContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryOneContext indicates an expected call of QueryOneContext.
+func (mr *MockQueryableMockRecorder) QueryOneContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOneContext", reflect.TypeOf((*MockQueryable)(nil).QueryOneContext), varargs...)
 }
 
 // MockORM is a mock of ORM interface.
@@ -200,11 +280,12 @@ func (mr *MockORMMockRecorder) CopyTo(w, query interface{}, params ...interface{
 }
 
 // Delete mocks base method.
-func (m *MockORM) Delete(model interface{}) error {
+func (m *MockORM) Delete(model interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Delete indicates an expected call of Delete.
@@ -214,11 +295,12 @@ func (mr *MockORMMockRecorder) Delete(model interface{}) *gomock.Call {
 }
 
 // ForceDelete mocks base method.
-func (m *MockORM) ForceDelete(model interface{}) error {
+func (m *MockORM) ForceDelete(model interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ForceDelete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // ForceDelete indicates an expected call of ForceDelete.
@@ -247,15 +329,16 @@ func (mr *MockORMMockRecorder) FormatQuery(b, query interface{}, params ...inter
 }
 
 // Insert mocks base method.
-func (m *MockORM) Insert(model ...interface{}) error {
+func (m *MockORM) Insert(model ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{}
 	for _, a := range model {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "Insert", varargs...)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Insert indicates an expected call of Insert.
@@ -279,11 +362,12 @@ func (mr *MockORMMockRecorder) Select(model interface{}) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockORM) Update(model interface{}) error {
+func (m *MockORM) Update(model interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", model)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Update indicates an expected call of Update.
@@ -399,11 +483,12 @@ func (mr *MockDBMockRecorder) CopyTo(w, query interface{}, params ...interface{}
 }
 
 // Delete mocks base method.
-func (m *MockDB) Delete(model interface{}) error {
+func (m *MockDB) Delete(model interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Delete indicates an expected call of Delete.
@@ -432,6 +517,26 @@ func (mr *MockDBMockRecorder) Exec(arg0 interface{}, arg1 ...interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockDB)(nil).Exec), varargs...)
 }
 
+// ExecContext mocks base method.
+func (m *MockDB) ExecContext(arg0 context.Context, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExecContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExecContext indicates an expected call of ExecContext.
+func (mr *MockDBMockRecorder) ExecContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecContext", reflect.TypeOf((*MockDB)(nil).ExecContext), varargs...)
+}
+
 // ExecOne mocks base method.
 func (m *MockDB) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
@@ -452,12 +557,33 @@ func (mr *MockDBMockRecorder) ExecOne(arg0 interface{}, arg1 ...interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOne", reflect.TypeOf((*MockDB)(nil).ExecOne), varargs...)
 }
 
+// ExecOneContext mocks base method.
+func (m *MockDB) ExecOneContext(arg0 context.Context, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExecOneContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExecOneContext indicates an expected call of ExecOneContext.
+func (mr *MockDBMockRecorder) ExecOneContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOneContext", reflect.TypeOf((*MockDB)(nil).ExecOneContext), varargs...)
+}
+
 // ForceDelete mocks base method.
-func (m *MockDB) ForceDelete(model interface{}) error {
+func (m *MockDB) ForceDelete(model interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ForceDelete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // ForceDelete indicates an expected call of ForceDelete.
@@ -486,15 +612,16 @@ func (mr *MockDBMockRecorder) FormatQuery(b, query interface{}, params ...interf
 }
 
 // Insert mocks base method.
-func (m *MockDB) Insert(model ...interface{}) error {
+func (m *MockDB) Insert(model ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{}
 	for _, a := range model {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "Insert", varargs...)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Insert indicates an expected call of Insert.
@@ -541,6 +668,26 @@ func (mr *MockDBMockRecorder) Query(arg0, arg1 interface{}, arg2 ...interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockDB)(nil).Query), varargs...)
 }
 
+// QueryContext mocks base method.
+func (m *MockDB) QueryContext(arg0 context.Context, arg1, arg2 interface{}, arg3 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryContext indicates an expected call of QueryContext.
+func (mr *MockDBMockRecorder) QueryContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryContext", reflect.TypeOf((*MockDB)(nil).QueryContext), varargs...)
+}
+
 // QueryOne mocks base method.
 func (m *MockDB) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
@@ -561,6 +708,26 @@ func (mr *MockDBMockRecorder) QueryOne(arg0, arg1 interface{}, arg2 ...interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOne", reflect.TypeOf((*MockDB)(nil).QueryOne), varargs...)
 }
 
+// QueryOneContext mocks base method.
+func (m *MockDB) QueryOneContext(arg0 context.Context, arg1, arg2 interface{}, arg3 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryOneContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryOneContext indicates an expected call of QueryOneContext.
+func (mr *MockDBMockRecorder) QueryOneContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOneContext", reflect.TypeOf((*MockDB)(nil).QueryOneContext), varargs...)
+}
+
 // Select mocks base method.
 func (m *MockDB) Select(model interface{}) error {
 	m.ctrl.T.Helper()
@@ -576,11 +743,12 @@ func (mr *MockDBMockRecorder) Select(model interface{}) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockDB) Update(model interface{}) error {
+func (m *MockDB) Update(model interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", model)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Update indicates an expected call of Update.
@@ -660,6 +828,26 @@ func (mr *MockTxMockRecorder) Exec(arg0 interface{}, arg1 ...interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockTx)(nil).Exec), varargs...)
 }
 
+// ExecContext mocks base method.
+func (m *MockTx) ExecContext(arg0 context.Context, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExecContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExecContext indicates an expected call of ExecContext.
+func (mr *MockTxMockRecorder) ExecContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecContext", reflect.TypeOf((*MockTx)(nil).ExecContext), varargs...)
+}
+
 // ExecOne mocks base method.
 func (m *MockTx) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
@@ -678,6 +866,26 @@ func (mr *MockTxMockRecorder) ExecOne(arg0 interface{}, arg1 ...interface{}) *go
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0}, arg1...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOne", reflect.TypeOf((*MockTx)(nil).ExecOne), varargs...)
+}
+
+// ExecOneContext mocks base method.
+func (m *MockTx) ExecOneContext(arg0 context.Context, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExecOneContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExecOneContext indicates an expected call of ExecOneContext.
+func (mr *MockTxMockRecorder) ExecOneContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOneContext", reflect.TypeOf((*MockTx)(nil).ExecOneContext), varargs...)
 }
 
 // Model mocks base method.
@@ -718,6 +926,26 @@ func (mr *MockTxMockRecorder) Query(arg0, arg1 interface{}, arg2 ...interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockTx)(nil).Query), varargs...)
 }
 
+// QueryContext mocks base method.
+func (m *MockTx) QueryContext(arg0 context.Context, arg1, arg2 interface{}, arg3 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryContext indicates an expected call of QueryContext.
+func (mr *MockTxMockRecorder) QueryContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryContext", reflect.TypeOf((*MockTx)(nil).QueryContext), varargs...)
+}
+
 // QueryOne mocks base method.
 func (m *MockTx) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
@@ -736,6 +964,26 @@ func (mr *MockTxMockRecorder) QueryOne(arg0, arg1 interface{}, arg2 ...interface
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOne", reflect.TypeOf((*MockTx)(nil).QueryOne), varargs...)
+}
+
+// QueryOneContext mocks base method.
+func (m *MockTx) QueryOneContext(arg0 context.Context, arg1, arg2 interface{}, arg3 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryOneContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryOneContext indicates an expected call of QueryOneContext.
+func (mr *MockTxMockRecorder) QueryOneContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOneContext", reflect.TypeOf((*MockTx)(nil).QueryOneContext), varargs...)
 }
 
 // Rollback mocks base method.
@@ -948,11 +1196,12 @@ func (mr *MockDBTxMockRecorder) CopyTo(w, query interface{}, params ...interface
 }
 
 // Delete mocks base method.
-func (m *MockDBTx) Delete(model interface{}) error {
+func (m *MockDBTx) Delete(model interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Delete indicates an expected call of Delete.
@@ -981,6 +1230,26 @@ func (mr *MockDBTxMockRecorder) Exec(arg0 interface{}, arg1 ...interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockDBTx)(nil).Exec), varargs...)
 }
 
+// ExecContext mocks base method.
+func (m *MockDBTx) ExecContext(arg0 context.Context, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExecContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExecContext indicates an expected call of ExecContext.
+func (mr *MockDBTxMockRecorder) ExecContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecContext", reflect.TypeOf((*MockDBTx)(nil).ExecContext), varargs...)
+}
+
 // ExecOne mocks base method.
 func (m *MockDBTx) ExecOne(arg0 interface{}, arg1 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
@@ -1001,12 +1270,33 @@ func (mr *MockDBTxMockRecorder) ExecOne(arg0 interface{}, arg1 ...interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOne", reflect.TypeOf((*MockDBTx)(nil).ExecOne), varargs...)
 }
 
+// ExecOneContext mocks base method.
+func (m *MockDBTx) ExecOneContext(arg0 context.Context, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExecOneContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExecOneContext indicates an expected call of ExecOneContext.
+func (mr *MockDBTxMockRecorder) ExecOneContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecOneContext", reflect.TypeOf((*MockDBTx)(nil).ExecOneContext), varargs...)
+}
+
 // ForceDelete mocks base method.
-func (m *MockDBTx) ForceDelete(model interface{}) error {
+func (m *MockDBTx) ForceDelete(model interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ForceDelete", model)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // ForceDelete indicates an expected call of ForceDelete.
@@ -1035,15 +1325,16 @@ func (mr *MockDBTxMockRecorder) FormatQuery(b, query interface{}, params ...inte
 }
 
 // Insert mocks base method.
-func (m *MockDBTx) Insert(model ...interface{}) error {
+func (m *MockDBTx) Insert(model ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{}
 	for _, a := range model {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "Insert", varargs...)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Insert indicates an expected call of Insert.
@@ -1090,6 +1381,26 @@ func (mr *MockDBTxMockRecorder) Query(arg0, arg1 interface{}, arg2 ...interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockDBTx)(nil).Query), varargs...)
 }
 
+// QueryContext mocks base method.
+func (m *MockDBTx) QueryContext(arg0 context.Context, arg1, arg2 interface{}, arg3 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryContext indicates an expected call of QueryContext.
+func (mr *MockDBTxMockRecorder) QueryContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryContext", reflect.TypeOf((*MockDBTx)(nil).QueryContext), varargs...)
+}
+
 // QueryOne mocks base method.
 func (m *MockDBTx) QueryOne(arg0, arg1 interface{}, arg2 ...interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
@@ -1108,6 +1419,26 @@ func (mr *MockDBTxMockRecorder) QueryOne(arg0, arg1 interface{}, arg2 ...interfa
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOne", reflect.TypeOf((*MockDBTx)(nil).QueryOne), varargs...)
+}
+
+// QueryOneContext mocks base method.
+func (m *MockDBTx) QueryOneContext(arg0 context.Context, arg1, arg2 interface{}, arg3 ...interface{}) (orm.Result, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryOneContext", varargs...)
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// QueryOneContext indicates an expected call of QueryOneContext.
+func (mr *MockDBTxMockRecorder) QueryOneContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryOneContext", reflect.TypeOf((*MockDBTx)(nil).QueryOneContext), varargs...)
 }
 
 // Rollback mocks base method.
@@ -1139,11 +1470,12 @@ func (mr *MockDBTxMockRecorder) Select(model interface{}) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockDBTx) Update(model interface{}) error {
+func (m *MockDBTx) Update(model interface{}) (orm.Result, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", model)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(orm.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Update indicates an expected call of Update.

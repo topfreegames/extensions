@@ -26,8 +26,8 @@ import (
 	"context"
 	"io"
 
-	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	"github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10/orm"
 )
 
 // Queryable is a contract implemented by types that query
@@ -37,16 +37,20 @@ type Queryable interface {
 	ExecOne(interface{}, ...interface{}) (orm.Result, error)
 	Query(interface{}, interface{}, ...interface{}) (orm.Result, error)
 	QueryOne(interface{}, interface{}, ...interface{}) (orm.Result, error)
+	ExecContext(context.Context, interface{}, ...interface{}) (orm.Result, error)
+	ExecOneContext(context.Context, interface{}, ...interface{}) (orm.Result, error)
+	QueryContext(context.Context, interface{}, interface{}, ...interface{}) (orm.Result, error)
+	QueryOneContext(context.Context, interface{}, interface{}, ...interface{}) (orm.Result, error)
 	Model(model ...interface{}) *orm.Query
 }
 
 // ORM defines the ORM interface
 type ORM interface {
 	Select(model interface{}) error
-	Insert(model ...interface{}) error
-	Update(model interface{}) error
-	Delete(model interface{}) error
-	ForceDelete(model interface{}) error
+	Insert(model ...interface{}) (orm.Result, error)
+	Update(model interface{}) (orm.Result, error)
+	Delete(model interface{}) (orm.Result, error)
+	ForceDelete(model interface{}) (orm.Result, error)
 
 	CopyFrom(r io.Reader, query interface{}, params ...interface{}) (orm.Result, error)
 	CopyTo(w io.Writer, query interface{}, params ...interface{}) (orm.Result, error)
