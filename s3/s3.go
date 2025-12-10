@@ -24,68 +24,95 @@ package s3
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3iface"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"github.com/aws/smithy-go/logging"
 	"github.com/spf13/viper"
 )
+
+// S3API defines the interface for S3 operations
+type S3API interface {
+	GetObject(ctx context.Context, params *s3.GetObjectInput, optFns ...func(*s3.Options)) (*s3.GetObjectOutput, error)
+	PutObject(ctx context.Context, params *s3.PutObjectInput, optFns ...func(*s3.Options)) (*s3.PutObjectOutput, error)
+	DeleteObject(ctx context.Context, params *s3.DeleteObjectInput, optFns ...func(*s3.Options)) (*s3.DeleteObjectOutput, error)
+}
 
 // Client is a wrapper over the official aws s3 package
 // only implements used functions
 type Client struct {
-	client s3iface.S3API
-	bucket string
-	folder string
+	client       S3API
+	presignAPI   *s3.PresignClient
+	bucket       string
+	folder       string
+	endpointURL  string
+	forcePathStyle bool
 }
 
 // NewClient ctor
 func NewClient(prefix string, conf *viper.Viper) (*Client, error) {
+	ctx := context.Background()
 	region := conf.GetString(fmt.Sprintf("%s.region", prefix))
 	accessKey := conf.GetString(fmt.Sprintf("%s.accessKey", prefix))
 	secretAccessKey := conf.GetString(fmt.Sprintf("%s.secretAccessKey", prefix))
-	credentials := credentials.NewStaticCredentials(accessKey, secretAccessKey, "")
-
-	forcePathStyle := true
-	awsConfig := &aws.Config{
-		Region:           &region,
-		Credentials:      credentials,
-		S3ForcePathStyle: &forcePathStyle,
-	}
-
 	endpoint := conf.GetString(fmt.Sprintf("%s.endpoint", prefix))
-	if endpoint != "" {
-		awsConfig.Endpoint = &endpoint
-	}
 
-	sess, err := session.NewSession(awsConfig)
+	// Create AWS config with credentials
+	cfg, err := config.LoadDefaultConfig(ctx,
+		config.WithRegion(region),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+			accessKey,
+			secretAccessKey,
+			"",
+		)),
+		config.WithLogger(logging.NewStandardLogger(io.Discard)),
+	)
 	if err != nil {
 		return nil, err
 	}
-	svc := s3.New(sess)
-	s3 := s3iface.S3API(svc)
+
+	// Configure S3 client with options
+	var s3Options []func(*s3.Options)
+	forcePathStyle := true
+	
+	if endpoint != "" {
+		s3Options = append(s3Options, func(o *s3.Options) {
+			o.BaseEndpoint = aws.String(endpoint)
+			o.UsePathStyle = forcePathStyle
+		})
+	}
+
+	svc := s3.NewFromConfig(cfg, s3Options...)
+	presignClient := s3.NewPresignClient(svc)
+
 	return &Client{
-		client: s3,
-		bucket: conf.GetString(fmt.Sprintf("%s.bucket", prefix)),
-		folder: conf.GetString(fmt.Sprintf("%s.folder", prefix)),
+		client:         svc,
+		presignAPI:     presignClient,
+		bucket:         conf.GetString(fmt.Sprintf("%s.bucket", prefix)),
+		folder:         conf.GetString(fmt.Sprintf("%s.folder", prefix)),
+		endpointURL:    endpoint,
+		forcePathStyle: forcePathStyle,
 	}, nil
 }
 
-func streamToByte(stream *io.ReadCloser) []byte {
+func streamToByte(stream io.ReadCloser) []byte {
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(*stream)
+	buf.ReadFrom(stream)
 	return buf.Bytes()
 }
 
 // GetObject gets an object from s3
 func (c Client) GetObject(path string) ([]byte, error) {
+	ctx := context.Background()
 	splittedString := strings.SplitN(path, "/", 2)
 	if len(splittedString) < 2 {
 		return nil, fmt.Errorf("Invalid path")
@@ -93,25 +120,26 @@ func (c Client) GetObject(path string) ([]byte, error) {
 	bucket := splittedString[0]
 	objKey := splittedString[1]
 	params := &s3.GetObjectInput{
-		Bucket: &bucket,
-		Key:    &objKey,
+		Bucket: aws.String(bucket),
+		Key:    aws.String(objKey),
 	}
-	resp, err := c.client.GetObject(params)
+	resp, err := c.client.GetObject(ctx, params)
 	if err != nil {
 		return nil, err
 	}
-	return streamToByte(&resp.Body), nil
+	defer resp.Body.Close()
+	return streamToByte(resp.Body), nil
 }
 
 // PutObject puts an object into s3
-func (c Client) PutObject(path string, body *[]byte) error {
+func (c Client) PutObject(ctx context.Context, path string, body *[]byte) error {
 	b := bytes.NewReader(*body)
 	params := &s3.PutObjectInput{
-		Bucket: &c.bucket,
-		Key:    &path,
+		Bucket: aws.String(c.bucket),
+		Key:    aws.String(path),
 		Body:   b,
 	}
-	_, err := c.client.PutObject(params)
+	_, err := c.client.PutObject(ctx, params)
 	if err != nil {
 		return err
 	}
@@ -124,29 +152,38 @@ func (c Client) MakePath(k string) string {
 }
 
 // PutObjectRequest return a presigned url for uploading a file to s3
-func (c Client) PutObjectRequest(key, acl string) (string, http.Header, error) {
+func (c Client) PutObjectRequest(ctx context.Context, key, acl string) (string, http.Header, error) {
 	path := c.MakePath(key)
 	params := &s3.PutObjectInput{
-		ACL:    &acl,
-		Bucket: &c.bucket,
-		Key:    &path,
+		ACL:    types.ObjectCannedACL(acl),
+		Bucket: aws.String(c.bucket),
+		Key:    aws.String(path),
 	}
-	req, _ := c.client.PutObjectRequest(params)
-	url, header, err := req.PresignRequest(900 * time.Second)
+
+	req, err := c.presignAPI.PresignPutObject(ctx, params, func(opts *s3.PresignOptions) {
+		opts.Expires = 900 * time.Second
+	})
 	if err != nil {
 		return "", nil, err
 	}
-	return url, header, nil
+
+	// Convert map to http.Header
+	header := make(http.Header)
+	for k, v := range req.SignedHeader {
+		header[k] = v
+	}
+
+	return req.URL, header, nil
 }
 
-// DeleteObject puts an object into s3
-func (c Client) DeleteObject(key string) error {
+// DeleteObject deletes an object from s3
+func (c Client) DeleteObject(ctx context.Context, key string) error {
 	path := c.MakePath(key)
 	params := &s3.DeleteObjectInput{
-		Bucket: &c.bucket,
-		Key:    &path,
+		Bucket: aws.String(c.bucket),
+		Key:    aws.String(path),
 	}
-	_, err := c.client.DeleteObject(params)
+	_, err := c.client.DeleteObject(ctx, params)
 	if err != nil {
 		return err
 	}
@@ -155,15 +192,15 @@ func (c Client) DeleteObject(key string) error {
 
 // PutObjectInput puts an object into s3, if params.Bucket or params.Body
 // are equal nil, they will be overwrite
-func (c Client) PutObjectInput(params *s3.PutObjectInput, body *[]byte) error {
+func (c Client) PutObjectInput(ctx context.Context, params *s3.PutObjectInput, body *[]byte) error {
 	b := bytes.NewReader(*body)
 	if params.Bucket == nil {
-		params.Bucket = &c.bucket
+		params.Bucket = aws.String(c.bucket)
 	}
 	if params.Body == nil {
 		params.Body = b
 	}
-	_, err := c.client.PutObject(params)
+	_, err := c.client.PutObject(ctx, params)
 	if err != nil {
 		return err
 	}
